@@ -9,6 +9,7 @@ import { useIsStarred } from "@/hooks/use-projects";
 import { useRegistryWrite } from "@/hooks/use-registry-write";
 import { useIsClient } from "@/hooks/use-is-client";
 import { CHAIN } from "@/lib/config";
+import { gsap } from "@/lib/gsap";
 import type { Dapp } from "@/lib/types";
 
 const METAMASK_URL = "https://metamask.io/download/";
@@ -24,10 +25,27 @@ export function StarButton({ dapp, size = "sm" }: { dapp: Dapp; size?: "sm" | "m
   const [authBusy, setAuthBusy] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const lastAction = useRef<"star" | "unstar">("star");
+  const burst = useRef<HTMLSpanElement>(null);
 
   // Party Kit moment after a successful star.
   useEffect(() => {
     if (state.status === "success" && lastAction.current === "star") {
+      // Little burst of stars out of the button (skipped under reduced motion).
+      if (burst.current && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        gsap.fromTo(
+          burst.current.children,
+          { x: 0, y: 0, scale: 0.4, opacity: 1, rotation: 0 },
+          {
+            x: (i: number) => Math.cos((i / 10) * Math.PI * 2) * gsap.utils.random(38, 70),
+            y: (i: number) => Math.sin((i / 10) * Math.PI * 2) * gsap.utils.random(30, 60),
+            scale: () => gsap.utils.random(0.8, 1.4),
+            rotation: () => gsap.utils.random(-180, 180),
+            opacity: 0,
+            duration: 0.9,
+            ease: "power3.out",
+          },
+        );
+      }
       setParty(true);
       const t = setTimeout(() => {
         setParty(false);
@@ -80,6 +98,13 @@ export function StarButton({ dapp, size = "sm" }: { dapp: Dapp; size?: "sm" | "m
 
   return (
     <div className="relative flex flex-col items-end gap-1">
+      <span ref={burst} aria-hidden className="pointer-events-none absolute top-4 right-10 z-30">
+        {Array.from({ length: 10 }, (_, i) => (
+          <span key={i} className="text-brand absolute text-sm opacity-0">
+            ★
+          </span>
+        ))}
+      </span>
       <Button
         variant={starred ? "outline" : "primary"}
         size={size}

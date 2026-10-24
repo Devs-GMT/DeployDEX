@@ -25,5 +25,14 @@ Next 16 differs from older versions. Before using a Next API, read the matching 
 - Browsing must work with no wallet and no MetaMask.
 - Conventional commits. Small, reviewable changes.
 
+## Motion conventions (GSAP)
+- Import GSAP only from `src/lib/gsap.ts` (registers ScrollTrigger, SplitText, MotionPath, DrawSVG, useGSAP) and only in client components.
+- Use `useGSAP` with a scope ref and `gsap.matchMedia()`: `MQ_FULL` for pinned/scrubbed scenes, `MQ_LITE` for small screens, `MQ_MOTION` for any motion. Never animate under reduced motion.
+- Server sections stay server components; wrap them in a small `*-scene.tsx` client component that animates tagged nodes (`data-*`).
+- Opt-in reveals: add `className="reveal"` or `data-split` and `MotionRoot` handles it. Do not hide content in CSS before JS runs.
+- Pitfall 1: elements with Tailwind `transition-all`/`transition-transform` must not be tweened directly. Use `muteTransitions()`/`restoreTransitions()` or tween a wrapper.
+- Pitfall 2: inside a `.reveal` container use `opacity`, not `autoAlpha`. While the container is hidden its children inherit `visibility: hidden` and autoAlpha records 0 as the start.
+- Check scenes with `node apps/web/scripts/shots.mjs <url> <outDir> <width> [--at=…|--sections] [--reduced]` against a production build.
+
 ## Out of scope (MVP)
 Reviews, paid spots, analytics, OAuth, source verification, multi-chain, deleting listings, tokens, database.

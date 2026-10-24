@@ -48,3 +48,26 @@ Structure learned from the reference screenshots. We reuse the layout ideas, nev
 - **Tunnel graphic** + pink pill flow for the old-way vs DeployDex comparison.
 - **Draggable carousel** for most-starred (real data only, empty state otherwise).
 - Logo strip under the hero shows real listed projects; before any exist it shows value-prop wordmarks, never fake customers.
+
+## Motion (GSAP + ScrollTrigger + Lenis)
+Story: "Kit's launch day". Kit launches from the hero, inspects contracts on the way down, and lands on the certificate in the footer.
+
+| Where | What |
+|---|---|
+| Global | Lenis smooth scroll, orange scroll-progress bar, `.reveal` rise-in, `[data-split]` headings reveal word by word |
+| Hero | Kit flies a curved path with a contrail; pinned scroll parts the near clouds; logo strip speed follows scroll velocity |
+| Intro | Statement lights up word by word; documents fan out |
+| Categories | Pointer tilt with depth layers, counts count up |
+| Why | Pinned: old way falls apart into a 404, tiles stream into Kit's portal |
+| List it | Pinned: form types itself, Inspector Kit ticks the checks, cursor lands on Next |
+| Most starred | Vertical scroll moves the row sideways (desktop, only when it overflows) |
+| Closing | Kits fly into formation, confetti burst; magnetic primary CTAs |
+| Footer | VERIFIED seal slams onto the certificate; landscape parallax |
+| App pages | Calm: card tilt, star burst on a successful star. No pinning. |
+
+Rules
+- Pinning and scrubbed scenes only at `MQ_FULL` (≥1024px, motion allowed). Smaller screens get simple one-shot reveals. Reduced motion: nothing moves, all content is in its final state.
+- The static markup is always the finished state. Animations use `from` toward it, so no-JS still reads correctly.
+- Animate transform and opacity only.
+- Kit idle life (blink, ear, tail, flames, breathing) is CSS on named SVG groups, offset per instance.
+- `NEXT_PUBLIC_KIT_RASTER=1` swaps the SVG Kit for `/public/kit/<pose>.webp` renders (same pose names).
