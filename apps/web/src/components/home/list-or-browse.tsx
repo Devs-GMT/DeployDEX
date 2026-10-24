@@ -2,8 +2,28 @@ import { ButtonLink } from "@/components/ui/button";
 import { Kit } from "@/components/kit/kit";
 import { CursorTag } from "@/components/ui/decor";
 import { Em, Section } from "@/components/ui/frame";
+import type { ReactNode } from "react";
+import { ListScene } from "./list-scene";
 
-function MockForm({ className }: { className?: string }) {
+const CHECKS = [
+  "Deployed contract on BOT Chain",
+  "Not already listed",
+  "GitHub repo is public",
+  "Live URL is https://",
+];
+
+/** Field value that ListScene "types" in. Static text when there is no animation. */
+function Typed({ children, live }: { children: ReactNode; live?: boolean }) {
+  return live ? (
+    <span data-type className="inline-block">
+      {children}
+    </span>
+  ) : (
+    <>{children}</>
+  );
+}
+
+function MockForm({ className, live }: { className?: string; live?: boolean }) {
   return (
     <div aria-hidden className={`bg-panel rounded-2xl p-6 shadow-xl ${className ?? ""}`}>
       <p className="font-display text-2xl">Project details</p>
@@ -12,36 +32,44 @@ function MockForm({ className }: { className?: string }) {
         <div>
           Name*
           <div className="border-line text-muted mt-1 h-9 rounded-lg border bg-white px-3 leading-9">
-            Kit Swap
+            <Typed live={live}>Kit Swap</Typed>
           </div>
         </div>
         <div>
           Category*
           <div className="border-line text-muted mt-1 h-9 rounded-lg border bg-white px-3 leading-9">
-            Productivity
+            <Typed live={live}>Productivity</Typed>
           </div>
         </div>
       </div>
       <div className="mt-4 text-[11px]">
         Contract address*
         <div className="border-line text-muted mt-1 h-9 rounded-lg border bg-white px-3 font-mono leading-9">
-          0x3b3A…735A
+          <Typed live={live}>0x3b3A…735A</Typed>
         </div>
       </div>
       <div className="mt-4 text-[11px]">
         GitHub repo*
         <div className="border-line text-muted mt-1 h-9 rounded-lg border bg-white px-3 font-mono leading-9">
-          owner/repo
+          <Typed live={live}>owner/repo</Typed>
         </div>
       </div>
-      <div className="border-brand/40 bg-peach/70 text-muted mt-4 rounded-lg border border-dashed py-7 text-center text-xs">
+      <div
+        data-logo-drop={live ? "" : undefined}
+        className="border-brand/40 bg-peach/70 text-muted mt-4 rounded-lg border border-dashed py-7 text-center text-xs"
+      >
         Drop your logo here
         <br />
         <span className="text-[10px]">PNG or SVG, https URL also works</span>
       </div>
       <div className="mt-5 flex justify-between text-xs">
         <span className="border-line rounded-lg border bg-white px-4 py-2">Back</span>
-        <span className="bg-brand rounded-lg px-4 py-2 text-white">Next</span>
+        <span
+          data-list-next={live ? "" : undefined}
+          className="bg-brand inline-block rounded-lg px-4 py-2 text-white"
+        >
+          Next
+        </span>
       </div>
     </div>
   );
@@ -54,34 +82,58 @@ export function ListOrBrowse() {
         <Em>List it</Em> in a minute or just browse
       </h2>
 
-      <div className="reveal mt-12 grid items-center gap-10 lg:grid-cols-2">
-        <div className="relative h-112 overflow-hidden rounded-3xl bg-[#ff7a2e] px-6 pt-8 sm:px-12">
-          <MockForm className="mx-auto max-w-lg" />
-          <CursorTag className="top-2 right-6">Important dApp, Probably</CursorTag>
-          <div
-            aria-hidden
-            className="pointer-events-none absolute right-2 bottom-0 hidden w-36 sm:block sm:w-44"
-          >
-            <Kit pose="inspector" float />
+      <ListScene>
+        <div className="reveal mt-12 grid items-center gap-10 lg:grid-cols-2">
+          <div className="relative h-112 overflow-hidden rounded-3xl bg-[#ff7a2e] px-6 pt-8 sm:px-12 lg:h-[37rem]">
+            <MockForm className="mx-auto max-w-lg" live />
+            <div
+              data-checks
+              aria-hidden
+              className="absolute bottom-6 left-4 w-56 rounded-2xl bg-white/95 p-3 text-[11px] shadow-xl backdrop-blur sm:left-6"
+            >
+              <p className="font-display mb-1.5 text-sm">Inspector Kit says</p>
+              <ul className="space-y-1">
+                {CHECKS.map((c) => (
+                  <li key={c} className="flex items-center gap-2">
+                    <span
+                      data-check
+                      className="bg-success grid size-4 place-items-center rounded-full text-[9px] text-white"
+                    >
+                      ✓
+                    </span>
+                    {c}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div data-list-cursor className="absolute right-8 bottom-6 lg:bottom-10">
+              <CursorTag className="relative">Important dApp, Probably</CursorTag>
+            </div>
+            <div
+              aria-hidden
+              className="pointer-events-none absolute top-1 right-1 hidden w-24 rotate-[-8deg] sm:block sm:w-32"
+            >
+              <Kit pose="inspector" float />
+            </div>
+          </div>
+          <div className="max-w-md">
+            <h3 className="text-2xl leading-tight">
+              List it: fill 6 fields, we check the contract, you&apos;re live.
+            </h3>
+            <p className="text-muted mt-4">
+              Name, tagline, category, contract, live URL and repo. DeployDex checks the contract on
+              BOT Chain and the repo on GitHub while you type.
+            </p>
+            <p className="mt-6 font-medium">Best for:</p>
+            <p className="text-muted mt-1">
+              Builders who already shipped something and want eyes on it.
+            </p>
+            <ButtonLink href="/list" size="lg" className="mt-8">
+              Start listing →
+            </ButtonLink>
           </div>
         </div>
-        <div className="max-w-md">
-          <h3 className="text-2xl leading-tight">
-            List it: fill 6 fields, we check the contract, you&apos;re live.
-          </h3>
-          <p className="text-muted mt-4">
-            Name, tagline, category, contract, live URL and repo. DeployDex checks the contract on
-            BOT Chain and the repo on GitHub while you type.
-          </p>
-          <p className="mt-6 font-medium">Best for:</p>
-          <p className="text-muted mt-1">
-            Builders who already shipped something and want eyes on it.
-          </p>
-          <ButtonLink href="/list" size="lg" className="mt-8">
-            Start listing →
-          </ButtonLink>
-        </div>
-      </div>
+      </ListScene>
 
       <div className="reveal mt-20 grid items-center gap-10 lg:grid-cols-2">
         <div className="order-2 max-w-md lg:order-1">

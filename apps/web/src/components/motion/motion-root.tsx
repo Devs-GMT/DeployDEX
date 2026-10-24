@@ -1,7 +1,15 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { gsap, MQ_MOTION, muteTransitions, restoreTransitions, ScrollTrigger, SplitText, useGSAP } from "@/lib/gsap";
+import {
+  gsap,
+  MQ_MOTION,
+  muteTransitions,
+  restoreTransitions,
+  ScrollTrigger,
+  SplitText,
+  useGSAP,
+} from "@/lib/gsap";
 
 const REVEAL = ".reveal";
 const SPLIT = "[data-split]";
@@ -31,7 +39,8 @@ export function MotionRoot() {
           return found.filter((el) => !seen.has(el));
         };
 
-        const onScreen = (el: Element) => el.getBoundingClientRect().top < window.innerHeight * 0.92;
+        const onScreen = (el: Element) =>
+          el.getBoundingClientRect().top < window.innerHeight * 0.92;
 
         const register = (root: ParentNode, initial: boolean) => {
           const reveals = collect(root, REVEAL).filter((el) => {

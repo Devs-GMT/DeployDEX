@@ -133,3 +133,12 @@ html.lenis body { height: auto; }
 .halftone-mask { -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 78%); mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 78%); }
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* FAQ: animate <details> open/close height where supported (progressive enhancement). */
+:root { interpolate-size: allow-keywords; }
+.faq-item::details-content {
+  block-size: 0;
+  overflow: hidden;
+  transition: block-size 0.35s ease, content-visibility 0.35s allow-discrete;
+}
+.faq-item[open]::details-content { block-size: auto; }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useReadContract } from "wagmi";
 import { deployDexAbi } from "@/lib/abi";
 import {
@@ -16,6 +16,8 @@ import { ExternalLink } from "@/components/ui/button";
 import { BotChainLogo } from "@/components/ui/bot-chain-logo";
 import { Kit } from "@/components/kit/kit";
 import { Landscape } from "@/components/ui/landscape";
+import { Seal } from "@/components/illustrations/seal";
+import { gsap, MQ_MOTION, muteTransitions, restoreTransitions, useGSAP } from "@/lib/gsap";
 
 const COLUMNS: { title: string; links: { label: string; href: string; external?: boolean }[] }[] = [
   {
@@ -57,6 +59,36 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
 
 function Certificate() {
   const [copied, setCopied] = useState(false);
+  const root = useRef<HTMLDivElement>(null);
+
+  // Kit lands on the certificate, then the VERIFIED seal slams down and the card shudders.
+  useGSAP(
+    () => {
+      const q = gsap.utils.selector(root);
+      gsap.matchMedia().add(MQ_MOTION, () => {
+        const card = q("[data-cert-card]");
+        muteTransitions(card);
+        gsap
+          .timeline({
+            scrollTrigger: { trigger: root.current, start: "top 80%", once: true },
+            onComplete: () => restoreTransitions(card),
+          })
+          .from(card, { y: 70, rotation: -5, opacity: 0, duration: 0.8, ease: "power3.out" })
+          .from(
+            q("[data-cert-kit]"),
+            { y: 70, opacity: 0, duration: 0.6, ease: "back.out(1.8)" },
+            "-=0.35",
+          )
+          .from(
+            q("[data-cert-seal]"),
+            { scale: 2.8, rotation: -45, opacity: 0, duration: 0.32, ease: "expo.in" },
+            "+=0.1",
+          )
+          .to(card, { keyframes: { x: [0, -6, 5, -3, 0] }, duration: 0.3, ease: "none" });
+      });
+    },
+    { scope: root },
+  );
   const { data: total } = useReadContract({
     address: REGISTRY_ADDRESS,
     abi: deployDexAbi,
@@ -76,18 +108,23 @@ function Certificate() {
   }
 
   return (
-    <div className="group kit-group relative mx-auto mt-24 max-w-2xl">
-      <Kit
-        pose="curator"
+    <div ref={root} className="group kit-group relative mx-auto mt-24 max-w-2xl">
+      <div
+        data-cert-kit
         className="absolute -top-20 left-1/2 w-32 -translate-x-1/2 sm:left-12 sm:translate-x-0"
-        title="Curator Kit holding the certificate"
-      />
-      <div className="border-line border-l-brand bg-card relative -rotate-1 overflow-hidden rounded-2xl border border-l-8 p-6 shadow-lg transition-transform duration-300 group-hover:rotate-0 sm:p-8">
+      >
+        <Kit pose="curator" title="Curator Kit holding the certificate" />
+      </div>
+      <div
+        data-cert-card
+        className="border-line border-l-brand bg-card relative -rotate-1 overflow-hidden rounded-2xl border border-l-8 p-6 shadow-lg transition-transform duration-300 group-hover:rotate-0 sm:p-8"
+      >
         <div
+          data-cert-seal
           aria-hidden
-          className="border-brand text-brand absolute top-4 right-4 grid size-14 rotate-12 place-items-center rounded-full border-2 border-dashed font-mono text-[10px]"
+          className="absolute top-3 right-3 size-20 rotate-12 sm:size-24"
         >
-          VERIFIED
+          <Seal className="size-full" />
         </div>
         <p className="text-muted font-mono text-xs tracking-widest uppercase">Official record</p>
         <h2 className="mt-1 text-2xl sm:text-3xl">Certificate of Deployment</h2>
@@ -144,8 +181,28 @@ function Certificate() {
 }
 
 export function Footer() {
+  const root = useRef<HTMLElement>(null);
+
+  // Painted countryside: clouds drift down and hills rise as the page bottoms out.
+  useGSAP(
+    () => {
+      const q = gsap.utils.selector(root);
+      gsap.matchMedia().add(MQ_MOTION, () => {
+        const scrub = {
+          trigger: q("[data-landscape]")[0],
+          start: "top bottom",
+          end: "bottom bottom",
+          scrub: 0.6,
+        };
+        gsap.from(q('[data-ls="clouds"]'), { y: -40, ease: "none", scrollTrigger: scrub });
+        gsap.from(q('[data-ls="hills"]'), { y: 50, ease: "none", scrollTrigger: scrub });
+      });
+    },
+    { scope: root },
+  );
+
   return (
-    <footer className="border-line bg-page border-t">
+    <footer ref={root} className="border-line bg-page border-t">
       <div className="lg:border-line mx-auto max-w-300 px-5 pb-0 sm:px-10 lg:border-x">
         <Certificate />
 
@@ -203,7 +260,9 @@ export function Footer() {
           own research before using a dApp.
         </p>
       </div>
-      <Landscape className="block h-56 w-full sm:h-72" />
+      <div data-landscape>
+        <Landscape className="block h-56 w-full sm:h-72" />
+      </div>
     </footer>
   );
 }

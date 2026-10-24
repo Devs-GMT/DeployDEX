@@ -7,6 +7,7 @@ import { Sky } from "@/components/illustrations/sky";
 import { CHAIN } from "@/lib/config";
 import { LogoStrip } from "./marquee";
 import { HeroScene } from "./hero-scene";
+import { Magnetic } from "@/components/motion/magnetic";
 
 export function Hero() {
   return (
@@ -51,7 +52,10 @@ export function Hero() {
           </div>
         </div>
 
-        <div aria-hidden className="pointer-events-none absolute bottom-40 left-[5%] hidden size-40 -rotate-12 opacity-80 md:block">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute bottom-40 left-[5%] hidden size-40 -rotate-12 opacity-80 md:block"
+        >
           <Halftone shape="spark" />
         </div>
         <Sparkle className="top-40 left-[14%]" />
@@ -70,7 +74,10 @@ export function Hero() {
               </span>
               Live on {CHAIN.name} · chain {CHAIN.id}
             </div>
-            <h1 data-hero-title className="mx-auto max-w-4xl text-[clamp(2.75rem,7.5vw,5.75rem)] leading-[0.98]">
+            <h1
+              data-hero-title
+              className="mx-auto max-w-4xl text-[clamp(2.75rem,7.5vw,5.75rem)] leading-[0.98]"
+            >
               The home of
               <br />
               BOT Chain <Em>dApps.</Em>
@@ -81,16 +88,22 @@ export function Hero() {
               Built for builders, by builders.
             </p>
             <div data-hero-cta className="mt-9 flex flex-wrap justify-center gap-3">
-              <ButtonLink href="/list" size="lg">
-                List your dApp
-              </ButtonLink>
+              <Magnetic>
+                <ButtonLink href="/list" size="lg">
+                  List your dApp
+                </ButtonLink>
+              </Magnetic>
               <ButtonLink href="/dapps" variant="secondary" size="lg">
                 Browse dApps
               </ButtonLink>
             </div>
           </div>
 
-          <div data-hero-trio aria-hidden className="mx-auto mt-12 flex w-fit items-end gap-1 sm:gap-3">
+          <div
+            data-hero-trio
+            aria-hidden
+            className="mx-auto mt-12 flex w-fit items-end gap-1 sm:gap-3"
+          >
             <div className="w-24 sm:w-40">
               <Kit pose="hackathon" float />
             </div>

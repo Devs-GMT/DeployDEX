@@ -25,13 +25,13 @@ export function Landscape({ className }: { className?: string }) {
         <filter id="ls-blur"><feGaussianBlur stdDeviation="8" /></filter>
       </defs>
       <rect width="1440" height="360" fill="url(#ls-sky)" />
-      <g filter="url(#ls-blur)" opacity="0.9">
+      <g data-ls="clouds" filter="url(#ls-blur)" opacity="0.9">
         <ellipse cx="260" cy="150" rx="220" ry="70" fill="#f3d79b" />
         <ellipse cx="380" cy="120" rx="150" ry="60" fill="#ecc58a" />
         <ellipse cx="1000" cy="170" rx="260" ry="60" fill="#f4dba4" />
         <ellipse cx="1120" cy="140" rx="160" ry="50" fill="#ebc283" />
       </g>
-      <g filter="url(#ls-paint)">
+      <g data-ls="hills" filter="url(#ls-paint)">
         <path d="M0 250 C200 190 330 220 520 236 C700 250 860 200 1040 226 C1200 248 1320 214 1440 230 V360 H0Z" fill="url(#ls-hill1)" />
         <path d="M0 296 C220 262 420 300 640 288 C860 276 1060 252 1440 292 V360 H0Z" fill="url(#ls-hill2)" />
         <path d="M120 360 C260 316 330 312 520 322 C640 330 760 306 900 296" fill="none" stroke="#c49a63" strokeWidth="9" strokeLinecap="round" />

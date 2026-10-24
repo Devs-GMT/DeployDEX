@@ -17,7 +17,7 @@ export function Faq() {
       <div className="reveal mt-10 rounded-3xl border border-line bg-panel shadow-[0_10px_30px_-18px_rgba(0,0,0,0.3)]">
         <div className="divide-y divide-line px-6 sm:px-8">
           {FAQS.map(([q, a]) => (
-            <details key={q} className="group py-5">
+            <details key={q} className="faq-item group py-5">
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-[17px] font-medium text-ink/90">
                 {q}
                 <svg aria-hidden viewBox="0 0 20 20" className="size-4 shrink-0 transition-transform group-open:rotate-180">
