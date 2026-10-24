@@ -12,7 +12,7 @@ export function Hero() {
       <PainterlySky />
 
       {/* flying Astro Kit, top right */}
-      <div aria-hidden className="pointer-events-none absolute -top-4 right-[3%] w-44 rotate-[18deg] animate-float sm:w-72">
+      <div aria-hidden className="pointer-events-none absolute -top-2 -right-2 w-28 rotate-[18deg] animate-float sm:top-[-1rem] sm:right-[3%] sm:w-72">
         <Kit pose="astro" />
       </div>
       {/* dot-screen sparkle, bottom left (our take on the halftone hand in the reference) */}
@@ -46,7 +46,7 @@ export function Hero() {
         <div className="mx-auto mt-14 hidden w-fit items-end gap-2 sm:flex" aria-hidden>
           <Kit pose="hackathon" className="w-40" float />
           <Kit pose="dev" className="w-60 [animation-delay:-1.5s]" float />
-          <Kit pose="party" className="w-40 [animation-delay:-3s]" float />
+          <Kit pose="astro" className="w-40 [animation-delay:-3s]" float />
         </div>
       </div>
       <LogoStrip />

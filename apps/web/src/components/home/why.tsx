@@ -1,5 +1,6 @@
 import { Kit } from "@/components/kit/kit";
 import { Em, Section } from "@/components/ui/frame";
+import { WhyLogos } from "./why-logos";
 
 const OLD = [
   { t: "Scattered tweets", i: "✎" },
@@ -111,6 +112,7 @@ export function Why() {
           </p>
         </div>
       </div>
+      <WhyLogos />
     </Section>
   );
 }

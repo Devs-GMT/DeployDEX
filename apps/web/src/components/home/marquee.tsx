@@ -27,10 +27,10 @@ function Track({ children, reverse }: { children: React.ReactNode; reverse?: boo
   );
 }
 
-function ProjectRow({ items }: { items: Dapp[] }) {
+function ProjectRow({ items, reverse }: { items: Dapp[]; reverse?: boolean }) {
   const base = items.length < 6 ? [...items, ...items, ...items] : items;
   return (
-    <Track>
+    <Track reverse={reverse}>
       {base.map((d, i) => (
         <Link key={`${d.id}-${i}`} href={`/dapps/${d.id}`} className="flex items-center gap-3 text-xl font-medium opacity-80 transition-opacity hover:opacity-100">
           <LogoAvatar name={d.name} src={d.logoUrl} className="size-9" />
@@ -46,10 +46,7 @@ export function LogoStrip() {
   const { data } = useProjects();
   const hasProjects = !!data && data.length > 0;
   return (
-    <div className="relative border-t border-line bg-page py-7" aria-label={hasProjects ? "Listed projects" : undefined}>
-      {hasProjects ? (
-        <ProjectRow items={data} />
-      ) : (
+    <div className="relative space-y-5 border-t border-line bg-page py-7" aria-label={hasProjects ? "Listed projects" : undefined}>
         <div aria-hidden>
           <Track>
             {PROPS.map((p) => (
@@ -57,7 +54,6 @@ export function LogoStrip() {
             ))}
           </Track>
         </div>
-      )}
     </div>
   );
 }

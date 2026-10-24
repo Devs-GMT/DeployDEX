@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { useRef } from "react";
-import { useProjects } from "@/hooks/use-projects";
+import { useProjects, useWeeklyStars } from "@/hooks/use-projects";
 import { LogoAvatar } from "@/components/dapps/logo-avatar";
 import { Halftone } from "@/components/ui/halftone";
 import { ButtonLink, ExternalLink } from "@/components/ui/button";
 import { Kit } from "@/components/kit/kit";
 import { CATEGORIES, CATEGORY_ART } from "@/lib/categories";
 import { shortAddress } from "@/lib/format";
+import { safeHttpsUrl } from "@/lib/validators";
 import { Em, Section } from "@/components/ui/frame";
 
 /** Click-and-drag horizontal scroller (touch uses native scrolling). */
@@ -58,7 +59,13 @@ function DragScroller({ children }: { children: React.ReactNode }) {
 /** Top projects by stars, straight from the contract. Real data only. */
 export function MostStarred() {
   const { data } = useProjects();
-  const top = [...(data ?? [])].sort((a, b) => b.stars - a.stars).slice(0, 10);
+  const { data: weekly } = useWeeklyStars();
+  // "This week" only when the logs show real movement; otherwise be honest and show all-time.
+  const weeklyTop = weekly
+    ? (data ?? []).filter((d) => (weekly.get(d.id) ?? 0) > 0).sort((a, b) => (weekly.get(b.id) ?? 0) - (weekly.get(a.id) ?? 0))
+    : [];
+  const isWeekly = weeklyTop.length > 0;
+  const top = (isWeekly ? weeklyTop : [...(data ?? [])].sort((a, b) => b.stars - a.stars)).slice(0, 10);
 
   return (
     <Section innerClassName="!px-0 sm:!px-0">
@@ -67,7 +74,7 @@ export function MostStarred() {
           <h2 className="text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.02]">
             Built for <Em>builders</Em> who ship
           </h2>
-          <p className="mt-3 text-lg text-muted">The most starred dApps on BOT Chain, straight from the contract.</p>
+          <p className="mt-3 text-lg text-muted">{isWeekly ? "Most starred this week" : "Most starred of all time"}, straight from the contract.</p>
         </div>
         <ButtonLink href="/dapps?s=stars" variant="secondary">See all dApps</ButtonLink>
       </div>
@@ -106,7 +113,11 @@ export function MostStarred() {
                   <p className="line-clamp-4 min-h-24 text-[15px]">“{d.tagline || d.name}”</p>
                   <div className="mt-4 flex items-center justify-between text-sm">
                     <Link href={`/dapps/${d.id}`} className="font-medium hover:text-brand">Details</Link>
-                    <ExternalLink href={d.liveUrl} className="font-medium text-brand hover:underline">Open ↗</ExternalLink>
+                    {safeHttpsUrl(d.liveUrl) ? (
+                      <ExternalLink href={safeHttpsUrl(d.liveUrl)!} className="font-medium text-brand hover:underline">Open ↗</ExternalLink>
+                    ) : (
+                      <span className="text-muted">No link</span>
+                    )}
                   </div>
                 </div>
               </article>

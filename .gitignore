@@ -6,3 +6,6 @@ node_modules
 .DS_Store
 .vercel
 docs/corgi ui/
+contracts/lib
+contracts/out
+contracts/cache

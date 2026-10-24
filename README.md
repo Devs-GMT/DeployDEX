@@ -38,7 +38,7 @@ npm run dev
 The registry checks `target.code.length` on the chain it lives on, so deploy a registry per network.
 
 ## Deploy the site (Vercel)
-Import the repo, set root directory `apps/web`, add the env vars from `.env.example` (`GITHUB_TOKEN` is optional and server-only), then add your custom domain.
+Import the repo, set root directory `apps/web`, add the env vars from `.env.example` (`GITHUB_TOKEN` is optional and server-only; set `NEXT_PUBLIC_SITE_URL` to the production URL), then add your custom domain.
 
 ## Status
 Built: contract, web3 wiring, directory, project page, list/edit form with live checks, star/unstar, My dApps, 9-section home, certificate footer, Kit SVG poses.

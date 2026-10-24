@@ -34,6 +34,7 @@ Before sharing the link, list your own deployed hackathon projects from the real
 | `NEXT_PUBLIC_CHAIN` | `mainnet` |
 | `NEXT_PUBLIC_REGISTRY_MAINNET` | your mainnet address |
 | `NEXT_PUBLIC_REGISTRY_TESTNET` | testnet address (optional) |
+| `NEXT_PUBLIC_SITE_URL` | your production URL, e.g. `https://deploydex.xyz` (used by sitemap and social cards) |
 | `GITHUB_TOKEN` | optional, a fine-grained token with no scopes (public data only). Server only, never prefix with `NEXT_PUBLIC_`. |
 
 4. Deploy, then add your custom domain in Project Settings, Domains.

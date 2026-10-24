@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePublicClient, useWriteContract } from "wagmi";
 import { deployDexAbi } from "@/lib/abi";
@@ -60,5 +60,6 @@ export function useRegistryWrite() {
     }
   }
 
-  return { state, run, reset: () => setState({ status: "idle" }) };
+  const reset = useCallback(() => setState({ status: "idle" }), []);
+  return { state, run, reset };
 }

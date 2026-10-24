@@ -19,7 +19,7 @@ function Doc({ className, title }: { className?: string; title: string }) {
 
 export function Intro() {
   return (
-    <section className="border-t border-line">
+    <section id="about" className="border-t border-line">
       <div className="mx-auto max-w-300 px-3 py-6 sm:px-5 lg:border-x lg:border-line">
         <div className="reveal relative overflow-hidden rounded-3xl bg-charcoal text-white">
           <div aria-hidden className="absolute -top-40 left-1/3 size-130 rounded-full border border-white/10" />

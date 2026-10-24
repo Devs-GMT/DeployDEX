@@ -17,7 +17,7 @@ export function Chip({
         tone === "peach" && "bg-peach text-[#7a2d00]",
         tone === "pink" && "bg-pink-soft text-pink",
         tone === "neutral" && "border border-line bg-panel text-muted",
-        tone === "green" && "bg-[#e6f6ec] text-[#14693a]",
+        tone === "green" && "bg-success-soft text-success",
         className,
       )}
     >

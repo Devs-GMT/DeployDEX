@@ -126,3 +126,44 @@ export function useIsStarred(id: number, address?: Address) {
     },
   });
 }
+
+const WEEK_SECONDS = 7 * 24 * 3600;
+
+/**
+ * Net stars per project id over the last 7 days, tallied from Starred/Unstarred events.
+ * Returns null when logs are unavailable so callers can fall back to all-time totals.
+ */
+export function useWeeklyStars() {
+  const client = usePublicClient({ chainId: CHAIN.id });
+  return useQuery({
+    queryKey: ["weekly-stars", REGISTRY_ADDRESS],
+    enabled: !!client && REGISTRY_DEPLOYED,
+    staleTime: 5 * 60 * 1000,
+    retry: false,
+    queryFn: async (): Promise<Map<number, number> | null> => {
+      if (!client) return null;
+      try {
+        const latest = await client.getBlockNumber();
+        const sample = latest > 1000n ? 1000n : latest;
+        const [a, b] = await Promise.all([
+          client.getBlock({ blockNumber: latest }),
+          client.getBlock({ blockNumber: latest - sample }),
+        ]);
+        const secPerBlock = sample > 0n ? Number(a.timestamp - b.timestamp) / Number(sample) : 0;
+        if (!(secPerBlock > 0)) return null;
+        const span = BigInt(Math.ceil(WEEK_SECONDS / secPerBlock));
+        const fromBlock = latest > span ? latest - span : 0n;
+        const [up, down] = await Promise.all([
+          client.getContractEvents({ address: REGISTRY_ADDRESS, abi: deployDexAbi, eventName: "Starred", fromBlock, toBlock: latest }),
+          client.getContractEvents({ address: REGISTRY_ADDRESS, abi: deployDexAbi, eventName: "Unstarred", fromBlock, toBlock: latest }),
+        ]);
+        const tally = new Map<number, number>();
+        for (const e of up) tally.set(Number(e.args.id), (tally.get(Number(e.args.id)) ?? 0) + 1);
+        for (const e of down) tally.set(Number(e.args.id), (tally.get(Number(e.args.id)) ?? 0) - 1);
+        return tally;
+      } catch {
+        return null;
+      }
+    },
+  });
+}

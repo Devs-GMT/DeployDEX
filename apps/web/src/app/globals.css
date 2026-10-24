@@ -15,6 +15,8 @@
   --color-sky: #dff0ff;
   --color-charcoal: #333333;
   --color-brand-deep: #b83f00;
+  --color-success: #14693a;
+  --color-success-soft: #e6f6ec;
   --radius-xl: 16px;
   --animate-float: float 5s ease-in-out infinite;
   --animate-marquee: marquee 40s linear infinite;
@@ -63,14 +65,15 @@
   --font-serif: var(--font-instrument), Georgia, serif;
 }
 
-html { scroll-behavior: smooth; }
+html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
 body { background: var(--color-page); color: var(--color-ink); font-family: var(--font-sans); }
 h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.04em; }
 
 :focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
 
 .kit-tail { transform-origin: 150px 150px; transform-box: view-box; }
-.kit-hover:hover .kit-tail { animation: wag 0.7s ease-in-out 2; }
+.kit-hover:hover .kit-tail,
+.kit-group:hover .kit-tail { animation: wag 0.7s ease-in-out 2; }
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
