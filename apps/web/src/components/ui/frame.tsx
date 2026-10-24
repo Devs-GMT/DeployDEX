@@ -57,12 +57,16 @@ export function SectionHead({
   dark?: boolean;
 }) {
   return (
-    <div className="reveal flex flex-wrap items-end justify-between gap-4">
+    <div className="flex flex-wrap items-end justify-between gap-4">
       <div>
-        <h2 className="text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.02]">{title}</h2>
-        {sub && <p className={cn("mt-3 max-w-xl text-lg", dark ? "text-white/70" : "text-muted")}>{sub}</p>}
+        <h2 data-split className="text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.02]">
+          {title}
+        </h2>
+        {sub && (
+          <p className={cn("reveal mt-3 max-w-xl text-lg", dark ? "text-white/70" : "text-muted")}>{sub}</p>
+        )}
       </div>
-      {action}
+      {action && <div className="reveal">{action}</div>}
     </div>
   );
 }

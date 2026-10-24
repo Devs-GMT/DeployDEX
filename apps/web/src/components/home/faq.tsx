@@ -13,7 +13,7 @@ const FAQS: [string, string][] = [
 export function Faq() {
   return (
     <Section id="faq" innerClassName="max-w-3xl lg:border-x-0">
-      <h2 className="reveal text-center text-[clamp(2.25rem,5vw,3.75rem)] leading-none">FAQ</h2>
+      <h2 data-split className="text-center text-[clamp(2.25rem,5vw,3.75rem)] leading-none">FAQ</h2>
       <div className="reveal mt-10 rounded-3xl border border-line bg-panel shadow-[0_10px_30px_-18px_rgba(0,0,0,0.3)]">
         <div className="divide-y divide-line px-6 sm:px-8">
           {FAQS.map(([q, a]) => (

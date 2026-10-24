@@ -23,3 +23,6 @@ export const BOT_CHAIN_SITE = "https://botchain.ai";
 
 /** Public site URL for sitemap/OG. Set NEXT_PUBLIC_SITE_URL in production. */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");
+
+/** Set NEXT_PUBLIC_KIT_RASTER=1 to use 3D renders from /public/kit/<pose>.webp instead of the SVG Kit. */
+export const KIT_RASTER = process.env.NEXT_PUBLIC_KIT_RASTER === "1";

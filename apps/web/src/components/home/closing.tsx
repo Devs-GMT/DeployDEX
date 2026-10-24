@@ -20,7 +20,7 @@ export function Closing() {
           </div>
         ))}
       </div>
-      <h2 className="reveal mx-auto mt-10 max-w-4xl text-[clamp(2.25rem,5.5vw,4rem)] leading-[1.02]">
+      <h2 data-split className="mx-auto mt-10 max-w-4xl text-[clamp(2.25rem,5.5vw,4rem)] leading-[1.02]">
         Ship it. List it. <Em>Get starred.</Em>
       </h2>
       <p className="reveal mt-4 text-lg text-white/70">Move fast, deploy on BOT Chain, get discovered.</p>

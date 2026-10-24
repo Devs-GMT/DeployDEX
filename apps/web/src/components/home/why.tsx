@@ -91,7 +91,7 @@ function Tunnel() {
 export function Why() {
   return (
     <Section dark>
-      <h2 className="reveal text-center text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.02]">
+      <h2 data-split className="text-center text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.02]">
         Our unique <Em>advantage</Em>
       </h2>
       <div className="reveal mt-12 grid gap-5 lg:grid-cols-2">

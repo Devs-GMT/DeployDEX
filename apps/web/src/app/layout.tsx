@@ -6,6 +6,9 @@ import { Providers } from "@/components/web3/providers";
 import { TopBanner } from "@/components/layout/top-banner";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { MotionRoot } from "@/components/motion/motion-root";
+import { ScrollProgress } from "@/components/motion/scroll-progress";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -31,6 +34,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
+        <SmoothScroll />
+        <MotionRoot />
+        <ScrollProgress />
         <Providers>
           <TopBanner />
           <Header />

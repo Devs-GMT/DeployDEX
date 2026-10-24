@@ -50,7 +50,7 @@ function MockForm({ className }: { className?: string }) {
 export function ListOrBrowse() {
   return (
     <Section>
-      <h2 className="reveal text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.02]">
+      <h2 data-split className="text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.02]">
         <Em>List it</Em> in a minute or just browse
       </h2>
 
