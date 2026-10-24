@@ -1,0 +1,115 @@
+@import "tailwindcss";
+
+@theme {
+  --color-page: #f6f6f6;
+  --color-card: #ffffff;
+  --color-panel: #f9f9f9;
+  --color-line: #e1e1e1;
+  --color-ink: #191919;
+  --color-muted: #5f5f5f;
+  --color-brand: #ff5c00;
+  --color-brand-hover: #cc4a00;
+  --color-peach: #ffdecc;
+  --color-pink: #ff405d;
+  --color-pink-soft: #ffe9ec;
+  --color-sky: #dff0ff;
+  --color-charcoal: #333333;
+  --color-brand-deep: #b83f00;
+  --radius-xl: 16px;
+  --animate-float: float 5s ease-in-out infinite;
+  --animate-marquee: marquee 40s linear infinite;
+  --animate-marquee-reverse: marquee 46s linear infinite reverse;
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  --animate-drift: drift 60s linear infinite;
+  --animate-drift-slow: drift 90s linear infinite;
+  --animate-twinkle: twinkle 3s ease-in-out infinite;
+  --animate-ring: ring 3.2s ease-out infinite;
+  --animate-fly: fly 22s linear infinite;
+  @keyframes drift {
+    from { transform: translateX(-20vw); }
+    to { transform: translateX(120vw); }
+  }
+  @keyframes twinkle {
+    0%, 100% { opacity: 0.25; transform: scale(0.8); }
+    50% { opacity: 1; transform: scale(1.15); }
+  }
+  @keyframes ring {
+    from { transform: scale(0.3); opacity: 0.9; }
+    to { transform: scale(1.5); opacity: 0; }
+  }
+  @keyframes fly {
+    from { transform: translateX(-15vw) rotate(-8deg); }
+    50% { transform: translateX(50vw) translateY(-14px) rotate(4deg); }
+    to { transform: translateX(115vw) rotate(-8deg); }
+  }
+  @keyframes wag {
+    0%, 100% { transform: rotate(0deg); }
+    30% { transform: rotate(14deg); }
+    60% { transform: rotate(-10deg); }
+  }
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans), system-ui, sans-serif;
+  --font-display: var(--font-space), var(--font-geist-sans), sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-serif: var(--font-instrument), Georgia, serif;
+}
+
+html { scroll-behavior: smooth; }
+body { background: var(--color-page); color: var(--color-ink); font-family: var(--font-sans); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.04em; }
+
+:focus-visible { outline: 2px solid var(--color-brand); outline-offset: 2px; }
+
+.kit-tail { transform-origin: 150px 150px; transform-box: view-box; }
+.kit-hover:hover .kit-tail { animation: wag 0.7s ease-in-out 2; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.dot-grid {
+  background-image: radial-gradient(rgba(25, 25, 25, 0.09) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.dot-grid-light {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.marker {
+  background: linear-gradient(transparent 62%, var(--color-peach) 62%, var(--color-peach) 92%, transparent 92%);
+}
+
+/* Scroll reveal: progressive enhancement, only where view timelines exist. */
+@supports (animation-timeline: view()) {
+  .reveal {
+    animation: reveal-in linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+  @keyframes reveal-in {
+    from { opacity: 0; transform: translateY(28px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal { animation: none !important; opacity: 1 !important; transform: none !important; }
+}
+
+.em-serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--color-brand); }
+.halftone-mask { -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 78%); mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 78%); }
+.no-scrollbar { scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
