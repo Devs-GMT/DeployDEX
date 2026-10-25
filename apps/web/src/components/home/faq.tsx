@@ -1,4 +1,5 @@
 import { Section } from "@/components/ui/frame";
+import { CONTACT_EMAIL } from "@/lib/config";
 
 const FAQS: [string, string][] = [
   ["Is it free to list?", "Yes. You only pay the network gas fee for the transaction."],
@@ -30,7 +31,7 @@ export function Faq() {
         </div>
         <p className="rounded-b-3xl bg-white py-5 text-center text-sm">
           Can&apos;t find an answer to your question?{" "}
-          <a className="text-brand hover:underline" href="mailto:hello@deploydex.xyz">Get in touch</a>
+          <a className="text-brand hover:underline" href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
         </p>
       </div>
     </Section>

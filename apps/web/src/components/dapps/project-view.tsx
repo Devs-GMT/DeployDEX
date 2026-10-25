@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { categoryById } from "@/lib/categories";
-import { explorerAddressUrl, REGISTRY_DEPLOYED } from "@/lib/config";
+import { CONTACT_EMAIL, explorerAddressUrl, REGISTRY_DEPLOYED } from "@/lib/config";
 import { formatDate, shortAddress } from "@/lib/format";
 import { useProject } from "@/hooks/use-projects";
 import { useIsContractOwner } from "@/hooks/use-contract-check";
@@ -152,7 +152,7 @@ export function ProjectView({ id }: { id: number }) {
           Something wrong?{" "}
           <a
             className="underline"
-            href={`mailto:hello@deploydex.xyz?subject=${encodeURIComponent(`Report dApp #${dapp.id}`)}`}
+            href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Report dApp #${dapp.id}`)}`}
           >
             Report this listing
           </a>

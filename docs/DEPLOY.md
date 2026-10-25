@@ -38,7 +38,7 @@ Before sharing the link, list your own deployed hackathon projects from the real
 | `GITHUB_TOKEN` | optional, a fine-grained token with no scopes (public data only). Server only, never prefix with `NEXT_PUBLIC_`. |
 
 4. Deploy, then add your custom domain in Project Settings, Domains.
-5. Update the footer/contact placeholders: `hello@deploydex.xyz` (header/footer/FAQ/project page) and the Faucet link.
+5. Contact email, docs and faucet links live in `src/lib/config.ts` (`CONTACT_EMAIL`, `BOT_CHAIN_DOCS`, `BOT_CHAIN_FAUCET`).
 
 ## 5. Launch checklist
 - [ ] Mainnet address in README, footer shows it, visible on scan.botchain.ai
