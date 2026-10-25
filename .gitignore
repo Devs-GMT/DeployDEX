@@ -22,3 +22,4 @@ skills-lock.json
 # Raw category renders (the built webp files in public/category are committed)
 apps/web/art-src/category/*.png
 apps/web/art-src/category/*.webp
+apps/web/art-src/composed/

@@ -1,6 +1,8 @@
-// Builds the category renders: art-src/category/<slug>.png (any size, transparent background)
-// -> public/category/<slug>.webp (1024 master), <slug>-512.webp, <slug>-256.webp, then lists the
-// ready categories in src/lib/category-art-ready.ts. Prompts and specs: docs/CATEGORY_ART.md.
+// Builds the category renders -> public/category/<slug>.webp (1024 master), <slug>-512.webp,
+// <slug>-256.webp, then lists the ready categories in src/lib/category-art-ready.ts.
+// Source per slug: a hand-made render in art-src/category/<slug>.png (any size, transparent
+// background) wins; else the composed one in art-src/composed/ (scripts/category-compose.mjs).
+// Prompts and specs: docs/CATEGORY_ART.md.
 // Usage (from apps/web): node scripts/category-art.mjs
 import sharp from "sharp";
 import { existsSync, mkdirSync, readdirSync, writeFileSync } from "node:fs";
@@ -17,20 +19,28 @@ const SLUGS = [
   "other",
 ];
 const root = join(import.meta.dirname, "..");
-const src = join(root, "art-src", "category");
+const handMade = join(root, "art-src", "category");
+const composed = join(root, "art-src", "composed");
 const out = join(root, "public", "category");
 mkdirSync(out, { recursive: true });
 
-const sources = existsSync(src) ? readdirSync(src).filter((f) => /\.(png|webp)$/i.test(f)) : [];
-for (const file of sources) {
-  const slug = file.replace(/\.(png|webp)$/i, "").toLowerCase();
-  if (!SLUGS.includes(slug)) {
-    console.warn(`skip ${file}: name it after a category (${SLUGS.join(", ")})`);
-    continue;
+const images = (dir) =>
+  existsSync(dir) ? readdirSync(dir).filter((f) => /\.(png|webp)$/i.test(f)) : [];
+const sources = new Map();
+for (const [dir, kind] of [
+  [composed, "composed"],
+  [handMade, "hand-made"],
+]) {
+  for (const file of images(dir)) {
+    const slug = file.replace(/\.(png|webp)$/i, "").toLowerCase();
+    if (SLUGS.includes(slug)) sources.set(slug, { path: join(dir, file), kind });
+    else console.warn(`skip ${file}: name it after a category (${SLUGS.join(", ")})`);
   }
+}
+for (const [slug, { path, kind }] of sources) {
   // Trim the empty margin, then centre the figure on a square with an even 6% breathing room,
   // so every category sits at the same scale as the Kit renders.
-  const trimmed = await sharp(join(src, file)).ensureAlpha().trim({ threshold: 4 }).toBuffer();
+  const trimmed = await sharp(path).ensureAlpha().trim({ threshold: 4 }).toBuffer();
   const master = await sharp(trimmed)
     .resize(904, 904, { fit: "contain", background: { r: 0, g: 0, b: 0, alpha: 0 } })
     .extend({
@@ -52,7 +62,7 @@ for (const file of sources) {
       .webp({ quality: 88, alphaQuality: 100, effort: 6 })
       .toFile(join(out, name));
   }
-  console.log(`✓ ${slug}`);
+  console.log(`✓ ${slug} (${kind})`);
 }
 
 const ready = SLUGS.filter((s) => existsSync(join(out, `${s}.webp`)));

@@ -5,7 +5,30 @@ filter chips on /dapps, the category picker in /list, the Explore menu and the f
 Until a render exists the site shows the closest existing pose (`CATEGORY_ART[slug].kit` in
 `apps/web/src/lib/categories.ts`), so nothing breaks while the set is in progress.
 
-## Steps
+## Current set: composed
+
+The art shipping today is composed by `apps/web/scripts/category-compose.mjs`: an existing Kit
+render plus two 3D props per category, with soft shadows.
+
+| Slug | Kit pose | Props |
+|---|---|---|
+| `ai` | astro | glowing bulb, lightning |
+| `rwa` | curator | key, dollar coin |
+| `community` | party | chat bubbles, heart |
+| `productivity` | inspector | calendar, tick |
+| `fun-lifestyle` | napping | music note, colour palette |
+| `dev-tools` | dev | tools, chain link |
+| `hackathon` | hackathon | trophy, fire |
+| `other` | Kit in a box | puzzle piece, star |
+
+Props are from [3dicons](https://3dicons.co) by Vijay Verma (CC0, no attribution required),
+kept in `apps/web/art-src/props/`. They come on white, which the script removes. To tweak a
+scene, edit `SCENES` in the script, then from `apps/web`:
+`node scripts/category-compose.mjs <slug> && node scripts/category-art.mjs`.
+
+A hand-made render (below) in `art-src/category/<slug>.png` always wins over the composed one.
+
+## Steps for a hand-made render
 
 1. Generate each image with the prompts below. **Attach an existing Kit render as the style
    reference** (e.g. `apps/web/public/kit/dev.webp`, ideally also `curator.webp`) so the face,
@@ -14,8 +37,8 @@ Until a render exists the site shows the closest existing pose (`CATEGORY_ART[sl
 2. Remove the background if the tool can't export transparency (any background remover works).
 3. Save as `apps/web/art-src/category/<slug>.png`. Slugs: `ai`, `rwa`, `community`,
    `productivity`, `fun-lifestyle`, `dev-tools`, `hackathon` (optional), `other` (optional).
-4. From `apps/web`: `node scripts/category-art.mjs`. It trims, centres, builds the 1024/512/256
-   webp files in `public/category/` and switches those categories over automatically.
+4. From `apps/web`: `node scripts/category-art.mjs`. It trims, centres and builds the
+   1024/512/256 webp files in `public/category/`, using your render instead of the composed one.
 5. Check `/dapps`, the home page and `/list`, then commit `public/category/*` and
    `src/lib/category-art-ready.ts` (the raw PNGs are git-ignored).
 

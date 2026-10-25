@@ -54,7 +54,7 @@ export function Categories() {
                   <div
                     aria-hidden
                     data-depth="18"
-                    className="pointer-events-none absolute -top-14 -right-5 w-32 sm:w-36"
+                    className="pointer-events-none absolute -top-16 -right-6 w-36 sm:w-40"
                   >
                     <CategoryArt slug={c.slug} sizes="176px" />
                   </div>

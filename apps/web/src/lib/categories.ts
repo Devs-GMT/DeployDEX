@@ -19,8 +19,8 @@ export const categoryById = (id: number): Category => CATEGORIES[id] ?? CATEGORI
 
 /**
  * Per category: halftone shape (small decorative marks), blurb, soft tint (a color token for
- * covers) and `kit`, the existing Kit pose shown until the category's own render exists
- * (see components/ui/category-art.tsx and docs/CATEGORY_ART.md).
+ * covers) and `kit`, the plain Kit pose used for round badges and as a stand-in until the
+ * category's own render exists (see components/ui/category-art.tsx and docs/CATEGORY_ART.md).
  */
 export const CATEGORY_ART: Record<
   string,
@@ -54,7 +54,7 @@ export const CATEGORY_ART: Record<
     shape: "gamepad",
     blurb: "Games, art and good vibes",
     tint: "--color-pink-soft",
-    kit: "hackathon",
+    kit: "napping",
   },
   "dev-tools": {
     shape: "code",
