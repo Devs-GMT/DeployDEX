@@ -45,7 +45,7 @@ export function DappCard({ dapp, rank }: { dapp: Dapp; rank?: number }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Open <IconExternal className="size-3.5" />
+                Open app <IconExternal className="size-3.5" />
                 <span className="sr-only">{dapp.name} (opens in a new tab)</span>
               </ButtonLink>
             ) : (

@@ -21,7 +21,7 @@ const COLS = 3;
 const SORTS = [
   { id: "stars", label: "Most starred" },
   { id: "new", label: "Newest" },
-  { id: "updated", label: "Updated" },
+  { id: "updated", label: "Recently updated", short: "Updated" },
 ] as const;
 
 type SortId = (typeof SORTS)[number]["id"];
@@ -185,7 +185,14 @@ export function Directory() {
                         : "text-muted hover:text-ink",
                     )}
                   >
-                    {s.label}
+                    {"short" in s ? (
+                      <>
+                        <span className="sm:hidden">{s.short}</span>
+                        <span className="hidden sm:inline">{s.label}</span>
+                      </>
+                    ) : (
+                      s.label
+                    )}
                   </button>
                 );
               })}
