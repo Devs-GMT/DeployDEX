@@ -13,10 +13,10 @@ export function buttonClasses(variant: Variant = "primary", size: Size = "md", c
     size === "md" && "h-11 px-5 text-[15px]",
     size === "lg" && "h-13 px-7 text-base",
     variant !== "ghost" && "border-b-4 active:translate-y-0.5 active:border-b-2",
-    variant === "primary" && "border-brand-deep bg-brand text-white hover:bg-[#ff6c1a]",
-    variant === "secondary" && "border-black bg-ink text-white hover:bg-[#2a2a2a]",
+    variant === "primary" && "border-brand-deep bg-brand text-white hover:bg-brand-hover",
+    variant === "secondary" && "border-black bg-ink text-white hover:bg-ink-soft",
     variant === "outline" && "border-line bg-card text-ink shadow-sm hover:bg-panel",
-    variant === "light" && "border-[#cfcfcf] bg-white text-ink hover:bg-panel",
+    variant === "light" && "border-line-strong bg-white text-ink hover:bg-panel",
     variant === "ghost" && "text-ink hover:bg-black/5",
     className,
   );

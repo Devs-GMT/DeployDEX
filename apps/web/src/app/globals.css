@@ -17,6 +17,19 @@
   --color-brand-deep: #b83f00;
   --color-success: #14693a;
   --color-success-soft: #e6f6ec;
+  /* Supporting UI shades (keep components free of raw hex). */
+  --color-ink-soft: #2a2a2a;
+  --color-line-strong: #cfcfcf;
+  --color-peach-ink: #7a2d00;
+  --color-tangerine: #ff7a2e;
+  --color-mist: #ededed;
+  --color-smoke: #dcdcdc;
+  --color-ash: #9a9a9a;
+  --color-pink-line: #ffb3c0;
+  --color-pink-wash: #ffe3e8;
+  --color-pink-deep: #d0213d;
+  --color-live: #22c55e;
+  --color-cursor: #2563eb;
   --radius-xl: 16px;
   --animate-float: float 5s ease-in-out infinite;
   --animate-marquee: marquee 40s linear infinite;

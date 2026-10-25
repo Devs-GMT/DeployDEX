@@ -57,7 +57,7 @@ function DragScroller({ children }: { children: React.ReactNode }) {
   return (
     <div className="relative">
       {overflows && (
-        <span className="absolute -top-9 right-5 rounded-md bg-[#ff7a2e] px-2.5 py-1 text-xs font-medium text-white sm:right-10">
+        <span className="absolute -top-9 right-5 rounded-md bg-tangerine px-2.5 py-1 text-xs font-medium text-white sm:right-10">
           ⇆ Drag to see more
         </span>
       )}
@@ -90,9 +90,9 @@ function StarCard({ d, className }: { d: Dapp; className?: string }) {
         className,
       )}
     >
-      <div className="relative h-52 bg-[#ededed]">
+      <div className="relative h-52 bg-mist">
         <div aria-hidden className="halftone-mask absolute inset-0 p-6 opacity-70">
-          <Halftone shape={CATEGORY_ART[slug]!.shape} color="#9a9a9a" dot={2.2} />
+          <Halftone shape={CATEGORY_ART[slug]!.shape} color="var(--color-ash)" dot={2.2} />
         </div>
         <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-linear-to-t from-white/90 to-transparent p-4 pt-10">
           <LogoAvatar name={d.name} src={d.logoUrl} category={d.category} className="size-11" />

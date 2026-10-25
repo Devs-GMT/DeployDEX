@@ -170,7 +170,7 @@ function Certificate() {
         {REGISTRY_DEPLOYED && (
           <ExternalLink
             href={explorerAddressUrl(REGISTRY_ADDRESS)}
-            className="border-brand-deep bg-brand mt-6 inline-flex h-11 items-center rounded-xl border-b-4 px-5 text-sm font-medium text-white hover:bg-[#ff6c1a]"
+            className="border-brand-deep bg-brand mt-6 inline-flex h-11 items-center rounded-xl border-b-4 px-5 text-sm font-medium text-white hover:bg-brand-hover"
           >
             View on explorer ↗
           </ExternalLink>

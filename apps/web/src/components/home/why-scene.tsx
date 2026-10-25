@@ -96,7 +96,7 @@ export function WhyScene({ children }: { children: ReactNode }) {
             { autoAlpha: 1, scale: 1.4, duration: 0.6, ease: "power1.out" },
             "<",
           )
-          .to(q("[data-why-highlight]"), { color: "#ff5c00", duration: 0.3 }, ">-0.2");
+          .to(q("[data-why-highlight]"), { color: getComputedStyle(document.documentElement).getPropertyValue("--color-brand"), duration: 0.3 }, ">-0.2");
       });
     },
     { scope: root },
