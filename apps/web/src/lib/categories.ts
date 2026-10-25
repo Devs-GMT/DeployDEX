@@ -16,15 +16,18 @@ export type Category = (typeof CATEGORIES)[number];
 
 export const categoryById = (id: number): Category => CATEGORIES[id] ?? CATEGORIES[7];
 
-
-/** Halftone illustration + soft tint per category (used on cards). */
-export const CATEGORY_ART: Record<string, { shape: HalftoneShape; blurb: string }> = {
-  ai: { shape: "spark", blurb: "Agents, models and smart tools" },
-  rwa: { shape: "building", blurb: "Real-world assets, on-chain" },
-  community: { shape: "people", blurb: "DAOs, social and groups" },
-  productivity: { shape: "clock", blurb: "Get more done, on-chain" },
-  "fun-lifestyle": { shape: "gamepad", blurb: "Games, art and good vibes" },
-  "dev-tools": { shape: "code", blurb: "Build faster on BOT Chain" },
-  hackathon: { shape: "flag", blurb: "Fresh from the build week" },
-  other: { shape: "star", blurb: "Everything else worth a look" },
+/** Halftone illustration, blurb and soft tint (a color token, for card covers) per category. */
+export const CATEGORY_ART: Record<string, { shape: HalftoneShape; blurb: string; tint: string }> = {
+  ai: { shape: "spark", blurb: "Agents, models and smart tools", tint: "--color-peach" },
+  rwa: { shape: "building", blurb: "Real-world assets, on-chain", tint: "--color-sky" },
+  community: { shape: "people", blurb: "DAOs, social and groups", tint: "--color-pink-soft" },
+  productivity: { shape: "clock", blurb: "Get more done, on-chain", tint: "--color-peach" },
+  "fun-lifestyle": {
+    shape: "gamepad",
+    blurb: "Games, art and good vibes",
+    tint: "--color-pink-soft",
+  },
+  "dev-tools": { shape: "code", blurb: "Build faster on BOT Chain", tint: "--color-sky" },
+  hackathon: { shape: "flag", blurb: "Fresh from the build week", tint: "--color-peach" },
+  other: { shape: "star", blurb: "Everything else worth a look", tint: "--color-panel" },
 };

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { coverArt, extractPreviewImage, isPrivateAddress } from "./preview";
+import { extractPreviewImage, isPrivateAddress } from "./preview";
 
 describe("extractPreviewImage", () => {
   const page = "https://app.example.com/dashboard/";
@@ -68,22 +68,5 @@ describe("isPrivateAddress", () => {
 
   it.each(["8.8.8.8", "104.16.0.1", "2606:4700::1111", "::ffff:8.8.8.8"])("allows %s", (ip) => {
     expect(isPrivateAddress(ip)).toBe(false);
-  });
-});
-
-describe("coverArt", () => {
-  it("is deterministic per seed (case-insensitive) and varies across seeds", () => {
-    const a = coverArt("0xcaE9000000000000000000000000000000ddFe");
-    expect(coverArt("0xCAE9000000000000000000000000000000DDFE")).toEqual(a);
-    const looks = new Set(
-      Array.from({ length: 12 }, (_, i) => coverArt(`0x${i}abc`).style.backgroundImage),
-    );
-    expect(looks.size).toBeGreaterThan(10);
-  });
-
-  it("uses brand tokens only", () => {
-    const { style } = coverArt("seed");
-    expect(style.backgroundColor).toMatch(/^var\(--color-[a-z-]+\)$/);
-    expect(style.backgroundImage).not.toMatch(/#[0-9a-f]{3,6}/i);
   });
 });

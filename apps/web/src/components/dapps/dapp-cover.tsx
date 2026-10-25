@@ -2,80 +2,93 @@
 
 import { useState } from "react";
 import { CATEGORY_ART, categoryById } from "@/lib/categories";
-import { coverArt } from "@/lib/preview";
 import { cn } from "@/lib/utils";
 import { usePreviewImage } from "@/hooks/use-preview-image";
-import { Halftone } from "@/components/ui/halftone";
+import { LogoAvatar } from "./logo-avatar";
 
 /**
- * Cover art for a listing: the project's own share image when its site (or repo) has one,
- * over a generative poster (brand mesh seeded by the contract, the project name as an
- * oversized wordmark bleeding off the bottom, the category halftone as a small accent), so
- * every card differs and nothing is ever blank while the image loads or when there is none.
- * Fills its parent; the parent sets the size and clipping.
+ * Cover for a listing. When the project's site (or repo) declares a share image, that image
+ * fills the cover with the logo as a small badge in its corner. Otherwise the cover is calm and
+ * on-brand: the category's soft tint, the site's dot grid, and the project logo large in the
+ * middle, like an app-store tile. Fills its parent; the parent sets the size and clipping.
  */
 export function DappCover({
   name,
-  seed,
+  logoUrl,
   category,
   liveUrl,
   repo,
+  size = "md",
   className,
 }: {
   name: string;
-  /** Stable per listing (the contract address); picks the generative colors. */
-  seed: string;
+  logoUrl?: string;
   category: number;
   liveUrl?: string;
   repo?: string;
+  /** Logo tile size: cards use md, the project page lg. */
+  size?: "md" | "lg";
   className?: string;
 }) {
   const preview = usePreviewImage(liveUrl, repo);
   const [loaded, setLoaded] = useState<string | null>(null);
   const [broken, setBroken] = useState<string | null>(null);
-  const art = CATEGORY_ART[categoryById(category).slug]!;
-  const poster = coverArt(seed);
+  const tint = CATEGORY_ART[categoryById(category).slug]!.tint;
   const src = preview.data && preview.data !== broken ? preview.data : null;
   const showing = !!src && loaded === src;
 
   return (
-    <div aria-hidden className={cn("@container absolute inset-0 overflow-hidden", className)}>
-      <div className="absolute inset-0" style={poster.style} />
-      <div className="halftone-field absolute inset-0 opacity-60" />
-      <p
-        className={cn(
-          "font-display absolute right-4 -bottom-[0.18em] left-24 truncate text-right text-[clamp(3rem,9cqw,5.5rem)] leading-none tracking-[-0.06em]",
-          poster.dark ? "text-card/15" : "text-card/80",
-        )}
-      >
-        {name}
-      </p>
-      {src && (
-        // eslint-disable-next-line @next/next/no-img-element -- arbitrary listing host, loaded as-is
-        <img
-          key={src}
-          src={src}
-          alt=""
-          loading="lazy"
-          decoding="async"
-          referrerPolicy="no-referrer"
-          onLoad={() => setLoaded(src)}
-          onError={() => setBroken(src)}
-          className={cn(
-            "absolute inset-0 size-full object-cover transition-[opacity,scale] duration-700 ease-out group-hover:scale-[1.03]",
-            showing ? "opacity-100" : "opacity-0",
-          )}
-        />
-      )}
+    <div
+      className={cn("absolute inset-0 overflow-hidden", className)}
+      style={{ backgroundColor: `color-mix(in srgb, var(${tint}) 55%, var(--color-card))` }}
+    >
+      <div aria-hidden className="dot-grid absolute inset-0" />
       <div
-        data-depth="10"
+        aria-hidden
+        className="absolute inset-0 bg-[radial-gradient(closest-side,color-mix(in_srgb,var(--color-card)_75%,transparent),transparent)]"
+      />
+      <div
         className={cn(
-          "absolute -top-2 -right-2 size-20 transition-transform duration-700 ease-out group-hover:-rotate-6",
+          "absolute inset-0 grid place-items-center transition-opacity duration-500",
           showing && "opacity-0",
         )}
       >
-        <Halftone shape={art.shape} />
+        <LogoAvatar
+          name={name || "?"}
+          src={logoUrl}
+          className={cn(
+            "border-card border-4 shadow-[0_14px_30px_-14px_rgb(120_45_0/0.45)] transition-transform duration-500 ease-out group-hover:-translate-y-1",
+            size === "lg" ? "size-28 rounded-[28px] text-5xl" : "size-20 rounded-3xl text-3xl",
+          )}
+        />
       </div>
+      {src && (
+        <>
+          {/* eslint-disable-next-line @next/next/no-img-element -- arbitrary listing host, loaded as-is */}
+          <img
+            key={src}
+            src={src}
+            alt=""
+            aria-hidden
+            loading="lazy"
+            decoding="async"
+            referrerPolicy="no-referrer"
+            onLoad={() => setLoaded(src)}
+            onError={() => setBroken(src)}
+            className={cn(
+              "absolute inset-0 size-full object-cover transition-[opacity,scale] duration-700 ease-out group-hover:scale-[1.03]",
+              showing ? "opacity-100" : "opacity-0",
+            )}
+          />
+          {showing && (
+            <LogoAvatar
+              name={name || "?"}
+              src={logoUrl}
+              className="border-card absolute bottom-3 left-3 size-10 rounded-xl border-2 text-base shadow-[0_6px_16px_-6px_rgb(0_0_0/0.4)]"
+            />
+          )}
+        </>
+      )}
     </div>
   );
 }

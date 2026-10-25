@@ -12,7 +12,6 @@ import { Button, ButtonLink } from "@/components/ui/button";
 import { safeHttpsUrl } from "@/lib/validators";
 import { Kit } from "@/components/kit/kit";
 import { DappCover } from "./dapp-cover";
-import { LogoAvatar } from "./logo-avatar";
 import { StarButton } from "./star-button";
 import { GithubPanel } from "./github-panel";
 import { parseRepo } from "@/lib/validators";
@@ -69,18 +68,14 @@ export function ProjectView({ id }: { id: number }) {
         <div className="border-line relative aspect-[1.91/1] border-b sm:aspect-[3/1]">
           <DappCover
             name={dapp.name}
-            seed={dapp.target}
+            logoUrl={dapp.logoUrl}
             category={dapp.category}
             liveUrl={dapp.liveUrl}
             repo={dapp.repo}
+            size="lg"
           />
         </div>
         <div className="flex flex-wrap items-start gap-4 p-6">
-          <LogoAvatar
-            name={dapp.name}
-            src={dapp.logoUrl}
-            className="relative -mt-14 size-20 rounded-2xl border-[3px] border-white shadow-[0_6px_16px_-6px_rgb(0_0_0/0.3)]"
-          />
           <div className="min-w-0 flex-1">
             <h1 className="text-3xl">{dapp.name}</h1>
             <p className="text-muted mt-1">{dapp.tagline}</p>

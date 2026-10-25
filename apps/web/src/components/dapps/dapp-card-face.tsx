@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { Chip } from "@/components/ui/chip";
 import { IconRepo, IconStar, IconVerified } from "@/components/ui/icons";
 import { DappCover } from "./dapp-cover";
-import { LogoAvatar } from "./logo-avatar";
 
 /**
  * The visual card shared by the showcase and the form's live preview, so builders
@@ -62,9 +61,7 @@ export function DappCardFace({
             1.91:1 is the og:image shape, so a project's share image fits without cropping. */}
         <DappCover
           name={name}
-          // Until the form has a valid contract the preview keeps one cover instead of
-          // repainting on every keystroke; the published card is seeded by the contract.
-          seed={target ?? "deploydex"}
+          logoUrl={logoUrl}
           category={category}
           liveUrl={liveUrl}
           repo={repo}
@@ -87,14 +84,9 @@ export function DappCardFace({
             </span>
           )}
         </div>
-        <LogoAvatar
-          name={name || "?"}
-          src={logoUrl}
-          className="absolute -bottom-7 left-5 size-15 rounded-2xl border-[3px] border-white shadow-[0_6px_16px_-6px_rgb(0_0_0/0.3)]"
-        />
       </div>
 
-      <div className="flex flex-1 flex-col px-5 pt-10 pb-5">
+      <div className="flex flex-1 flex-col px-5 pt-5 pb-5">
         <div className="flex items-start justify-between gap-3">
           <h3 className="min-w-0 truncate text-[1.375rem] leading-tight">{title ?? name}</h3>
           <span

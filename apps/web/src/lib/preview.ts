@@ -2,8 +2,8 @@ import { safeHttpsUrl } from "./validators";
 
 /**
  * Card covers. A listing has no cover field on-chain, so the card shows the project's own
- * share image (og:image / twitter:image of its live site, found by /api/preview) and falls back
- * to a generative cover seeded by the contract address. Pure helpers, shared by server and client.
+ * share image (og:image / twitter:image of its live site, found by /api/preview) when there is
+ * one, else the logo on the category tint. Pure helpers for the server route.
  */
 
 const META_KEYS = [
@@ -90,62 +90,4 @@ export function isPrivateAddress(ip: string): boolean {
     v.startsWith("::ffff:") ||
     v.startsWith("64:ff9b:")
   );
-}
-
-/** FNV-1a, so the same seed always paints the same cover (server and client alike). */
-function hash(seed: string): number {
-  let h = 0x811c9dc5;
-  for (let i = 0; i < seed.length; i++) {
-    h ^= seed.charCodeAt(i);
-    h = Math.imul(h, 0x01000193);
-  }
-  return h >>> 0;
-}
-
-function rng(seed: number) {
-  let s = seed || 1;
-  return () => {
-    s = (s + 0x6d2b79f5) | 0;
-    let t = Math.imul(s ^ (s >>> 15), 1 | s);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
-
-/**
- * Curated schemes from brand tokens, so every cover looks intentional: warm, sunset sky (the
- * hero), pink, and night (the dark sections). `dark` tells the cover to print its wordmark
- * faintly instead of in white.
- */
-const SCHEMES = [
-  { base: "--color-peach", blobs: ["--color-brand", "--color-pink", "--color-card"], dark: false },
-  { base: "--color-sky", blobs: ["--color-card", "--color-peach", "--color-brand"], dark: false },
-  {
-    base: "--color-pink-soft",
-    blobs: ["--color-pink", "--color-peach", "--color-card"],
-    dark: false,
-  },
-  { base: "--color-charcoal", blobs: ["--color-brand", "--color-pink", "--color-ink"], dark: true },
-] as const;
-
-export interface CoverArt {
-  style: { backgroundColor: string; backgroundImage: string };
-  dark: boolean;
-}
-
-/** Mesh-gradient cover for a seed: one scheme, its blobs placed and sized by the seed. */
-export function coverArt(seed: string): CoverArt {
-  const r = rng(hash(seed.toLowerCase()));
-  const scheme = SCHEMES[Math.floor(r() * SCHEMES.length)]!;
-  const blobs = scheme.blobs.map((color, i) => {
-    const x = Math.round(r() * 100);
-    const y = Math.round(r() * 100);
-    const size = Math.round(50 + r() * 30);
-    const strength = Math.round((i === 0 ? 75 : 55) + r() * 20);
-    return `radial-gradient(circle at ${x}% ${y}%, color-mix(in srgb, var(${color}) ${strength}%, transparent), transparent ${size}%)`;
-  });
-  return {
-    style: { backgroundColor: `var(${scheme.base})`, backgroundImage: blobs.join(", ") },
-    dark: scheme.dark,
-  };
 }
