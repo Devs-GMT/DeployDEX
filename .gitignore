@@ -9,3 +9,9 @@ docs/corgi ui/
 contracts/lib
 contracts/out
 contracts/cache
+
+# Local AI-agent tooling (not part of the app)
+.agents/
+.claude/
+.codegraph/
+skills-lock.json
