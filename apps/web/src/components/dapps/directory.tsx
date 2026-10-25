@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { CATEGORIES, CATEGORY_ART } from "@/lib/categories";
 import { REGISTRY_DEPLOYED } from "@/lib/config";
@@ -35,8 +35,6 @@ export function Directory() {
   const { data, isLoading, isError } = useProjects();
   const search = useRef<HTMLInputElement>(null);
   const results = useRef<HTMLDivElement>(null);
-  const sentinel = useRef<HTMLDivElement>(null);
-  const [stuck, setStuck] = useState(false);
 
   const q = params.get("q") ?? "";
   const cat = params.get("c") ?? "all";
@@ -76,20 +74,6 @@ export function Directory() {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, []);
-
-  // The search shelf is sticky; once it leaves its spot it tightens up and Kit hops off.
-  useEffect(() => {
-    const el = sentinel.current;
-    if (!el) return;
-    const io = new IntersectionObserver(
-      ([e]) => setStuck(!!e && !e.isIntersecting && e.boundingClientRect.top < 0),
-      {
-        rootMargin: "-80px 0px 0px 0px",
-      },
-    );
-    io.observe(el);
-    return () => io.disconnect();
   }, []);
 
   const all = useMemo(() => data ?? [], [data]);
@@ -145,23 +129,14 @@ export function Directory() {
   return (
     <div>
       {/* Search shelf: overlaps the sky band above it. Curator Kit sits on its top edge. */}
-      <div ref={sentinel} aria-hidden className="h-px" />
-      <div className="relative z-30 -mt-14 sm:-mt-16 md:sticky md:top-20">
+      <div className="relative z-30 -mt-14 sm:-mt-16">
         <div
           aria-hidden
-          className={cn(
-            "pointer-events-none absolute -top-[6.5rem] right-4 hidden w-36 transition-[opacity,translate] duration-300 sm:block lg:-top-[8.25rem] lg:right-10 lg:w-44",
-            stuck && "translate-y-6 opacity-0",
-          )}
+          className="pointer-events-none absolute -top-[6.5rem] right-4 hidden w-36 sm:block lg:-top-[8.25rem] lg:right-10 lg:w-44"
         >
           <Kit pose="curator" sizes="176px" priority />
         </div>
-        <div
-          className={cn(
-            "border-line bg-card/95 rounded-[28px] border p-3 shadow-[0_24px_50px_-28px_rgb(120_45_0/0.35)] backdrop-blur transition-[padding] duration-300 sm:p-4",
-            stuck && "sm:p-2.5",
-          )}
-        >
+        <div className="border-line bg-card/95 rounded-[28px] border p-3 shadow-[0_24px_50px_-28px_rgb(120_45_0/0.35)] backdrop-blur sm:p-4">
           <div className="flex flex-col gap-3 md:flex-row md:items-center">
             <label className="group/search border-line bg-panel focus-within:border-brand/60 focus-within:bg-card relative flex h-12 flex-1 items-center gap-3 rounded-2xl border px-4 transition-colors sm:h-14">
               <IconSearch className="text-muted group-focus-within/search:text-brand size-5 shrink-0" />
