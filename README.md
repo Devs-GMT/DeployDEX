@@ -41,5 +41,5 @@ The registry checks `target.code.length` on the chain it lives on, so deploy a r
 Import the repo, set root directory `apps/web`, add the env vars from `.env.example` (`GITHUB_TOKEN` is optional and server-only; set `NEXT_PUBLIC_SITE_URL` to the production URL), then add your custom domain.
 
 ## Status
-Built: contract, web3 wiring, directory, project page, list/edit form with live checks, star/unstar, My dApps, 9-section home, certificate footer, Kit SVG poses.
-Next: two-wallet test on testnet, mainnet deploy, seed listings, replace the placeholder BOT Chain logo. Step-by-step in `docs/DEPLOY.md`.
+Built: contract, web3 wiring, directory, project page, list/edit form with live checks, star/unstar, My dApps, 9-section home, certificate footer, Kit HD poses and per-category Kit art.
+Next: two-wallet test on testnet, mainnet deploy, seed listings. Step-by-step in `docs/DEPLOY.md`.

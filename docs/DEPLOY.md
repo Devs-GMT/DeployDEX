@@ -46,4 +46,4 @@ Before sharing the link, list your own deployed hackathon projects from the real
 - [ ] At least a few real listings
 - [ ] Demo clip: list, checks pass, star from the second wallet
 - [ ] X post tagging @BOTChain_ai
-- [ ] Replace the placeholder BOT Chain logo with the official asset (`components/ui/bot-chain-logo.tsx`)
+- [x] Official BOT Chain logo in place (`components/ui/bot-chain-logo.tsx`)
