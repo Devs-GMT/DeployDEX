@@ -119,7 +119,7 @@ function Tunnel() {
       />
       <div
         data-why-portal
-        className="absolute top-[calc(50%-4.5rem)] left-[calc(50%-4.5rem)] grid size-36 place-items-center rounded-full bg-white/30 p-3 backdrop-blur-sm"
+        className="absolute top-[calc(50%-4.5rem)] left-[calc(50%-4.5rem)] grid size-36 place-items-center rounded-full bg-white/45 p-3"
       >
         <div className="grid size-full place-items-center overflow-hidden rounded-full bg-white shadow-xl">
           <Kit pose="dev" className="mt-3 w-24" title="Kit, the DeployDex cat" />

@@ -21,6 +21,7 @@ Body Geist. Headings Space Grotesk, weight 500. Small labels Geist Mono. Hero 36
 
 ## Components
 - Buttons: 16px radius. Primary orange/white, secondary black, tertiary text link.
+- Brand mark: Kit's head shaped as a "D" on a brand-orange tile (`components/ui/logo.tsx`, same art as `app/icon.svg` favicon). Header and footer lockups use it beside the "DeployDex" wordmark.
 - Cards: white, 16px radius, 1px border. Logo top-left, orange star count top-right, peach category chip.
 - Top banner: slim, dismissible. Header: logo, mega-menus (Explore, Builders, About), right actions.
 - Dark rounded panel for the intro statement.
@@ -55,9 +56,9 @@ Story: "Kit's launch day". Kit launches from the hero, inspects contracts on the
 | Where | What |
 |---|---|
 | Global | Native scroll (CSS smooth anchors, no scroll library), orange scroll-progress bar (CSS scroll-driven), `.reveal` rise-in and `[data-split]` word reveals (IntersectionObserver + CSS) |
-| Hero | Kit flies a curved path with a contrail; pinned scroll parts the near clouds; logo strip speed follows scroll velocity |
+| Hero | On load only: Kit flies a curved path with a contrail and hovers top right, copy and Kit trio rise in. No scroll-linked work; the painted sky is still (its SVG filter is painted once). Logo strip speed follows scroll velocity |
 | Intro | Statement lights up word by word; documents fan out |
-| Categories | Pointer tilt with depth layers, counts count up |
+| Categories | Cards fade up once (`.reveal`), pointer tilt with depth layers, counts count up |
 | Why | Pinned: old way falls apart into a 404, tiles stream into Kit's portal |
 | List it | Pinned: form types itself, Inspector Kit ticks the checks, cursor lands on Next |
 | Most starred | Vertical scroll moves the row sideways (desktop, only when it overflows) |

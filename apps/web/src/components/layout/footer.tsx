@@ -15,6 +15,7 @@ import { shortAddress } from "@/lib/format";
 import { ExternalLink } from "@/components/ui/button";
 import { BotChainLogo } from "@/components/ui/bot-chain-logo";
 import { Kit } from "@/components/kit/kit";
+import { LogoMark } from "@/components/ui/logo";
 import { Seal } from "@/components/illustrations/seal";
 import { gsap, MQ_MOTION, muteTransitions, restoreTransitions, useGSAP } from "@/lib/gsap";
 
@@ -241,7 +242,7 @@ export function Footer() {
 
         <div className="border-line mt-20 grid border-y md:grid-cols-[1.1fr_repeat(4,1fr)]">
           <div className="border-line flex items-center gap-3 border-b p-8 md:border-r md:border-b-0">
-            <Kit pose="dev" className="w-16" />
+            <LogoMark className="size-12" />
             <span className="font-display text-brand text-3xl">DeployDex</span>
           </div>
           {COLUMNS.map((col) => (

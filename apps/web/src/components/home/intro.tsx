@@ -63,10 +63,10 @@ export function Intro() {
                 </ButtonLink>
               </div>
               <div aria-hidden className="relative hidden h-80 lg:block">
-                <div data-intro-doc className="absolute top-2 left-10 w-72 rotate-[-8deg]">
+                <div data-intro-doc className="absolute top-2 left-10 w-72 rotate-[-8deg] will-change-transform">
                   <Doc title="Project details" />
                 </div>
-                <div data-intro-doc className="absolute top-24 left-44 w-72 rotate-[5deg]">
+                <div data-intro-doc className="absolute top-24 left-44 w-72 rotate-[5deg] will-change-transform">
                   <Doc title="Certificate of Deployment" />
                 </div>
                 <div data-intro-cursor className="absolute top-4 left-0">
