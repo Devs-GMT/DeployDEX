@@ -382,7 +382,7 @@ function CategoryChip({
 function SkeletonCard() {
   return (
     <div aria-hidden className="border-line bg-card overflow-hidden rounded-3xl border">
-      <div className="bg-panel dot-grid relative h-30 animate-pulse">
+      <div className="bg-panel dot-grid relative aspect-[1.91/1] animate-pulse">
         <span className="bg-line absolute -bottom-7 left-5 size-15 rounded-2xl border-[3px] border-white" />
       </div>
       <div className="grid gap-3 px-5 pt-10 pb-5">

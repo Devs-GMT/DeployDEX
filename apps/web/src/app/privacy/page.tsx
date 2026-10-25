@@ -13,7 +13,9 @@ export default function PrivacyPage() {
       </p>
       <p>
         Repository info is fetched from GitHub&apos;s public API through our server and cached for
-        an hour. Project logos load directly from the URLs builders provide.
+        an hour. Project logos load directly from the URLs builders provide. Card covers use the
+        share image a project&apos;s own site declares: our server reads the page to find it, and
+        your browser then loads the image from that site.
       </p>
     </article>
   );
