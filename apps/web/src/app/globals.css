@@ -193,7 +193,7 @@ input, textarea { caret-color: var(--color-brand); }
   }
 }
 
-.em-serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--color-brand); }
+.em-serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; word-spacing: normal; color: var(--color-brand); }
 /* Footer wordmark: letters filled with an orange dot screen whose grid scales with the viewport
    (so phones still read the word). `--fill` is the dot radius as a share of the grid cell; the
    footer scene tweens it from 0 so the dots "print in", and it rests full without JS. */
