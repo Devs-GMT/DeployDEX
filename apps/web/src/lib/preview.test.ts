@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { extractPreviewImage, isPrivateAddress } from "./preview";
+import { extractPreviewImage, isPrivateAddress, sniffImage } from "./preview";
 
 describe("extractPreviewImage", () => {
   const page = "https://app.example.com/dashboard/";
@@ -64,9 +64,50 @@ describe("isPrivateAddress", () => {
     "fd00::1",
     "fe80::1",
     "::ffff:127.0.0.1",
+    "64:ff9b::7f00:1",
+    "64:ff9b::10.0.0.1",
+    "64:ff9b:1::a9fe:a9fe",
   ])("blocks %s", (ip) => expect(isPrivateAddress(ip)).toBe(true));
 
-  it.each(["8.8.8.8", "104.16.0.1", "2606:4700::1111", "::ffff:8.8.8.8"])("allows %s", (ip) => {
+  it.each([
+    "8.8.8.8",
+    "104.16.0.1",
+    "2606:4700::1111",
+    "::ffff:8.8.8.8",
+    "64:ff9b::14cd:f3a6",
+    "64:ff9b::8.8.8.8",
+  ])("allows %s", (ip) => {
     expect(isPrivateAddress(ip)).toBe(false);
+  });
+});
+
+describe("sniffImage", () => {
+  const bytes = (...xs: (number | string)[]) =>
+    new Uint8Array(
+      xs.flatMap((x) => (typeof x === "string" ? [...x].map((c) => c.charCodeAt(0)) : [x])),
+    );
+
+  it("recognises raster formats by their magic bytes", () => {
+    expect(sniffImage(bytes(0x89, "PNG", 13, 10))).toBe("image/png");
+    expect(sniffImage(bytes(0xff, 0xd8, 0xff, 0xe0))).toBe("image/jpeg");
+    expect(sniffImage(bytes("GIF89a"))).toBe("image/gif");
+    expect(sniffImage(bytes("RIFF", 0, 0, 0, 0, "WEBPVP8 "))).toBe("image/webp");
+    expect(sniffImage(bytes(0, 0, 0, 0x1c, "ftypavif"))).toBe("image/avif");
+  });
+
+  it("recognises SVG, with or without an XML prolog", () => {
+    expect(sniffImage(bytes('<svg xmlns="http://www.w3.org/2000/svg"></svg>'))).toBe(
+      "image/svg+xml",
+    );
+    expect(sniffImage(bytes('<?xml version="1.0"?>', 10, '<svg viewBox="0 0 1 1"/>'))).toBe(
+      "image/svg+xml",
+    );
+  });
+
+  it("rejects HTML, scripts and other files", () => {
+    expect(sniffImage(bytes("<!doctype html><html>"))).toBeNull();
+    expect(sniffImage(bytes("<html><svg></svg></html>"))).toBeNull();
+    expect(sniffImage(bytes("alert(1)"))).toBeNull();
+    expect(sniffImage(bytes("PK", 3, 4))).toBeNull();
   });
 });

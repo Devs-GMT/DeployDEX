@@ -294,6 +294,7 @@ export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappForm
                 <div className="flex items-center gap-3">
                   <LogoAvatar
                     name={values.name || "?"}
+                    category={values.category}
                     src={values.logoUrl}
                     className="size-12 shrink-0 rounded-2xl"
                   />

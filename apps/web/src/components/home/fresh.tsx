@@ -39,7 +39,7 @@ function LaunchLog({ items }: { items: Dapp[] }) {
               {i === 0 ? "new" : `#${i + 1}`}
             </span>
             <article className="border-line bg-card hover:border-ink/25 relative flex min-w-0 flex-1 items-center gap-3 rounded-2xl border p-3.5 transition-colors sm:gap-4 sm:p-5">
-              <LogoAvatar name={d.name} src={d.logoUrl} className="size-10 sm:size-12" />
+              <LogoAvatar name={d.name} src={d.logoUrl} category={d.category} className="size-10 sm:size-12" />
               <div className="min-w-0 flex-1">
                 <h3 className="truncate text-lg leading-tight">
                   <Link

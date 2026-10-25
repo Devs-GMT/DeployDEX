@@ -80,6 +80,17 @@ export function isPrivateAddress(ip: string): boolean {
   if (/^\d+\.\d+\.\d+\.\d+$/.test(v)) return ipv4Private(v);
   const mapped = v.match(/^::ffff:(\d+\.\d+\.\d+\.\d+)$/);
   if (mapped) return ipv4Private(mapped[1]!);
+  // NAT64 (64:ff9b::/96, RFC 6052): IPv6-only networks reach IPv4 hosts through it, so judge
+  // the IPv4 address embedded in the last 32 bits rather than refusing every such host.
+  const nat64 =
+    v.match(/^64:ff9b::(\d+\.\d+\.\d+\.\d+)$/) ??
+    v.match(/^64:ff9b::([0-9a-f]{1,4}):([0-9a-f]{1,4})$/);
+  if (nat64) {
+    if (nat64[2] === undefined) return ipv4Private(nat64[1]!);
+    const hi = parseInt(nat64[1]!, 16);
+    const lo = parseInt(nat64[2], 16);
+    return ipv4Private(`${hi >> 8}.${hi & 255}.${lo >> 8}.${lo & 255}`);
+  }
   if (!v.includes(":")) return true;
   return (
     v === "::" ||
@@ -90,4 +101,27 @@ export function isPrivateAddress(ip: string): boolean {
     v.startsWith("::ffff:") ||
     v.startsWith("64:ff9b:")
   );
+}
+
+/**
+ * Image type from the first bytes (the upstream Content-Type is not trusted). Raster formats
+ * browsers show in <img>, plus SVG; anything else (HTML, scripts, archives) is null.
+ */
+export function sniffImage(bytes: Uint8Array): string | null {
+  const b = (i: number) => bytes[i] ?? -1;
+  const ascii = (from: number, to: number) => String.fromCharCode(...bytes.slice(from, to));
+  if (b(0) === 0x89 && ascii(1, 4) === "PNG") return "image/png";
+  if (b(0) === 0xff && b(1) === 0xd8 && b(2) === 0xff) return "image/jpeg";
+  if (ascii(0, 4) === "GIF8") return "image/gif";
+  if (ascii(0, 4) === "RIFF" && ascii(8, 12) === "WEBP") return "image/webp";
+  if (ascii(4, 8) === "ftyp" && /^avi[fs]$/.test(ascii(8, 12))) return "image/avif";
+  if (b(0) === 0 && b(1) === 0 && b(2) === 1 && b(3) === 0) return "image/x-icon";
+  const head = new TextDecoder()
+    .decode(bytes.slice(0, 1024))
+    .replace(/^\uFEFF/, "")
+    .trimStart();
+  if (/^(<\?xml[^>]*>\s*)?(<!--[\s\S]*?-->\s*)*(<!DOCTYPE svg[^>]*>\s*)?<svg[\s>]/i.test(head)) {
+    return "image/svg+xml";
+  }
+  return null;
 }

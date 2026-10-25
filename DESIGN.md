@@ -25,6 +25,7 @@ Body Geist. Headings Space Grotesk, weight 500. Small labels Geist Mono. Hero 36
 - Cards: white, 16px radius, 1px border. Logo top-left, orange star count top-right, peach category chip.
 - Category art: Kit in a costume per category (`<CategoryArt slug />`, `components/ui/category-art.tsx`), on card covers, home category cards, /dapps filter chips (round crop), the /list category picker, the Explore menu and the featured dApp. Renders live in `public/category` (built by `scripts/category-art.mjs`, prompts in `docs/CATEGORY_ART.md`); until one exists the closest Kit pose stands in.
 - dApp card cover (1.91:1, the og:image shape): the project's own share image (og:image/twitter:image of its live site, else a custom GitHub social preview) via `/api/preview`; otherwise the category tint, the dot grid and the category Kit on the right. The project logo is a tile bottom-left. `components/dapps/dapp-cover.tsx`.
+- Project logos and cover images load through `/api/image` (our origin; SSRF-guarded fetch in `lib/safe-fetch.ts`, type sniffed from bytes, size-capped, SVG sandboxed). No logo, or a failed one: an app-icon tile with the category's 3D prop on its tint (`public/category/icons`, built by `scripts/category-compose.mjs`).
 - Top banner: slim, dismissible. Header: logo, mega-menus (Explore, Builders, About), right actions.
 - Dark rounded panel for the intro statement.
 

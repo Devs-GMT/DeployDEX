@@ -95,7 +95,7 @@ function StarCard({ d, className }: { d: Dapp; className?: string }) {
           <Halftone shape={CATEGORY_ART[slug]!.shape} color="#9a9a9a" dot={2.2} />
         </div>
         <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-linear-to-t from-white/90 to-transparent p-4 pt-10">
-          <LogoAvatar name={d.name} src={d.logoUrl} className="size-11" />
+          <LogoAvatar name={d.name} src={d.logoUrl} category={d.category} className="size-11" />
           <div className="min-w-0">
             <p className="truncate font-medium">{d.name}</p>
             <p className="text-muted font-mono text-xs">{shortAddress(d.lister)}</p>

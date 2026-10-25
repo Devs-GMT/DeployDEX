@@ -1,16 +1,13 @@
-import { lookup } from "node:dns/promises";
-import { isIP } from "node:net";
 import { z } from "zod";
-import { extractPreviewImage, isPrivateAddress } from "@/lib/preview";
+import { extractPreviewImage } from "@/lib/preview";
+import { fetchPublic, readCapped } from "@/lib/safe-fetch";
 import { parseRepo, safeHttpsUrl } from "@/lib/validators";
 
 /**
  * GET /api/preview?url=<live https url>&repo=<owner/repo>
  * Finds a listing's share image for its card cover: the live site's og:image / twitter:image,
- * else the repo's custom GitHub social preview. Returns `{ image: string | null }`; the browser
- * loads the image itself. Listing URLs are untrusted, so the fetch is https-only, refuses
- * private/internal addresses (checked again on every redirect), times out, and reads at most
- * the first part of the page.
+ * else the repo's custom GitHub social preview. Returns `{ image: string | null }`; the card
+ * loads it through /api/image. Listing URLs are untrusted: see lib/safe-fetch.ts.
  */
 
 const querySchema = z.object({
@@ -19,61 +16,19 @@ const querySchema = z.object({
 });
 
 const MAX_BYTES = 300_000;
-const MAX_REDIRECTS = 3;
 const TIMEOUT_MS = 5_000;
 
-async function publicHost(url: URL): Promise<boolean> {
-  if (url.protocol !== "https:" || (url.port && url.port !== "443")) return false;
-  const host = url.hostname.replace(/^\[|\]$/g, "");
-  if (host === "localhost" || host.endsWith(".localhost") || host.endsWith(".internal")) {
-    return false;
-  }
-  if (isIP(host)) return !isPrivateAddress(host);
-  try {
-    const addresses = await lookup(host, { all: true, verbatim: true });
-    return addresses.length > 0 && addresses.every((a) => !isPrivateAddress(a.address));
-  } catch {
-    return false;
-  }
-}
-
-/** The page's <head> (or its first MAX_BYTES), following a few checked redirects. */
+/** The page's <head> (or its first MAX_BYTES). */
 async function fetchHead(start: string): Promise<{ html: string; url: string } | null> {
-  let url = new URL(start);
-  for (let hop = 0; hop <= MAX_REDIRECTS; hop++) {
-    if (!(await publicHost(url))) return null;
-    const res = await fetch(url, {
-      redirect: "manual",
-      signal: AbortSignal.timeout(TIMEOUT_MS),
-      headers: { "User-Agent": "DeployDex-preview/1.0", Accept: "text/html" },
-      cache: "no-store",
-    });
-    if (res.status >= 300 && res.status < 400) {
-      const next = res.headers.get("location");
-      await res.body?.cancel();
-      if (!next || !URL.canParse(next, url)) return null;
-      url = new URL(next, url);
-      continue;
-    }
-    if (!res.ok || !res.body || !(res.headers.get("content-type") ?? "").includes("html")) {
-      await res.body?.cancel();
-      return null;
-    }
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let html = "";
-    let bytes = 0;
-    while (bytes < MAX_BYTES) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      bytes += value.byteLength;
-      html += decoder.decode(value, { stream: true });
-      if (/<\/head>/i.test(html)) break;
-    }
-    await reader.cancel();
-    return { html, url: url.toString() };
+  const got = await fetchPublic(start, "text/html");
+  if (!got) return null;
+  const { res, url } = got;
+  if (!res.ok || !(res.headers.get("content-type") ?? "").includes("html")) {
+    await res.body?.cancel();
+    return null;
   }
-  return null;
+  const body = await readCapped(res, MAX_BYTES, /<\/head>/i);
+  return body ? { html: new TextDecoder().decode(body), url } : null;
 }
 
 const ghSchema = z.object({

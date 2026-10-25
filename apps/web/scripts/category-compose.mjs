@@ -200,7 +200,40 @@ async function compose(slug, scene) {
   console.log(`✓ ${slug}`);
 }
 
+/**
+ * The default project logo per category (components/dapps/logo-avatar.tsx): the category's
+ * main prop alone, centred on a transparent square, built straight to public/category/icons.
+ */
+const ICONS = {
+  ai: "bulb",
+  rwa: "dollar",
+  community: "chat-bubble",
+  productivity: "calender",
+  "fun-lifestyle": "color-palette",
+  "dev-tools": "tools",
+  hackathon: "trophy",
+  other: "puzzle",
+};
+
+async function icon(slug, name) {
+  const dir = join(root, "public", "category", "icons");
+  mkdirSync(dir, { recursive: true });
+  const p = await piece(join(PROPS, `${name}.webp`), 220);
+  await sharp({
+    create: { width: 256, height: 256, channels: 4, background: { r: 0, g: 0, b: 0, alpha: 0 } },
+  })
+    .composite([
+      { input: p.buf, left: Math.round((256 - p.w) / 2), top: Math.round((256 - p.h) / 2) },
+    ])
+    .webp({ quality: 90, alphaQuality: 100, effort: 6 })
+    .toFile(join(dir, `${slug}.webp`));
+  console.log(`✓ icon ${slug}`);
+}
+
 const only = process.argv.slice(2);
 for (const [slug, scene] of Object.entries(SCENES)) {
-  if (!only.length || only.includes(slug)) await compose(slug, scene);
+  if (!only.length || only.includes(slug)) {
+    await compose(slug, scene);
+    await icon(slug, ICONS[slug]);
+  }
 }

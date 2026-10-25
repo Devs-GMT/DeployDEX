@@ -35,6 +35,7 @@ export function FeaturedDapp({ dapp }: { dapp: Dapp }) {
           <div className="flex items-center gap-4">
             <LogoAvatar
               name={dapp.name}
+              category={dapp.category}
               src={dapp.logoUrl}
               className="size-18 rounded-2xl border-[3px] border-white/90 text-3xl"
             />

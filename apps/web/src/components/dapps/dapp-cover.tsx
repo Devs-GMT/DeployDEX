@@ -5,7 +5,7 @@ import { CATEGORY_ART, categoryById } from "@/lib/categories";
 import { cn } from "@/lib/utils";
 import { usePreviewImage } from "@/hooks/use-preview-image";
 import { CategoryArt } from "@/components/ui/category-art";
-import { LogoAvatar } from "./logo-avatar";
+import { LogoAvatar, proxiedImage } from "./logo-avatar";
 
 /**
  * Cover for a listing. When the project's site (or repo) declares a share image, that image
@@ -64,7 +64,7 @@ export function DappCover({
         // eslint-disable-next-line @next/next/no-img-element -- arbitrary listing host, loaded as-is
         <img
           key={src}
-          src={src}
+          src={proxiedImage(src, "cover")}
           alt=""
           aria-hidden
           loading="lazy"
@@ -80,6 +80,7 @@ export function DappCover({
       )}
       <LogoAvatar
         name={name || "?"}
+        category={category}
         src={logoUrl}
         className={cn(
           "border-card absolute border-4 shadow-[0_14px_30px_-14px_rgb(120_45_0/0.45)]",
