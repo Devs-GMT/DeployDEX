@@ -14,6 +14,8 @@ import { Kit } from "@/components/kit/kit";
 import { DappCover } from "./dapp-cover";
 import { StarButton } from "./star-button";
 import { GithubPanel } from "./github-panel";
+import { TrustReport } from "./trust-report";
+import { useContractTrust } from "@/hooks/use-contract-trust";
 import { parseRepo } from "@/lib/validators";
 
 function NotFound({ delisted = false }: { delisted?: boolean }) {
@@ -34,6 +36,7 @@ function NotFound({ delisted = false }: { delisted?: boolean }) {
 export function ProjectView({ id }: { id: number }) {
   const { data: dapp, isLoading } = useProject(id);
   const { data: delisted } = useIsDelisted(id, !isLoading && !dapp);
+  const trust = useContractTrust(dapp?.target);
   const [copied, setCopied] = useState(false);
   const isOwner = useIsContractOwner(
     dapp?.target ?? "0x0000000000000000000000000000000000000000",
@@ -88,6 +91,7 @@ export function ProjectView({ id }: { id: number }) {
               <Chip>{categoryById(dapp.category).label}</Chip>
               <Chip tone="green">✓ Contract on BOT Chain</Chip>
               {repo && <Chip tone="green">✓ GitHub repo</Chip>}
+              {trust.data?.verified && <Chip tone="green">✓ Source verified</Chip>}
               {isOwner.data && <Chip tone="green">✓ Listed by the contract owner</Chip>}
             </div>
           </div>
@@ -163,6 +167,8 @@ export function ProjectView({ id }: { id: number }) {
           </a>
         </p>
       </section>
+
+      <TrustReport dapp={dapp} />
 
       {dapp.repo && <GithubPanel repo={dapp.repo} />}
     </div>

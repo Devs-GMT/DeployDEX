@@ -4,6 +4,10 @@ const OWNER = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/;
 const REPO = /^[A-Za-z0-9._-]{1,100}$/;
 /** README characters sent to the client; longer files end with a "continue on GitHub" link. */
 const README_MAX = 40_000;
+/** `.deploydex` claim file: read at most this much, keep at most this many wallets. */
+const CLAIM_MAX_BYTES = 2_000;
+const CLAIM_MAX_WALLETS = 10;
+const WALLET = /0x[0-9a-fA-F]{40}/g;
 
 const repoSchema = z.object({
   full_name: z.string(),
@@ -57,6 +61,20 @@ export async function GET(_req: Request, ctx: RouteContext<"/api/github/[owner]/
     readme = readmeTruncated ? text.slice(0, cut > 0 ? cut : README_MAX) : text;
   }
 
+  // Wallet claim: a `.deploydex` file at the repo root naming the lister's wallet(s), so a
+  // builder can prove the repo is theirs without OAuth. Comments (#) and other text are ignored.
+  let claims: string[] = [];
+  const claimRes = await fetch(`${base}/contents/.deploydex`, {
+    headers: { ...ghHeaders(), Accept: "application/vnd.github.raw+json" },
+    next: { revalidate: 3600 },
+  });
+  if (claimRes.ok) {
+    const text = (await claimRes.text()).slice(0, CLAIM_MAX_BYTES);
+    const lines = text.split(/\r?\n/).map((l) => l.replace(/#.*/, ""));
+    const found = lines.flatMap((l) => l.match(WALLET) ?? []).map((w) => w.toLowerCase());
+    claims = [...new Set(found)].slice(0, CLAIM_MAX_WALLETS);
+  }
+
   return Response.json(
     {
       name: r.full_name,
@@ -68,6 +86,7 @@ export async function GET(_req: Request, ctx: RouteContext<"/api/github/[owner]/
       url: r.html_url,
       readme,
       readmeTruncated,
+      claims,
     },
     { headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" } },
   );

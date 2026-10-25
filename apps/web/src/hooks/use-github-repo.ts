@@ -14,6 +14,8 @@ export interface GithubRepo {
   readme: string | null;
   /** The README was longer than the proxy sends; link to the rest on GitHub. */
   readmeTruncated?: boolean;
+  /** Lowercased wallets named in the repo's `.deploydex` file (empty when there is none). */
+  claims?: string[];
 }
 
 export type GithubResult =
