@@ -5,7 +5,7 @@ import Link from "next/link";
 import { categoryById } from "@/lib/categories";
 import { CONTACT_EMAIL, explorerAddressUrl, REGISTRY_DEPLOYED } from "@/lib/config";
 import { formatDate, shortAddress } from "@/lib/format";
-import { useProject } from "@/hooks/use-projects";
+import { useIsDelisted, useProject } from "@/hooks/use-projects";
 import { useIsContractOwner } from "@/hooks/use-contract-check";
 import { Chip } from "@/components/ui/chip";
 import { Button, ButtonLink } from "@/components/ui/button";
@@ -16,12 +16,16 @@ import { StarButton } from "./star-button";
 import { GithubPanel } from "./github-panel";
 import { parseRepo } from "@/lib/validators";
 
-function NotFound() {
+function NotFound({ delisted = false }: { delisted?: boolean }) {
   return (
     <div className="mx-auto flex max-w-md flex-col items-center gap-3 py-20 text-center">
       <Kit pose="napping" className="w-44" />
-      <h1 className="text-3xl">This dApp ran off.</h1>
-      <p className="text-muted text-sm">We looked everywhere, even under the cardboard box.</p>
+      <h1 className="text-3xl">{delisted ? "This dApp packed up." : "This dApp ran off."}</h1>
+      <p className="text-muted text-sm">
+        {delisted
+          ? "Its builder delisted it. The record stays on-chain, but it's no longer in the Dex."
+          : "We looked everywhere, even under the cardboard box."}
+      </p>
       <ButtonLink href="/dapps">Browse dApps</ButtonLink>
     </div>
   );
@@ -29,6 +33,7 @@ function NotFound() {
 
 export function ProjectView({ id }: { id: number }) {
   const { data: dapp, isLoading } = useProject(id);
+  const { data: delisted } = useIsDelisted(id, !isLoading && !dapp);
   const [copied, setCopied] = useState(false);
   const isOwner = useIsContractOwner(
     dapp?.target ?? "0x0000000000000000000000000000000000000000",
@@ -42,7 +47,7 @@ export function ProjectView({ id }: { id: number }) {
         Loading…
       </p>
     );
-  if (!dapp) return <NotFound />;
+  if (!dapp) return <NotFound delisted={!!delisted} />;
 
   async function copy() {
     if (!dapp) return;

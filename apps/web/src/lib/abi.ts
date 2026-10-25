@@ -60,10 +60,37 @@ export const deployDexAbi = [
   },
   { type: "function", name: "star", stateMutability: "nonpayable", inputs: [{ name: "id", type: "uint256" }], outputs: [] },
   { type: "function", name: "unstar", stateMutability: "nonpayable", inputs: [{ name: "id", type: "uint256" }], outputs: [] },
+  { type: "function", name: "delist", stateMutability: "nonpayable", inputs: [{ name: "id", type: "uint256" }], outputs: [] },
+  { type: "function", name: "delisted", stateMutability: "view", inputs: [{ name: "id", type: "uint256" }], outputs: [{ type: "bool" }] },
   {
     type: "function", name: "setHidden", stateMutability: "nonpayable",
     inputs: [{ name: "id", type: "uint256" }, { name: "hidden", type: "bool" }],
     outputs: [],
+  },
+  {
+    type: "event", name: "Listed",
+    inputs: [
+      { name: "id", type: "uint256", indexed: true },
+      { name: "lister", type: "address", indexed: true },
+      { name: "target", type: "address", indexed: true },
+      { name: "category", type: "uint8", indexed: false },
+    ],
+  },
+  { type: "event", name: "Updated", inputs: [{ name: "id", type: "uint256", indexed: true }] },
+  {
+    type: "event", name: "Hidden",
+    inputs: [
+      { name: "id", type: "uint256", indexed: true },
+      { name: "hidden", type: "bool", indexed: false },
+    ],
+  },
+  {
+    type: "event", name: "Delisted",
+    inputs: [
+      { name: "id", type: "uint256", indexed: true },
+      { name: "lister", type: "address", indexed: true },
+      { name: "target", type: "address", indexed: true },
+    ],
   },
   {
     type: "event", name: "Starred",
@@ -91,4 +118,5 @@ export const deployDexAbi = [
   { type: "error", name: "SelfStar", inputs: [] },
   { type: "error", name: "AlreadyStarred", inputs: [] },
   { type: "error", name: "NotStarred", inputs: [] },
+  { type: "error", name: "IsDelisted", inputs: [] },
 ] as const;

@@ -8,3 +8,4 @@
 7. B: `unstar(0)` -> stars = 0. B: `unstar(0)` again -> `NotStarred`.
 8. B: `setHidden(0, true)` -> `NotCurator`. Deployer: ok, `getProject(0).hidden` = true.
 9. Tagline of 81 chars -> `TooLong`. Empty name -> `EmptyName`.
+10. Deploy a second small contract as `TARGET2` and list it as A. B: `delist(1)` -> `NotLister`. A: `delist(1)` -> ok, `delisted(1)` = true, `getProject(1).hidden` = true, `idOfTarget(TARGET2)` = (false, 0). A: `delist(1)` again -> `IsDelisted`. B: `star(1)` -> `IsDelisted`. Deployer: `setHidden(1, false)` -> `IsDelisted`. B: `list(TARGET2, ...)` -> ok (new id).

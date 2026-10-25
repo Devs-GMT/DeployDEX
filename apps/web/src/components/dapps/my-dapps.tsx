@@ -8,6 +8,7 @@ import { ConnectButton } from "@/components/web3/connect-button";
 import { Button } from "@/components/ui/button";
 import { DappCard } from "./dapp-card";
 import { DappForm } from "./dapp-form";
+import { DelistButton } from "./delist-button";
 import { EmptyState } from "./empty-state";
 import type { Dapp } from "@/lib/types";
 
@@ -68,6 +69,7 @@ export function MyDapps() {
                 <Button variant="outline" size="sm" className="w-full" onClick={() => setEditing(d)}>
                   Edit listing
                 </Button>
+                <DelistButton dapp={d} />
               </div>
             ))}
           </div>

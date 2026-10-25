@@ -92,6 +92,32 @@ export function useProject(id: number) {
   });
 }
 
+/**
+ * Whether the lister delisted this project. Registries deployed before `delist` existed don't
+ * have the view, so a failed read means "no".
+ */
+export function useIsDelisted(id: number, enabled: boolean) {
+  const client = usePublicClient({ chainId: CHAIN.id });
+  return useQuery({
+    queryKey: ["delisted", REGISTRY_ADDRESS, id],
+    enabled: enabled && !!client && REGISTRY_DEPLOYED && Number.isInteger(id) && id >= 0,
+    retry: false,
+    queryFn: async () => {
+      if (!client) return false;
+      try {
+        return await client.readContract({
+          address: REGISTRY_ADDRESS,
+          abi: deployDexAbi,
+          functionName: "delisted",
+          args: [BigInt(id)],
+        });
+      } catch {
+        return false;
+      }
+    },
+  });
+}
+
 export function useMyIds(kind: "listedOf" | "starredOf", address?: Address) {
   const client = usePublicClient({ chainId: CHAIN.id });
   return useQuery({
