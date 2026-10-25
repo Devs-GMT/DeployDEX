@@ -27,7 +27,7 @@ Body Geist. Headings Space Grotesk, weight 500. Small labels Geist Mono. Hero 36
 
 ## Kit (mascot)
 Chubby orange tabby, white chest, round eyes, pink nose, one slightly bent ear, curly tail. Catchphrase: "Ship it. List it. Get starred."
-Poses: dev (hero, list CTA) · hackathon · astro (dividers, flying) · inspector (checks, loading) · curator (directory, footer) · napping (empty states) · party (success).
+Poses: dev (hero, list CTA) · hackathon · astro (dividers, flying) · inspector (checks, loading) · curator (directory, footer) · napping (empty states, footer wordmark) · party (success).
 Motion: gentle float, tail wag on hover. Nothing else. Disabled under reduced motion.
 
 ## Layout
@@ -43,18 +43,18 @@ Structure learned from the reference screenshots. We reuse the layout ideas, nev
 - **3D buttons**: 4px darker bottom edge that presses in on `:active` (`buttonClasses`). Primary orange, secondary black, `light` on dark.
 - **Charcoal sections** (`#333`, not black): "unique advantage" and the closing CTA.
 - **Halftone art**: orange dot-screen icons per category (`<Halftone shape>`), used on category and dApp cards.
-- **Painterly sky** hero (`<PainterlySky>`) and a painted countryside under the footer (`<Landscape>`).
+- **Painterly sky** hero (`<PainterlySky>`). The footer ends in an edge-to-edge DEPLOYDEX wordmark filled with the orange dot screen, cut off by the page bottom, with Napping Kit asleep on the letters.
 - **Cursor tag** ("Important dApp, Probably") on form mockups, orange/gray frames around mock forms.
 - **Tunnel graphic** + pink pill flow for the old-way vs DeployDex comparison.
 - **Draggable carousel** for most-starred (real data only, empty state otherwise).
 - Logo strip under the hero shows real listed projects; before any exist it shows value-prop wordmarks, never fake customers.
 
-## Motion (GSAP + ScrollTrigger + Lenis)
+## Motion (GSAP + ScrollTrigger, native scroll)
 Story: "Kit's launch day". Kit launches from the hero, inspects contracts on the way down, and lands on the certificate in the footer.
 
 | Where | What |
 |---|---|
-| Global | Lenis smooth scroll, orange scroll-progress bar, `.reveal` rise-in, `[data-split]` headings reveal word by word |
+| Global | Native scroll (CSS smooth anchors, no scroll library), orange scroll-progress bar (CSS scroll-driven), `.reveal` rise-in and `[data-split]` word reveals (IntersectionObserver + CSS) |
 | Hero | Kit flies a curved path with a contrail; pinned scroll parts the near clouds; logo strip speed follows scroll velocity |
 | Intro | Statement lights up word by word; documents fan out |
 | Categories | Pointer tilt with depth layers, counts count up |
@@ -62,7 +62,7 @@ Story: "Kit's launch day". Kit launches from the hero, inspects contracts on the
 | List it | Pinned: form types itself, Inspector Kit ticks the checks, cursor lands on Next |
 | Most starred | Vertical scroll moves the row sideways (desktop, only when it overflows) |
 | Closing | Kits fly into formation, confetti burst; magnetic primary CTAs |
-| Footer | VERIFIED seal slams onto the certificate; landscape parallax |
+| Footer | VERIFIED seal slams onto the certificate; wordmark letters rise and their dots print in as the page bottoms out |
 | App pages | Calm: card tilt, star burst on a successful star. No pinning. |
 
 Rules

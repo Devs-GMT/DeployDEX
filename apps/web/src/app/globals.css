@@ -65,7 +65,8 @@
   --font-serif: var(--font-instrument), Georgia, serif;
 }
 
-html { scroll-padding-top: 5rem; }
+/* Native scrolling; in-page anchors glide (reduced motion turns this off below). */
+html { scroll-padding-top: 5rem; scroll-behavior: smooth; }
 body { background: var(--color-page); color: var(--color-ink); font-family: var(--font-sans); }
 h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 500; letter-spacing: -0.04em; }
 
@@ -97,6 +98,37 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 500; letter-spac
 @keyframes kit-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.015, 1.035); } }
 @keyframes kit-zzz { 0% { transform: translate(0, 4px); opacity: 0.3; } 50% { opacity: 1; } 100% { transform: translate(6px, -10px); opacity: 0; } }
 
+/* HD Kit renders. The span holds layout; the img breathes, and hops when its card or itself is hovered. */
+/* Layered so sizing utilities on <Kit className="w-16"> still win over the default width. */
+@layer components {
+  .kit-pic { position: relative; display: block; width: 100%; isolation: isolate; }
+}
+.kit-pic > img {
+  display: block; width: 100%; height: auto; user-select: none;
+  transform-origin: 50% 92%;
+  filter: drop-shadow(0 10px 14px rgb(120 45 0 / 0.14));
+  animation: kit-pic-breathe 4.4s ease-in-out infinite var(--kit-delay, 0s);
+}
+.kit-pic-shadow::after {
+  content: ""; position: absolute; z-index: -1; left: 18%; right: 18%; bottom: 1%; height: 7%;
+  border-radius: 50%; background: radial-gradient(closest-side, rgb(60 25 5 / 0.22), transparent);
+  animation: kit-pic-shadow 4.4s ease-in-out infinite var(--kit-delay, 0s);
+}
+.kit-pic:hover > img,
+.kit-group:hover .kit-pic > img { animation: kit-pic-hop 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) 1; }
+@keyframes kit-pic-breathe { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.012, 1.028); } }
+@keyframes kit-pic-shadow { 0%, 100% { transform: scaleX(1); opacity: 1; } 50% { transform: scaleX(1.04); opacity: 0.85; } }
+@keyframes kit-pic-hop {
+  0% { transform: translateY(0) rotate(0); }
+  35% { transform: translateY(-9%) rotate(-4deg) scale(1.02); }
+  65% { transform: translateY(0) rotate(2deg) scale(1.03, 0.97); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+/* Branded browser surfaces. */
+::selection { background: var(--color-peach); color: var(--color-ink); }
+input, textarea { caret-color: var(--color-brand); }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.001ms !important;
@@ -118,18 +150,92 @@ h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 500; letter-spac
   background: linear-gradient(transparent 62%, var(--color-peach) 62%, var(--color-peach) 92%, transparent 92%);
 }
 
-/* `.reveal` and `[data-split]` are animated by components/motion/motion-root.tsx (GSAP). */
+/* Sections scrolled out of view (tagged by MotionRoot) pause their CSS loops. */
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after { animation-play-state: paused !important; }
 
-/* Lenis (copied from lenis/dist/lenis.css, which the package does not export). */
-html.lenis,
-html.lenis body { height: auto; }
-.lenis:not(.lenis-autoToggle).lenis-stopped { overflow: clip; }
-.lenis [data-lenis-prevent],
-.lenis [data-lenis-prevent-wheel],
-.lenis [data-lenis-prevent-touch] { overscroll-behavior: contain; }
-.lenis.lenis-smooth iframe { pointer-events: none; }
+/* `.reveal`, `.reveal-lite` and `[data-split]` are driven by components/motion/motion-root.tsx:
+   it adds these classes from an IntersectionObserver, so nothing is hidden before JS runs. */
+.reveal-pending { opacity: 0; transform: translateY(36px); }
+.reveal-pending.reveal-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1), transform 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.split-w { display: inline-block; overflow: hidden; vertical-align: top; padding-bottom: 0.12em; margin-bottom: -0.12em; }
+.split-i { display: inline-block; transform: translateY(110%); }
+.split-in .split-i { transform: none; transition: transform 0.9s cubic-bezier(0.16, 1, 0.3, 1); }
+
+/* Top scroll progress bar: native scroll-driven animation where supported (ScrollProgress
+   falls back to GSAP elsewhere). */
+@keyframes progress-grow { from { scale: 0 1; } to { scale: 1 1; } }
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scroll-progress { animation: progress-grow linear both; animation-timeline: scroll(root); }
+  }
+}
 
 .em-serif { font-family: var(--font-serif); font-style: italic; font-weight: 400; letter-spacing: -0.02em; color: var(--color-brand); }
+/* Footer wordmark: letters filled with an orange dot screen whose grid scales with the viewport
+   (so phones still read the word). `--fill` is the dot radius as a share of the grid cell; the
+   footer scene tweens it from 0 so the dots "print in", and it rests full without JS. */
+.wordmark-dots {
+  --cell: clamp(3.5px, 0.56vw, 8px);
+  --fill: 0.33;
+  background-image: radial-gradient(
+    circle,
+    var(--color-brand) calc(var(--cell) * var(--fill)),
+    transparent calc(var(--cell) * var(--fill) + 0.6px)
+  );
+  background-size: var(--cell) var(--cell);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* README rendered from untrusted markdown (components/dapps/readme-view.tsx). */
+.readme { font-size: 0.9375rem; line-height: 1.65; overflow-wrap: anywhere; }
+.readme > * + * { margin-top: 0.9em; }
+.readme :is(h1, h2, h3, h4) { line-height: 1.2; letter-spacing: -0.03em; margin-top: 1.4em; }
+.readme > :first-child { margin-top: 0; }
+.readme h1 { font-size: 1.6rem; }
+.readme h2 { font-size: 1.3rem; padding-bottom: 0.3em; border-bottom: 1px solid var(--color-line); }
+.readme h3 { font-size: 1.1rem; }
+.readme a { color: var(--color-brand-deep); text-decoration: underline; text-underline-offset: 2px; }
+.readme ul { list-style: disc; padding-left: 1.4em; }
+.readme ol { list-style: decimal; padding-left: 1.4em; }
+.readme li + li { margin-top: 0.25em; }
+.readme li > :is(ul, ol) { margin-top: 0.25em; }
+.readme code { font-family: var(--font-mono); font-size: 0.85em; background: var(--color-panel); border: 1px solid var(--color-line); border-radius: 6px; padding: 0.1em 0.35em; }
+.readme pre { overflow-x: auto; padding: 1em 1.1em; border-radius: 12px; background: var(--color-charcoal); color: var(--color-page); font-size: 0.85em; line-height: 1.55; }
+.readme pre code { background: none; border: 0; padding: 0; font-size: inherit; color: inherit; }
+.readme blockquote { border-left: 3px solid var(--color-peach); padding-left: 1em; color: var(--color-muted); }
+.readme img { display: inline-block; max-width: 100%; height: auto; }
+.readme p:has(> img + img), .readme p:has(> a > img) { display: flex; flex-wrap: wrap; gap: 0.35em; align-items: center; }
+.readme table { display: block; overflow-x: auto; border-collapse: collapse; font-size: 0.9em; }
+.readme :is(th, td) { border: 1px solid var(--color-line); padding: 0.4em 0.7em; }
+.readme th { background: var(--color-panel); font-weight: 600; }
+.readme hr { border-color: var(--color-line); }
+.readme input[type="checkbox"] { margin-right: 0.4em; }
+.readme [align="center"] { text-align: center; }
+.readme [align="right"] { text-align: right; }
+.readme details > summary { cursor: pointer; font-weight: 500; }
+
+/* Mobile menu sheet (components/layout/mobile-nav.tsx): fade in, then items rise in a stagger
+   set inline per item. The global reduced-motion rule makes both instant. */
+@keyframes sheet-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes nav-item-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+.sheet-in { animation: sheet-in 0.25s ease-out both; }
+.nav-item-in { animation: nav-item-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) both; }
+
+/* Big printed dot screen used as a section backdrop, fading out from one corner. */
+.halftone-field {
+  background-image: radial-gradient(color-mix(in srgb, var(--color-brand) 26%, transparent) 1.5px, transparent 1.8px);
+  background-size: 14px 14px;
+  -webkit-mask-image: radial-gradient(120% 90% at 100% 0%, #000 0%, transparent 60%);
+  mask-image: radial-gradient(120% 90% at 100% 0%, #000 0%, transparent 60%);
+}
 .halftone-mask { -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 78%); mask-image: radial-gradient(circle at 50% 50%, #000 40%, transparent 78%); }
 .no-scrollbar { scrollbar-width: none; }
 .no-scrollbar::-webkit-scrollbar { display: none; }

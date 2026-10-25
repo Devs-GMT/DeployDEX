@@ -24,11 +24,11 @@ export function CategoryPicker({
             <label
               key={c.id}
               className={cn(
-                "group relative flex cursor-pointer flex-col gap-1 rounded-xl border p-3 transition-colors",
-                "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-brand",
+                "group relative flex cursor-pointer flex-col gap-1 overflow-hidden rounded-2xl border p-3 transition-[background-color,border-color,box-shadow]",
+                "has-[:focus-visible]:outline-brand has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2",
                 selected
-                  ? "border-brand bg-peach/40"
-                  : "border-line bg-card hover:border-line hover:bg-panel",
+                  ? "border-brand bg-peach/40 shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-brand)_18%,transparent)]"
+                  : "border-line bg-card hover:border-ink/25 hover:bg-panel",
               )}
             >
               <input
@@ -39,13 +39,16 @@ export function CategoryPicker({
                 onChange={() => onChange(c.id)}
                 className="sr-only"
               />
-              <span className="size-6" aria-hidden>
-                <Halftone shape={art.shape} dot={3.2} />
+              <span
+                className="size-10 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
+                aria-hidden
+              >
+                <Halftone shape={art.shape} dot={3} />
               </span>
               <span className="text-sm leading-tight font-medium">{c.label}</span>
-              <span className="text-[11px] leading-tight text-muted">{art.blurb}</span>
+              <span className="text-muted text-[11px] leading-tight">{art.blurb}</span>
               {selected && (
-                <span className="absolute top-2 right-2 grid size-5 place-items-center rounded-full bg-brand text-white">
+                <span className="bg-brand absolute top-2 right-2 grid size-5 place-items-center rounded-full text-white">
                   <IconCheck className="size-3" />
                 </span>
               )}

@@ -1,7 +1,27 @@
-import { Kit } from "@/components/kit/kit";
+import { Kit, kitSrcSet } from "@/components/kit/kit";
+import { KIT_RASTER } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
 export function KitInBox({ className }: { className?: string }) {
+  if (KIT_RASTER) {
+    return (
+      <div className={cn("kit-pic kit-pic-shadow relative aspect-square", className)}>
+        {/* eslint-disable-next-line @next/next/no-img-element -- static HD render with a hand-built srcset */}
+        <img
+          src="/kit/404-512.webp"
+          srcSet={kitSrcSet("404")}
+          sizes="320px"
+          width={1024}
+          height={1024}
+          alt=""
+          aria-hidden
+          draggable={false}
+          className="absolute inset-0 h-full w-full object-contain"
+        />
+      </div>
+    );
+  }
+
   return (
     <div className={cn("relative aspect-square", className)}>
       <Kit pose="dev" className="absolute inset-0" />

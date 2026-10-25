@@ -17,9 +17,11 @@ import {
  * Hero choreography. The markup is server-rendered by Hero; this only animates tagged nodes.
  * - On load: Astro Kit launches from the bottom-left along a curved path, its contrail draws,
  *   the headline rises word by word, then the copy, buttons and the Kit trio land on the clouds.
- * - On scroll (desktop): the section pins briefly while the near clouds part like curtains,
- *   the sky layers drift at different speeds and Kit blasts off the top of the screen.
- * - Smaller screens get the load animation and light parallax, no pinning.
+ * - On scroll (desktop): as the hero scrolls away the near clouds part like curtains, the sky
+ *   layers drift at different speeds and Kit blasts off the top of the screen. No pin, so the
+ *   page keeps one less pin-spacer and the scroll stays light.
+ * - Smaller screens get the load animation only (no scroll-linked work); Kit swoops into its corner
+ *   instead of flying the desktop path, which would cross the headline on a narrow screen.
  * - Reduced motion: nothing moves; the still painting and copy are already in place.
  */
 export function HeroScene({ children }: { children: ReactNode }) {
@@ -31,17 +33,21 @@ export function HeroScene({ children }: { children: ReactNode }) {
       const mm = gsap.matchMedia();
 
       mm.add(MQ_MOTION, () => {
-        const path = q<SVGPathElement>("[data-hero-path]")[0];
-        const kit = q("[data-hero-kit]")[0];
-        const trail = q("[data-hero-trail]")[0];
         const split = SplitText.create(q("[data-hero-title]"), { type: "words", mask: "words" });
 
         const ctas = q("[data-hero-cta] > *");
         muteTransitions(ctas);
-        const intro = gsap.timeline({ defaults: { ease: "power3.out" }, onComplete: () => restoreTransitions(ctas) });
+        const intro = gsap.timeline({
+          defaults: { ease: "power3.out" },
+          onComplete: () => restoreTransitions(ctas),
+        });
         intro
           .from(q("[data-hero-badge]"), { autoAlpha: 0, y: -16, duration: 0.6 })
-          .from(split.words, { yPercent: 115, duration: 1, ease: "power4.out", stagger: 0.07 }, "<0.1")
+          .from(
+            split.words,
+            { yPercent: 115, duration: 1, ease: "power4.out", stagger: 0.07 },
+            "<0.1",
+          )
           .from(q("[data-hero-sub]"), { autoAlpha: 0, y: 20, duration: 0.8 }, "-=0.55")
           .from(ctas, { autoAlpha: 0, y: 18, scale: 0.94, stagger: 0.08, duration: 0.6 }, "-=0.5")
           .from(
@@ -50,23 +56,6 @@ export function HeroScene({ children }: { children: ReactNode }) {
             "-=0.45",
           );
 
-        if (path && kit && trail) {
-          gsap.set(trail, { autoAlpha: 1 });
-          intro
-            .fromTo(
-              kit,
-              { autoAlpha: 0 },
-              {
-                autoAlpha: 1,
-                duration: 2.4,
-                ease: "power2.inOut",
-                motionPath: { path, align: path, alignOrigin: [0.5, 0.5], start: 0, end: 0.7 },
-              },
-              0.2,
-            )
-            .fromTo(trail, { drawSVG: "0% 0%" }, { drawSVG: "0% 70%", duration: 2.4, ease: "power2.inOut" }, 0.2);
-        }
-
         return () => split.revert();
       });
 
@@ -74,9 +63,24 @@ export function HeroScene({ children }: { children: ReactNode }) {
         const path = q<SVGPathElement>("[data-hero-path]")[0];
         const kit = q("[data-hero-kit]")[0];
         const trail = q("[data-hero-trail]")[0];
+        // Launch: Kit flies the curved path across the sky while its contrail draws.
+        if (path && kit && trail) {
+          gsap.set(trail, { autoAlpha: 1 });
+          gsap
+            .timeline({ delay: 0.2, defaults: { duration: 2.4, ease: "power2.inOut" } })
+            .fromTo(
+              kit,
+              { autoAlpha: 0 },
+              {
+                autoAlpha: 1,
+                motionPath: { path, align: path, alignOrigin: [0.5, 0.5], start: 0, end: 0.7 },
+              },
+            )
+            .fromTo(trail, { drawSVG: "0% 0%" }, { drawSVG: "0% 70%" }, 0);
+        }
         const scene = gsap.timeline({
           defaults: { ease: "none" },
-          scrollTrigger: { trigger: root.current, start: "top top", end: "+=75%", pin: true, scrub: 0.8 },
+          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: 1 },
         });
         scene
           .to(q("[data-hero-near-left]"), { xPercent: -38, yPercent: 10, scale: 1.25 }, 0)
@@ -90,7 +94,10 @@ export function HeroScene({ children }: { children: ReactNode }) {
           scene
             .to(
               kit,
-              { motionPath: { path, align: path, alignOrigin: [0.5, 0.5], start: 0.7, end: 1 }, immediateRender: false },
+              {
+                motionPath: { path, align: path, alignOrigin: [0.5, 0.5], start: 0.7, end: 1 },
+                immediateRender: false,
+              },
               0,
             )
             .to(trail, { drawSVG: "0% 100%", immediateRender: false }, 0);
@@ -98,10 +105,16 @@ export function HeroScene({ children }: { children: ReactNode }) {
       });
 
       mm.add(MQ_LITE, () => {
-        gsap.to(q("[data-hero-mid]"), {
-          yPercent: -12,
-          ease: "none",
-          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: true },
+        // Phones: the desktop path would cross the headline, so Kit just swoops into its
+        // corner from off-screen top right, with no contrail.
+        gsap.from(q("[data-hero-kit]"), {
+          x: 140,
+          y: -110,
+          rotation: 35,
+          autoAlpha: 0,
+          duration: 1.3,
+          delay: 0.5,
+          ease: "power3.out",
         });
       });
 

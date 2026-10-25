@@ -6,13 +6,18 @@ import { Providers } from "@/components/web3/providers";
 import { TopBanner } from "@/components/layout/top-banner";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { ScrollRefresh } from "@/components/motion/scroll-refresh";
 import { MotionRoot } from "@/components/motion/motion-root";
 import { ScrollProgress } from "@/components/motion/scroll-progress";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
-const instrument = Instrument_Serif({ variable: "--font-instrument", subsets: ["latin"], weight: "400", style: "italic" });
+const instrument = Instrument_Serif({
+  variable: "--font-instrument",
+  subsets: ["latin"],
+  weight: "400",
+  style: "italic",
+});
 const space = Space_Grotesk({ variable: "--font-space", subsets: ["latin"], weight: ["500"] });
 
 export const metadata: Metadata = {
@@ -26,21 +31,27 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} ${space.variable} ${instrument.variable}`}>
+    <html
+      lang="en"
+      data-scroll-behavior="smooth"
+      className={`${geistSans.variable} ${geistMono.variable} ${space.variable} ${instrument.variable}`}
+    >
       <body className="flex min-h-screen flex-col antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-white"
+          className="focus:bg-ink sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:rounded-lg focus:px-4 focus:py-2 focus:text-sm focus:text-white"
         >
           Skip to content
         </a>
-        <SmoothScroll />
+        <ScrollRefresh />
         <MotionRoot />
         <ScrollProgress />
         <Providers>
           <TopBanner />
           <Header />
-          <main id="main" className="flex-1">{children}</main>
+          <main id="main" className="flex-1">
+            {children}
+          </main>
           <Footer />
         </Providers>
       </body>

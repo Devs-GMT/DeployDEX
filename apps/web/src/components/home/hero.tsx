@@ -45,10 +45,10 @@ export function Hero() {
         <div
           data-hero-kit
           aria-hidden
-          className="pointer-events-none absolute top-6 right-4 z-10 w-28 sm:top-10 sm:right-[6%] sm:w-56"
+          className="pointer-events-none absolute top-2 right-1 z-10 w-20 sm:top-10 sm:right-[6%] sm:w-56"
         >
           <div className="rotate-[18deg]">
-            <Kit pose="astro" float />
+            <Kit pose="astro" float sizes="(min-width: 640px) 224px, 80px" />
           </div>
         </div>
 
@@ -105,13 +105,24 @@ export function Hero() {
             className="mx-auto mt-12 flex w-fit items-end gap-1 sm:gap-3"
           >
             <div className="w-24 sm:w-40">
-              <Kit pose="hackathon" float />
+              <Kit pose="hackathon" float sizes="(min-width: 640px) 160px, 96px" />
             </div>
             <div className="w-36 sm:w-60">
-              <Kit pose="dev" float className="[animation-delay:-1.5s]" />
+              <Kit
+                pose="dev"
+                float
+                priority
+                sizes="(min-width: 640px) 240px, 144px"
+                className="[animation-delay:-1.5s]"
+              />
             </div>
             <div className="w-24 sm:w-40">
-              <Kit pose="inspector" float className="[animation-delay:-3s]" />
+              <Kit
+                pose="inspector"
+                float
+                sizes="(min-width: 640px) 160px, 96px"
+                className="[animation-delay:-3s]"
+              />
             </div>
           </div>
         </div>

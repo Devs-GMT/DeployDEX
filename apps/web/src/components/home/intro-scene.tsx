@@ -1,11 +1,13 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, MQ_MOTION, SplitText, useGSAP } from "@/lib/gsap";
+import { gsap, MQ_FULL, SplitText, useGSAP } from "@/lib/gsap";
 
 /**
  * Intro panel choreography: the statement lights up word by word as you scroll through it,
  * the two documents fan out of a stack, and the cursor tag slides in once they settle.
+ * Desktop only: on phones the documents are hidden and the statement simply reads in full,
+ * which spares a scroll-scrubbed tween per word.
  */
 export function IntroScene({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
@@ -14,7 +16,7 @@ export function IntroScene({ children }: { children: ReactNode }) {
     () => {
       const q = gsap.utils.selector(root);
       const mm = gsap.matchMedia();
-      mm.add(MQ_MOTION, () => {
+      mm.add(MQ_FULL, () => {
         const split = SplitText.create(q("[data-intro-text]"), { type: "words" });
         gsap.fromTo(
           split.words,
@@ -27,7 +29,7 @@ export function IntroScene({ children }: { children: ReactNode }) {
               trigger: root.current,
               start: "top 75%",
               end: "center 40%",
-              scrub: 0.6,
+              scrub: 0.8,
             },
           },
         );
@@ -39,7 +41,7 @@ export function IntroScene({ children }: { children: ReactNode }) {
               trigger: root.current,
               start: "top 70%",
               end: "center 45%",
-              scrub: 0.8,
+              scrub: 1,
             },
           })
           .from(docs[0] ?? [], { x: 70, y: 40, rotation: 6 }, 0)

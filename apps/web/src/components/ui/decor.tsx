@@ -29,12 +29,12 @@ export function Sparkle({ className, delay = 0 }: { className?: string; delay?: 
 /** Astro Kit flying across the page between sections. */
 export function FlyingKit({ className, delay = 0 }: { className?: string; delay?: number }) {
   return (
-    <div aria-hidden className="pointer-events-none relative h-24 overflow-hidden">
+    <div aria-hidden data-pause className="pointer-events-none relative h-24 overflow-hidden">
       <div
         className={cn("absolute top-2 w-20 animate-fly", className)}
         style={{ animationDelay: `${delay}s` }}
       >
-        <Kit pose="astro" />
+        <Kit pose="astro" sizes="80px" />
       </div>
     </div>
   );

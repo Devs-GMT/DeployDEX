@@ -1,14 +1,15 @@
 "use client";
 
 import { useRef, type ReactNode } from "react";
-import { gsap, MQ_FULL, MQ_LITE, useGSAP } from "@/lib/gsap";
+import { gsap, MQ_FULL, MQ_LITE, MQ_MOTION, useGSAP } from "@/lib/gsap";
 
 /**
- * "List it" demo: the mock form fills itself in as you scroll, Inspector Kit's checks tick
- * one by one, then the cursor moves onto Next and it pulses.
- * Desktop pins the row and scrubs the sequence; smaller screens play it once on enter.
- * The static markup is the finished state, so no-JS and reduced motion still read correctly.
- * (Uses opacity rather than autoAlpha because the row sits inside a global `.reveal`.)
+ * "List it or browse" as one flipping card.
+ * - Desktop: the card pins; scrolling fills the mock form in, ticks Inspector Kit's checks,
+ *   moves the cursor onto Next, then turns the card over to the "Browse it" face.
+ * - Smaller screens: the demo plays once on enter and a List/Browse toggle flips the card.
+ * - Static markup (no JS, reduced motion) shows both faces stacked, so nothing is hidden.
+ * The face that is turned away is made `inert` so keyboard and screen readers skip it.
  */
 export function ListScene({ children }: { children: ReactNode }) {
   const root = useRef<HTMLDivElement>(null);
@@ -16,6 +17,11 @@ export function ListScene({ children }: { children: ReactNode }) {
   useGSAP(
     () => {
       const q = gsap.utils.selector(root);
+      const stage = q<HTMLElement>("[data-flip-stage]")[0];
+      const card = q<HTMLElement>("[data-flip-card]")[0];
+      const front = q<HTMLElement>('[data-flip-face="front"]')[0];
+      const back = q<HTMLElement>('[data-flip-face="back"]')[0];
+      if (!stage || !card || !front || !back) return;
 
       const build = (tl: gsap.core.Timeline) => {
         q("[data-type]").forEach((field, i) => {
@@ -42,25 +48,105 @@ export function ListScene({ children }: { children: ReactNode }) {
         return tl;
       };
 
+      /** Which face is showing, from the card's current rotation. */
+      const sync = () => {
+        const showingBack = Math.abs(Number(gsap.getProperty(card, "rotationY"))) > 90;
+        front.inert = showingBack;
+        back.inert = !showingBack;
+        q<HTMLElement>("[data-flip-step]").forEach((el) => {
+          const on = (el.dataset.flipStep === "back") === showingBack;
+          el.classList.toggle("bg-ink", on);
+          el.classList.toggle("text-white", on);
+        });
+        q<HTMLButtonElement>("[data-flip-to]").forEach((b) => {
+          const on = (b.dataset.flipTo === "back") === showingBack;
+          b.setAttribute("aria-pressed", String(on));
+          b.classList.toggle("bg-ink", on);
+          b.classList.toggle("text-white", on);
+        });
+      };
+
       const mm = gsap.matchMedia();
+
+      // Turn the stacked faces into a two-sided card (any screen, motion allowed).
+      mm.add(MQ_MOTION, () => {
+        const height = () => Math.max(front.offsetHeight, back.offsetHeight);
+        gsap.set(stage, { perspective: 2000 });
+        gsap.set(card, { transformStyle: "preserve-3d", height });
+        gsap.set(front, { backfaceVisibility: "hidden", height: "100%" });
+        gsap.set(back, {
+          position: "absolute",
+          inset: 0,
+          marginTop: 0,
+          rotationY: 180,
+          backfaceVisibility: "hidden",
+        });
+        sync();
+        return () => {
+          front.inert = false;
+          back.inert = false;
+        };
+      });
+
       mm.add(MQ_FULL, () => {
-        build(
+        const steps = q<HTMLElement>("[data-flip-steps]")[0];
+        if (steps) {
+          steps.hidden = false;
+          steps.style.display = "flex";
+        }
+        const tl = build(
           gsap.timeline({
             defaults: { ease: "power2.out" },
             scrollTrigger: {
               trigger: root.current,
-              start: "top 15%",
-              end: "+=110%",
+              start: "top 12%",
+              end: "+=160%",
               pin: true,
-              scrub: 0.6,
+              scrub: 0.8,
             },
           }),
         );
-      });
-      mm.add(MQ_LITE, () => {
-        build(
-          gsap.timeline({ scrollTrigger: { trigger: root.current, start: "top 70%", once: true } }),
+        tl.to(
+          card,
+          { rotationY: 180, duration: 1.4, ease: "power2.inOut", onUpdate: sync },
+          ">+0.3",
+        ).from(
+          q("[data-flip-kit]"),
+          { y: 60, opacity: 0, duration: 0.5, ease: "back.out(1.6)" },
+          ">-0.2",
         );
+        return () => {
+          if (steps) {
+            steps.hidden = true;
+            steps.style.display = "";
+          }
+        };
+      });
+
+      mm.add(MQ_LITE, () => {
+        build(gsap.timeline({ scrollTrigger: { trigger: front, start: "top 70%", once: true } }));
+        const toggle = q<HTMLElement>("[data-flip-toggle]")[0];
+        if (!toggle) return;
+        toggle.hidden = false;
+        toggle.style.display = "flex";
+        const onClick = (e: MouseEvent) => {
+          const to = (e.target as HTMLElement).closest<HTMLButtonElement>("[data-flip-to]")?.dataset
+            .flipTo;
+          if (!to) return;
+          gsap.to(card, {
+            rotationY: to === "back" ? 180 : 0,
+            duration: 0.6,
+            ease: "power2.inOut",
+            overwrite: true,
+            onUpdate: sync,
+          });
+        };
+        toggle.addEventListener("click", onClick);
+        return () => {
+          toggle.removeEventListener("click", onClick);
+          toggle.hidden = true;
+          toggle.style.display = "";
+        };
       });
     },
     { scope: root },

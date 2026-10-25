@@ -42,7 +42,7 @@ export function WhyScene({ children }: { children: ReactNode }) {
               start: "top 12%",
               end: "+=130%",
               pin: true,
-              scrub: 0.8,
+              scrub: 1,
               invalidateOnRefresh: true,
             },
           })

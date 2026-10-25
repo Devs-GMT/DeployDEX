@@ -1,9 +1,10 @@
 "use client";
 
-import { byteLength, LIMITS, type DappFormValues } from "@/lib/validators";
+import { byteLength, LIMITS, validateField, type DappFormValues } from "@/lib/validators";
 import { REGISTRY_DEPLOYED } from "@/lib/config";
+import { cn } from "@/lib/utils";
 import { useDappForm, type FormMode } from "@/hooks/use-dapp-form";
-import { IconAlert } from "@/components/ui/icons";
+import { IconAlert, IconCheck } from "@/components/ui/icons";
 import { FormField, FieldCounter, fieldProps, inputClass } from "./form/form-field";
 import { CategoryPicker } from "./form/category-picker";
 import { ContractField } from "./form/contract-field";
@@ -14,15 +15,71 @@ import { ListingPreview } from "./form/listing-preview";
 import { SuccessPanel } from "./form/success-panel";
 import { LogoAvatar } from "./logo-avatar";
 
-function SectionTitle({ number, title }: { number: string; title: string }) {
+type StepState = "todo" | "done" | "attention";
+type Step = { id: string; number: string; title: string; state: StepState };
+
+function StepBadge({ number, state }: { number: string; state: StepState }) {
   return (
-    <div className="mb-4 flex items-center gap-3">
-      <span className="text-muted font-mono text-[11px] tracking-widest">{number}</span>
-      <h2 className="text-lg">{title}</h2>
+    <span
+      aria-hidden
+      className={cn(
+        "grid size-8 shrink-0 place-items-center rounded-full font-mono text-[11px] transition-colors",
+        state === "done" && "bg-success text-white",
+        state === "attention" && "bg-pink text-white",
+        state === "todo" && "border-line bg-panel text-muted border",
+      )}
+    >
+      {state === "done" ? <IconCheck className="size-3.5" /> : number}
+    </span>
+  );
+}
+
+function SectionTitle({ step }: { step: Step }) {
+  return (
+    <div className="mb-5 flex items-center gap-3">
+      <StepBadge number={step.number} state={step.state} />
+      <h2 className="text-xl">{step.title}</h2>
       <span className="bg-line h-px flex-1" aria-hidden />
+      {step.state === "done" && <span className="text-success font-mono text-[11px]">Done</span>}
     </div>
   );
 }
+
+/** Sticky progress rail: one link per section, coloured by how that section is doing. */
+function StepRail({ steps }: { steps: Step[] }) {
+  return (
+    <nav
+      aria-label="Form steps"
+      className="border-line bg-card/95 sticky top-20 z-20 rounded-2xl border p-1.5 shadow-[0_12px_30px_-24px_rgb(0_0_0/0.4)] backdrop-blur"
+    >
+      <ol className="flex gap-1">
+        {steps.map((st) => (
+          <li key={st.id} className="flex-1">
+            <a
+              href={`#${st.id}`}
+              className="hover:bg-panel flex items-center justify-center gap-2 rounded-xl px-2 py-1.5 text-sm font-medium transition-colors sm:justify-start sm:px-3"
+            >
+              <StepBadge number={st.number} state={st.state} />
+              <span className="hidden sm:inline">{st.title}</span>
+              <span className="sr-only">
+                {st.state === "done"
+                  ? " (done)"
+                  : st.state === "attention"
+                    ? " (needs attention)"
+                    : ""}
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  );
+}
+
+const valid = (values: DappFormValues, key: keyof DappFormValues) =>
+  validateField(key, values[key]) === null;
+
+const sectionClass = "border-line bg-card scroll-mt-40 rounded-3xl border p-5 sm:p-7";
 
 export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappFormValues }) {
   const s = useDappForm({ mode, initial });
@@ -34,13 +91,42 @@ export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappForm
 
   const pending = s.tx.status === "pending";
 
+  // Section progress, derived from the same validation the submit uses (no extra state).
+  const stepState = (keys: (keyof DappFormValues)[], extraOk = true): StepState =>
+    keys.some((k) => s.errors[k])
+      ? "attention"
+      : keys.every((k) => valid(values, k)) && extraOk
+        ? "done"
+        : "todo";
+  const project: Step = {
+    id: "step-project",
+    number: "01",
+    title: "Project",
+    state: stepState(["name", "tagline", "category"]),
+  };
+  const contract: Step = {
+    id: "step-contract",
+    number: "02",
+    title: "Contract",
+    state: s.contractProblem ? "attention" : stepState(["target"], s.editing || s.contractOk),
+  };
+  const links: Step = {
+    id: "step-links",
+    number: "03",
+    title: "Links",
+    state: stepState(["liveUrl", "repo", "logoUrl"], s.repoOk),
+  };
+  const passed = s.checks.filter((c) => c.state === "ok").length;
+
   return (
     <form
       onSubmit={s.submit}
       noValidate
-      className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px] lg:items-start"
+      className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-start lg:gap-x-8"
     >
-      <div className="grid gap-6">
+      <div className="grid gap-6 lg:col-start-1">
+        <StepRail steps={[project, contract, links]} />
+
         <p className="sr-only" aria-live="polite">
           {s.problems.length
             ? `${s.problems.length} problem${s.problems.length === 1 ? "" : "s"} need attention.`
@@ -95,14 +181,11 @@ export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappForm
         )}
 
         <fieldset disabled={pending} className="m-0 grid min-w-0 gap-6 border-0 p-0">
-          <section
-            className="border-line bg-card rounded-2xl border p-5 sm:p-6"
-            aria-labelledby="section-project"
-          >
+          <section id={project.id} className={sectionClass} aria-labelledby="section-project">
             <span id="section-project" className="sr-only">
               Project details
             </span>
-            <SectionTitle number="01" title="Project" />
+            <SectionTitle step={project} />
 
             <div className="grid gap-4">
               <FormField
@@ -148,14 +231,11 @@ export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappForm
             </div>
           </section>
 
-          <section
-            className="border-line bg-card rounded-2xl border p-5 sm:p-6"
-            aria-labelledby="section-contract"
-          >
+          <section id={contract.id} className={sectionClass} aria-labelledby="section-contract">
             <span id="section-contract" className="sr-only">
               Contract
             </span>
-            <SectionTitle number="02" title="Contract" />
+            <SectionTitle step={contract} />
             <ContractField
               value={values.target}
               onChange={(value) => s.update("target", value)}
@@ -168,14 +248,11 @@ export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappForm
             />
           </section>
 
-          <section
-            className="border-line bg-card rounded-2xl border p-5 sm:p-6"
-            aria-labelledby="section-links"
-          >
+          <section id={links.id} className={sectionClass} aria-labelledby="section-links">
             <span id="section-links" className="sr-only">
               Links
             </span>
-            <SectionTitle number="03" title="Links" />
+            <SectionTitle step={links} />
             <div className="grid gap-4">
               <FormField
                 id="liveUrl"
@@ -215,7 +292,11 @@ export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappForm
                 hint="A square https:// image. We fall back to your initial."
               >
                 <div className="flex items-center gap-3">
-                  <LogoAvatar name={values.name || "?"} src={values.logoUrl} />
+                  <LogoAvatar
+                    name={values.name || "?"}
+                    src={values.logoUrl}
+                    className="size-12 shrink-0 rounded-2xl"
+                  />
                   <input
                     {...fieldProps("logoUrl", {
                       error: s.errors.logoUrl,
@@ -234,6 +315,30 @@ export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappForm
           </section>
         </fieldset>
 
+        {/* Phones: the checks sit below the form, so keep a running tally within reach. */}
+        <a
+          href="#checks-title"
+          className="bg-ink sticky bottom-3 z-20 flex items-center justify-between gap-3 rounded-2xl px-4 py-3 text-sm text-white shadow-lg lg:hidden"
+        >
+          <span>
+            <span className="font-mono tabular-nums">
+              {passed}/{s.checks.length}
+            </span>{" "}
+            checks passed
+          </span>
+          <span className="text-peach font-medium">Review ↓</span>
+        </a>
+      </div>
+
+      <aside
+        className="grid gap-4 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-2 lg:row-start-1"
+        aria-label="Listing preview and checks"
+      >
+        <FormChecks items={s.checks} />
+        <ListingPreview values={values} contractOk={s.contractOk} repoOk={s.repoOk} />
+      </aside>
+
+      <div className="lg:col-start-1">
         <FormSubmit
           editing={s.editing}
           pending={pending}
@@ -243,11 +348,6 @@ export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappForm
           resetTx={s.resetTx}
         />
       </div>
-
-      <aside className="grid gap-4 lg:sticky lg:top-24" aria-label="Listing preview and checks">
-        <FormChecks items={s.checks} />
-        <ListingPreview values={values} contractOk={s.contractOk} repoOk={s.repoOk} />
-      </aside>
     </form>
   );
 }

@@ -15,7 +15,6 @@ import { shortAddress } from "@/lib/format";
 import { ExternalLink } from "@/components/ui/button";
 import { BotChainLogo } from "@/components/ui/bot-chain-logo";
 import { Kit } from "@/components/kit/kit";
-import { Landscape } from "@/components/ui/landscape";
 import { Seal } from "@/components/illustrations/seal";
 import { gsap, MQ_MOTION, muteTransitions, restoreTransitions, useGSAP } from "@/lib/gsap";
 
@@ -180,22 +179,56 @@ function Certificate() {
   );
 }
 
+const WORD = "DEPLOYDEX";
+
+/**
+ * Edge-to-edge DEPLOYDEX in an orange dot screen, cut off by the bottom of the page, with
+ * Napping Kit asleep on the letters: you've reached the end. Decorative; hover wakes Kit up.
+ */
+function Wordmark() {
+  return (
+    <div aria-hidden data-wordmark className="group kit-group relative mt-10 select-none sm:mt-16">
+      <div
+        data-wm-kit
+        className="pointer-events-none absolute top-0 left-[46%] z-10 w-[clamp(5.5rem,13vw,11rem)] -translate-y-[72%]"
+      >
+        <Kit pose="napping" sizes="(min-width: 1024px) 176px, 96px" />
+      </div>
+      <div className="font-display h-[0.72em] overflow-hidden text-[18.4vw] leading-[0.8] tracking-[-0.05em] [mask-image:linear-gradient(to_bottom,rgb(0_0_0/0.5),#000_70%)]">
+        <p className="flex justify-center whitespace-nowrap">
+          {[...WORD].map((ch, i) => (
+            <span key={i} data-wm-letter className="wordmark-dots inline-block">
+              {ch}
+            </span>
+          ))}
+        </p>
+      </div>
+    </div>
+  );
+}
+
 export function Footer() {
   const root = useRef<HTMLElement>(null);
 
-  // Painted countryside: clouds drift down and hills rise as the page bottoms out.
+  // As the page bottoms out the wordmark's letters rise one by one, their dots print in,
+  // and Napping Kit settles on top. Scrubbed, so it finishes exactly at the end of the page.
   useGSAP(
     () => {
       const q = gsap.utils.selector(root);
       gsap.matchMedia().add(MQ_MOTION, () => {
-        const scrub = {
-          trigger: q("[data-landscape]")[0],
-          start: "top bottom",
-          end: "bottom bottom",
-          scrub: 0.6,
-        };
-        gsap.from(q('[data-ls="clouds"]'), { y: -40, ease: "none", scrollTrigger: scrub });
-        gsap.from(q('[data-ls="hills"]'), { y: 50, ease: "none", scrollTrigger: scrub });
+        const letters = q("[data-wm-letter]");
+        gsap
+          .timeline({
+            scrollTrigger: {
+              trigger: q("[data-wordmark]")[0],
+              start: "top bottom",
+              end: "bottom bottom",
+              scrub: 0.8,
+            },
+          })
+          .from(letters, { yPercent: 70, ease: "power2.out", stagger: 0.06 }, 0)
+          .fromTo(letters, { "--fill": 0 }, { "--fill": 0.33, ease: "none", stagger: 0.06 }, 0)
+          .from(q("[data-wm-kit]"), { yPercent: 40, opacity: 0, ease: "back.out(1.6)" }, ">-0.3");
       });
     },
     { scope: root },
@@ -260,9 +293,7 @@ export function Footer() {
           own research before using a dApp.
         </p>
       </div>
-      <div data-landscape>
-        <Landscape className="block h-56 w-full sm:h-72" />
-      </div>
+      <Wordmark />
     </footer>
   );
 }

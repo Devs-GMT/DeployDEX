@@ -10,7 +10,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { ConnectButton } from "@/components/web3/connect-button";
 import { Kit } from "@/components/kit/kit";
 import { Halftone } from "@/components/ui/halftone";
-import { IconChevronDown, IconClose, IconMenu } from "@/components/ui/icons";
+import { IconChevronDown } from "@/components/ui/icons";
 import { MobileNav } from "@/components/layout/mobile-nav";
 
 type MenuId = "explore" | "builders";
@@ -76,9 +76,7 @@ function Menu({
           if (e.key !== "ArrowDown") return;
           e.preventDefault();
           onOpen();
-          requestAnimationFrame(() =>
-            panelRef.current?.querySelector<HTMLElement>("a")?.focus(),
-          );
+          requestAnimationFrame(() => panelRef.current?.querySelector<HTMLElement>("a")?.focus());
         }}
         className={cn(triggerClass, open && "bg-panel text-ink")}
       >
@@ -99,7 +97,7 @@ function Menu({
             : "pointer-events-none invisible -translate-y-1 opacity-0",
         )}
       >
-        <div className="overflow-hidden rounded-2xl border border-line bg-card p-2 shadow-[0_24px_48px_-24px_rgba(25,25,25,0.35)]">
+        <div className="border-line bg-card overflow-hidden rounded-2xl border p-2 shadow-[0_24px_48px_-24px_rgba(25,25,25,0.35)]">
           {children}
         </div>
       </div>
@@ -111,6 +109,7 @@ export function Header() {
   const pathname = usePathname();
   const [openMenu, setOpenMenu] = useState<MenuId | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [sheetTop, setSheetTop] = useState(64);
   const [lastPath, setLastPath] = useState(pathname);
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const headerRef = useRef<HTMLElement>(null);
@@ -164,7 +163,13 @@ export function Header() {
 
   useEffect(() => {
     function onPointerDown(e: PointerEvent) {
-      if (headerRef.current && !headerRef.current.contains(e.target as Node)) {
+      const target = e.target as Node;
+      // The mobile sheet is portalled to <body>, so taps inside it are not "outside".
+      if (
+        headerRef.current &&
+        !headerRef.current.contains(target) &&
+        !document.getElementById("mobile-nav")?.contains(target)
+      ) {
         setOpenMenu(null);
         setMobileOpen(false);
       }
@@ -188,15 +193,15 @@ export function Header() {
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-40 border-b border-line bg-white/90 backdrop-blur"
+      className="border-line sticky top-0 z-40 border-b bg-white/90 backdrop-blur"
     >
       <div className="mx-auto flex h-16 max-w-350 items-center gap-4 px-5 sm:px-10">
         <Link
           href="/"
-          className="flex shrink-0 items-center gap-2 font-display text-lg font-medium"
+          className="font-display flex shrink-0 items-center gap-2 text-lg font-medium"
           onClick={closeNow}
         >
-          <Kit pose="dev" className="size-8" />
+          <Kit pose="dev" className="size-8" shadow={false} sizes="32px" priority />
           DeployDex
         </Link>
 
@@ -219,26 +224,26 @@ export function Header() {
                     key={c.id}
                     href={`/dapps?c=${c.slug}`}
                     onClick={closeNow}
-                    className="flex items-start gap-3 rounded-xl px-7 py-2.5 transition-colors hover:bg-panel"
+                    className="hover:bg-panel flex items-start gap-3 rounded-xl px-7 py-2.5 transition-colors"
                   >
                     <span className="mt-0.5 size-6 shrink-0">
                       <Halftone shape={art.shape} dot={3.2} />
                     </span>
                     <span>
                       <span className="block text-sm font-medium">{c.label}</span>
-                      <span className="block text-xs text-muted">{art.blurb}</span>
+                      <span className="text-muted block text-xs">{art.blurb}</span>
                     </span>
                   </Link>
                 );
               })}
             </div>
-            <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-line px-3 pt-3 pb-1 text-sm">
+            <div className="border-line mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 border-t px-3 pt-3 pb-1 text-sm">
               {EXPLORE_SHORTCUTS.map((s) => (
                 <Link
                   key={s.href}
                   href={s.href}
                   onClick={closeNow}
-                  className="text-muted transition-colors hover:text-ink"
+                  className="text-muted hover:text-ink transition-colors"
                 >
                   {s.label}
                 </Link>
@@ -246,7 +251,7 @@ export function Header() {
               <Link
                 href="/dapps"
                 onClick={closeNow}
-                className="ml-auto inline-flex items-center gap-1 font-medium text-brand hover:text-brand-hover"
+                className="text-brand hover:text-brand-hover ml-auto inline-flex items-center gap-1 font-medium"
               >
                 Browse all dApps →
               </Link>
@@ -268,19 +273,15 @@ export function Header() {
                 key={l.href}
                 href={l.href}
                 onClick={closeNow}
-                className="block rounded-xl px-3 py-2.5 transition-colors hover:bg-panel"
+                className="hover:bg-panel block rounded-xl px-3 py-2.5 transition-colors"
               >
                 <span className="block text-sm font-medium">{l.label}</span>
-                <span className="block text-xs text-muted">{l.description}</span>
+                <span className="text-muted block text-xs">{l.description}</span>
               </Link>
             ))}
           </Menu>
 
-          <Link
-            href={ABOUT_HREF}
-            onClick={closeNow}
-            className={triggerClass}
-          >
+          <Link href={ABOUT_HREF} onClick={closeNow} className={triggerClass}>
             About
           </Link>
         </nav>
@@ -305,20 +306,48 @@ export function Header() {
           </ButtonLink>
         </div>
 
+        {/* Bare two-line hamburger (no box): the short line grows on hover, and both lines
+            fold into an ✕ when the menu opens. 44px tap target. */}
         <button
           ref={mobileTriggerRef}
+          id="mobile-nav-trigger"
           type="button"
-          className="ml-auto grid size-11 place-items-center rounded-lg border border-line bg-card text-ink lg:hidden"
+          className="group -mr-2.5 ml-auto grid size-11 place-items-center rounded-full lg:hidden"
           aria-expanded={mobileOpen}
           aria-controls="mobile-nav"
           aria-label={mobileOpen ? "Close menu" : "Open menu"}
-          onClick={() => setMobileOpen((v) => !v)}
+          onClick={() => {
+            // The sheet starts right under the header, wherever it sits (the top banner
+            // may still be on screen); page scroll is locked while it is open.
+            setSheetTop(headerRef.current?.getBoundingClientRect().bottom ?? 64);
+            setMobileOpen((v) => !v);
+          }}
         >
-          {mobileOpen ? <IconClose /> : <IconMenu />}
+          <span aria-hidden className="relative block h-3 w-6">
+            <span
+              className={cn(
+                "bg-ink absolute top-0 right-0 h-0.5 w-6 rounded-full transition-[top,rotate,translate] duration-300 ease-[cubic-bezier(0.65,0,0.35,1)]",
+                mobileOpen && "top-1/2 -translate-y-1/2 rotate-45",
+              )}
+            />
+            <span
+              className={cn(
+                "bg-ink absolute right-0 bottom-0 h-0.5 rounded-full transition-[bottom,width,rotate,translate,background-color] duration-300 ease-[cubic-bezier(0.65,0,0.35,1)]",
+                mobileOpen
+                  ? "bottom-1/2 w-6 translate-y-1/2 -rotate-45"
+                  : "group-hover:bg-brand w-3.5 group-hover:w-6",
+              )}
+            />
+          </span>
         </button>
       </div>
 
-      <MobileNav open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileNav
+        open={mobileOpen}
+        triggerId="mobile-nav-trigger"
+        top={sheetTop}
+        onClose={() => setMobileOpen(false)}
+      />
     </header>
   );
 }

@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const OWNER = /^[A-Za-z0-9][A-Za-z0-9-]{0,38}$/;
 const REPO = /^[A-Za-z0-9._-]{1,100}$/;
+/** README characters sent to the client; longer files end with a "continue on GitHub" link. */
+const README_MAX = 40_000;
 
 const repoSchema = z.object({
   full_name: z.string(),
@@ -41,13 +43,18 @@ export async function GET(_req: Request, ctx: RouteContext<"/api/github/[owner]/
   if (!parsed.success) return Response.json({ error: "bad_response" }, { status: 502 });
   const r = parsed.data;
 
+  // Raw markdown; the client renders it (no raw HTML) and starts collapsed to a short preview.
   let readme: string | null = null;
+  let readmeTruncated = false;
   const readmeRes = await fetch(`${base}/readme`, {
     headers: { ...ghHeaders(), Accept: "application/vnd.github.raw+json" },
     next: { revalidate: 3600 },
   });
   if (readmeRes.ok) {
-    readme = (await readmeRes.text()).split("\n").slice(0, 20).join("\n");
+    const text = await readmeRes.text();
+    readmeTruncated = text.length > README_MAX;
+    const cut = text.lastIndexOf("\n", README_MAX);
+    readme = readmeTruncated ? text.slice(0, cut > 0 ? cut : README_MAX) : text;
   }
 
   return Response.json(
@@ -60,6 +67,7 @@ export async function GET(_req: Request, ctx: RouteContext<"/api/github/[owner]/
       lastCommit: r.pushed_at,
       url: r.html_url,
       readme,
+      readmeTruncated,
     },
     { headers: { "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400" } },
   );

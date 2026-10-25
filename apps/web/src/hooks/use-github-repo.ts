@@ -12,12 +12,12 @@ export interface GithubRepo {
   lastCommit: string;
   url: string;
   readme: string | null;
+  /** The README was longer than the proxy sends; link to the rest on GitHub. */
+  readmeTruncated?: boolean;
 }
 
 export type GithubResult =
-  | { state: "ok"; repo: GithubRepo }
-  | { state: "not_found" }
-  | { state: "rate_limited" };
+  { state: "ok"; repo: GithubRepo } | { state: "not_found" } | { state: "rate_limited" };
 
 /** Public repo info via our /api/github proxy (cached for 1h server-side and in the browser). */
 export function useGithubRepo(input: string, enabled = true) {

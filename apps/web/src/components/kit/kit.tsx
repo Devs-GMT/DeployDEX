@@ -405,16 +405,29 @@ function Napping({ ids }: { ids: Ids }) {
 }
 
 /** Kit the orange tabby, in a soft clay-toy vector style. Poses map to costumes in DESIGN.md. */
+/** Responsive sources for an HD render in /public/kit (built by scripts/kit-sizes.mjs). */
+export function kitSrcSet(name: string) {
+  return `/kit/${name}-256.webp 256w, /kit/${name}-512.webp 512w, /kit/${name}.webp 1024w`;
+}
+
 export function Kit({
   pose,
   className,
   float = false,
+  shadow = true,
   title,
+  sizes = "240px",
+  priority = false,
 }: {
   pose: KitPose;
   className?: string;
   float?: boolean;
+  /** Soft contact shadow under the HD render. */
+  shadow?: boolean;
   title?: string;
+  /** Rendered width hint so the browser picks the 256/512/1024 source. */
+  sizes?: string;
+  priority?: boolean;
 }) {
   const uid = useId().replace(/:/g, "");
   const ids: Ids = { fur: `${uid}f`, cream: `${uid}c`, shade: `${uid}s` };
@@ -424,13 +437,25 @@ export function Kit({
 
   if (KIT_RASTER) {
     return (
-      // eslint-disable-next-line @next/next/no-img-element -- optional 3D renders dropped into /public/kit
-      <img
-        src={`/kit/${pose}.webp`}
-        alt={title ?? ""}
-        aria-hidden={title ? undefined : true}
-        className={cn("h-auto w-full", float && "animate-float", className)}
-      />
+      <span
+        className={cn("kit-pic", shadow && "kit-pic-shadow", float && "animate-float", className)}
+        style={{ "--kit-delay": `${offset}s` } as React.CSSProperties}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- static HD renders with a hand-built srcset */}
+        <img
+          src={`/kit/${pose}-512.webp`}
+          srcSet={kitSrcSet(pose)}
+          sizes={sizes}
+          width={1024}
+          height={1024}
+          alt={title ?? ""}
+          aria-hidden={title ? undefined : true}
+          draggable={false}
+          decoding="async"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
+        />
+      </span>
     );
   }
 
