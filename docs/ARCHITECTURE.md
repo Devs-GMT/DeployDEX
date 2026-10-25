@@ -3,6 +3,8 @@
 - **Registry contract** (`contracts/DeployDex.sol`) is the only database. Reads go straight to BOT Chain RPC via viem (public, no wallet needed). Writes go through MetaMask via wagmi.
 - **Chains**: mainnet 677 (rpc.botchain.ai, scan.botchain.ai), testnet 968 (rpc.bohr.life, scan.bohr.life). Selected by `NEXT_PUBLIC_CHAIN`; addresses in `src/lib/config.ts`.
 - **GitHub**: browser calls `/api/github/[owner]/[repo]`, a route handler that fetches repo info + README, uses optional `GITHUB_TOKEN`, caches 1h. On 403/rate-limit the UI shows the saved repo link only.
+- **Trust checks**: `/api/verify/[address]` reads the explorer (Blockscout API v2 on scan.botchain.ai) for verified source and the deploying wallet, cached 1h (15 min when unverified). The GitHub proxy also reads a repo-root `.deploydex` file of wallets. The project page combines these with `owner()` into a Trust report; only "real contract" is enforced on-chain.
+- **Stats** (`/stats`): computed in the browser from `getProjects` (listings, categories, stars) plus the last 7 days of `Starred`/`Unstarred` events. No indexer.
 - **Validation**: client checks `getCode(address)`, duplicate via `idOfTarget`, repo exists, https URL. Contract re-enforces code length and uniqueness.
 - **States**: no MetaMask, wrong network, tx pending/rejected/failed, empty category, unknown id, broken logo (initial avatar).
 
