@@ -1,5 +1,8 @@
 node_modules
 .next
+
+# Single lockfile lives at the repo root (npm workspaces)
+apps/web/package-lock.json
 .env*.local
 .env
 *.log
