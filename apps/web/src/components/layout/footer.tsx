@@ -31,6 +31,7 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
       { label: "Categories", href: "/#categories" },
       { label: "Most starred", href: "/dapps?s=stars" },
       { label: "Fresh deploys", href: "/dapps?s=new" },
+      { label: "Dex stats", href: "/stats" },
     ],
   },
   {
@@ -38,7 +39,7 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
     links: [
       { label: "List your dApp", href: "/list" },
       { label: "My dApps", href: "/my" },
-      { label: "Listing guidelines", href: "/#faq" },
+      { label: "Listing guidelines", href: "/guidelines" },
       { label: "GitHub", href: "https://github.com/Devs-GMT/DeployDEX", external: true },
     ],
   },

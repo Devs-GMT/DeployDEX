@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { usePublicClient } from "wagmi";
-import type { Address } from "viem";
+import type { Address, PublicClient } from "viem";
 import { deployDexAbi } from "@/lib/abi";
 import { CHAIN, REGISTRY_ADDRESS, REGISTRY_DEPLOYED } from "@/lib/config";
 import type { Dapp } from "@/lib/types";
@@ -153,7 +153,31 @@ export function useIsStarred(id: number, address?: Address) {
   });
 }
 
-const WEEK_SECONDS = 7 * 24 * 3600;
+export const WEEK_SECONDS = 7 * 24 * 3600;
+
+/**
+ * The block range covering roughly the last `seconds`, from the chain's measured block time.
+ * Returns null when the chain can't tell us (fresh chain, RPC hiccup).
+ */
+export async function recentBlocks(client: PublicClient, seconds: number) {
+  const latest = await client.getBlockNumber();
+  const sample = latest > 1000n ? 1000n : latest;
+  const [a, b] = await Promise.all([
+    client.getBlock({ blockNumber: latest }),
+    client.getBlock({ blockNumber: latest - sample }),
+  ]);
+  const secPerBlock = sample > 0n ? Number(a.timestamp - b.timestamp) / Number(sample) : 0;
+  if (!(secPerBlock > 0)) return null;
+  const span = BigInt(Math.ceil(seconds / secPerBlock));
+  return {
+    fromBlock: latest > span ? latest - span : 0n,
+    latest,
+    latestTime: Number(a.timestamp),
+    secPerBlock,
+    /** Estimated unix time of a block in the range (avoids one getBlock per event). */
+    timeOf: (block: bigint) => Number(a.timestamp) - Number(latest - block) * secPerBlock,
+  };
+}
 
 /**
  * Net stars per project id over the last 7 days, tallied from Starred/Unstarred events.
@@ -169,16 +193,9 @@ export function useWeeklyStars() {
     queryFn: async (): Promise<Map<number, number> | null> => {
       if (!client) return null;
       try {
-        const latest = await client.getBlockNumber();
-        const sample = latest > 1000n ? 1000n : latest;
-        const [a, b] = await Promise.all([
-          client.getBlock({ blockNumber: latest }),
-          client.getBlock({ blockNumber: latest - sample }),
-        ]);
-        const secPerBlock = sample > 0n ? Number(a.timestamp - b.timestamp) / Number(sample) : 0;
-        if (!(secPerBlock > 0)) return null;
-        const span = BigInt(Math.ceil(WEEK_SECONDS / secPerBlock));
-        const fromBlock = latest > span ? latest - span : 0n;
+        const range = await recentBlocks(client, WEEK_SECONDS);
+        if (!range) return null;
+        const { fromBlock, latest } = range;
         const [up, down] = await Promise.all([
           client.getContractEvents({ address: REGISTRY_ADDRESS, abi: deployDexAbi, eventName: "Starred", fromBlock, toBlock: latest }),
           client.getContractEvents({ address: REGISTRY_ADDRESS, abi: deployDexAbi, eventName: "Unstarred", fromBlock, toBlock: latest }),
