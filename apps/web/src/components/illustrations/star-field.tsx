@@ -18,23 +18,38 @@ function stars(count: number, seed: number) {
 
 const STARS = stars(70, 42);
 
-/** Night-sky dots with a few twinkling stars and a faint constellation, for dark sections. */
+/**
+ * Night-sky dots with a few twinkling stars and a faint constellation, for dark sections.
+ * Still stars are one static SVG. Twinkling ones are small HTML dots: a CSS animation on an
+ * SVG circle repaints the whole (section-sized) SVG every frame, while opacity/transform on an
+ * HTML element runs on the compositor.
+ */
 export function StarField({ className }: { className?: string }) {
   return (
-    <svg aria-hidden className={cn("pointer-events-none absolute inset-0 size-full", className)} preserveAspectRatio="none" viewBox="0 0 100 100">
-      {STARS.map((st, i) => (
-        <circle
-          key={i}
-          cx={st.x}
-          cy={st.y}
-          r={st.r / 6}
-          fill="#fff"
-          opacity={st.o}
-          className={st.twinkle ? "animate-twinkle" : undefined}
-          style={st.twinkle ? { animationDelay: `${(i % 7) * 0.4}s`, transformBox: "fill-box", transformOrigin: "center" } : undefined}
-        />
-      ))}
-      <path d="M70 18 L76 26 L84 22 L90 32 L82 40" fill="none" stroke="#fff" strokeOpacity="0.18" strokeWidth="0.15" />
-    </svg>
+    <div aria-hidden className={cn("pointer-events-none absolute inset-0", className)}>
+      <svg className="absolute inset-0 size-full" preserveAspectRatio="none" viewBox="0 0 100 100">
+        {STARS.map((st, i) =>
+          st.twinkle ? null : (
+            <circle key={i} cx={st.x} cy={st.y} r={st.r / 6} fill="#fff" opacity={st.o} />
+          ),
+        )}
+        <path d="M70 18 L76 26 L84 22 L90 32 L82 40" fill="none" stroke="#fff" strokeOpacity="0.18" strokeWidth="0.15" />
+      </svg>
+      {STARS.map((st, i) =>
+        st.twinkle ? (
+          <span
+            key={i}
+            className="animate-twinkle absolute block rounded-full bg-white"
+            style={{
+              left: `${st.x}%`,
+              top: `${st.y}%`,
+              width: `${st.r * 1.6}px`,
+              height: `${st.r * 1.6}px`,
+              animationDelay: `${(i % 7) * 0.4}s`,
+            }}
+          />
+        ) : null,
+      )}
+    </div>
   );
 }

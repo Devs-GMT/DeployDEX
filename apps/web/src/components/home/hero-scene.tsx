@@ -17,11 +17,11 @@ import {
  * Hero choreography. The markup is server-rendered by Hero; this only animates tagged nodes.
  * - On load: Astro Kit launches from the bottom-left along a curved path, its contrail draws,
  *   the headline rises word by word, then the copy, buttons and the Kit trio land on the clouds.
- * - On scroll (desktop): as the hero scrolls away the near clouds part like curtains, the sky
- *   layers drift at different speeds and Kit blasts off the top of the screen. No pin, so the
- *   page keeps one less pin-spacer and the scroll stays light.
- * - Smaller screens get the load animation only (no scroll-linked work); Kit swoops into its corner
- *   instead of flying the desktop path, which would cross the headline on a narrow screen.
+ *   Kit stops in the top right and keeps floating (its CSS float); the contrail stays drawn.
+ * - No scroll-linked work: the hero scrolls away like any section and the sky stays a still
+ *   painting, so its SVG filter is painted once and never again.
+ * - Smaller screens: Kit swoops into its corner instead of flying the desktop path, which would
+ *   cross the headline on a narrow screen.
  * - Reduced motion: nothing moves; the still painting and copy are already in place.
  */
 export function HeroScene({ children }: { children: ReactNode }) {
@@ -63,7 +63,7 @@ export function HeroScene({ children }: { children: ReactNode }) {
         const path = q<SVGPathElement>("[data-hero-path]")[0];
         const kit = q("[data-hero-kit]")[0];
         const trail = q("[data-hero-trail]")[0];
-        // Launch: Kit flies the curved path across the sky while its contrail draws.
+        // Launch: Kit flies the curved path into the top right while its contrail draws.
         if (path && kit && trail) {
           gsap.set(trail, { autoAlpha: 1 });
           gsap
@@ -77,30 +77,6 @@ export function HeroScene({ children }: { children: ReactNode }) {
               },
             )
             .fromTo(trail, { drawSVG: "0% 0%" }, { drawSVG: "0% 70%" }, 0);
-        }
-        const scene = gsap.timeline({
-          defaults: { ease: "none" },
-          scrollTrigger: { trigger: root.current, start: "top top", end: "bottom top", scrub: 1 },
-        });
-        scene
-          .to(q("[data-hero-near-left]"), { xPercent: -38, yPercent: 10, scale: 1.25 }, 0)
-          .to(q("[data-hero-near-right]"), { xPercent: 38, yPercent: 10, scale: 1.25 }, 0)
-          .to(q("[data-hero-mid]"), { yPercent: -10, scale: 1.08 }, 0)
-          .to(q("[data-hero-far]"), { yPercent: -4 }, 0)
-          .to(q("[data-hero-sun]"), { scale: 1.25, autoAlpha: 0.6 }, 0)
-          .to(q("[data-hero-copy]"), { yPercent: -14, autoAlpha: 0.15, scale: 0.96 }, 0)
-          .to(q("[data-hero-trio] > *"), { y: -40, stagger: 0.04 }, 0);
-        if (path && kit && trail) {
-          scene
-            .to(
-              kit,
-              {
-                motionPath: { path, align: path, alignOrigin: [0.5, 0.5], start: 0.7, end: 1 },
-                immediateRender: false,
-              },
-              0,
-            )
-            .to(trail, { drawSVG: "0% 100%", immediateRender: false }, 0);
         }
       });
 

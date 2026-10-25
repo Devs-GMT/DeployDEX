@@ -1,3 +1,4 @@
+import { useId } from "react";
 import { cn } from "@/lib/utils";
 import { Kit } from "@/components/kit/kit";
 
@@ -45,17 +46,18 @@ export function FlyingKit({ className, delay = 0 }: { className?: string; delay?
  * turbulence filter so the edges look brushed rather than vector-clean.
  */
 export function PainterlySky({ className }: { className?: string }) {
+  const id = `paint${useId().replace(/:/g, "")}`;
   return (
     <div aria-hidden className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}>
       <svg className="absolute size-0">
-        <filter id="paint" x="-10%" y="-10%" width="120%" height="120%">
+        <filter id={id} x="-10%" y="-10%" width="120%" height="120%">
           <feTurbulence type="fractalNoise" baseFrequency="0.012 0.02" numOctaves="3" seed="7" result="n" />
           <feDisplacementMap in="SourceGraphic" in2="n" scale="46" />
           <feGaussianBlur stdDeviation="1.2" />
         </filter>
       </svg>
       <div className="absolute inset-0 bg-linear-to-b from-[#9ec6e4] via-[#c9dcea] to-[#eef0f0]" />
-      <div className="absolute inset-0 [filter:url(#paint)]">
+      <div className="absolute inset-0" style={{ filter: `url(#${id})` }}>
         <div className="absolute -top-10 -left-24 h-72 w-136 rounded-[50%] bg-white/80 blur-2xl" />
         <div className="absolute top-24 left-[22%] h-48 w-112 rounded-[50%] bg-[#f4f2ee]/90 blur-2xl" />
         <div className="absolute top-8 right-[8%] h-60 w-120 rounded-[50%] bg-white/75 blur-2xl" />

@@ -18,6 +18,8 @@ export function IntroScene({ children }: { children: ReactNode }) {
       const mm = gsap.matchMedia();
       mm.add(MQ_FULL, () => {
         const split = SplitText.create(q("[data-intro-text]"), { type: "words" });
+        // Each word on its own compositor layer, so the scrubbed opacity never repaints the text.
+        gsap.set(split.words, { willChange: "opacity" });
         gsap.fromTo(
           split.words,
           { opacity: 0.18 },

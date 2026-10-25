@@ -63,10 +63,10 @@ export function Hero() {
         <Sparkle className="top-[22rem] right-[12%] size-3" delay={2} />
 
         <div className="relative mx-auto max-w-300 px-5 pt-20 pb-10 text-center sm:pt-28">
-          <div data-hero-copy>
+          <div>
             <div
               data-hero-badge
-              className="border-line mx-auto mb-6 flex w-fit items-center gap-2 rounded-full border bg-white/80 px-3 py-1 font-mono text-xs backdrop-blur"
+              className="border-line mx-auto mb-6 flex w-fit items-center gap-2 rounded-full border bg-white/90 px-3 py-1 font-mono text-xs"
             >
               <span className="relative flex size-2">
                 <span className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/60" />

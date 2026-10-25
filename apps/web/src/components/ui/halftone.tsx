@@ -56,28 +56,31 @@ const PATHS: Record<HalftoneShape, { d: string; evenodd?: boolean }> = {
 /**
  * Orange dot-screen illustration (the "halftone" look). Decorative.
  * `color` accepts any CSS color, including tokens like `var(--color-pink)`.
- * `animated` tags the dot with `data-ht` so a scene can "print" it in by tweening its radius.
  */
 export function Halftone({
   shape,
   className,
   color = "var(--color-brand)",
   dot = 2.6,
-  animated = false,
 }: {
   shape: HalftoneShape;
   className?: string;
   color?: string;
   dot?: number;
-  animated?: boolean;
 }) {
   const id = useId().replace(/:/g, "");
   const p = PATHS[shape];
   return (
     <svg viewBox="0 0 100 100" aria-hidden className={cn("size-full", className)}>
       <defs>
-        <pattern id={`p${id}`} width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(30)">
-          <circle cx="3" cy="3" r={dot} style={{ fill: color }} data-ht={animated ? dot : undefined} />
+        <pattern
+          id={`p${id}`}
+          width="6"
+          height="6"
+          patternUnits="userSpaceOnUse"
+          patternTransform="rotate(30)"
+        >
+          <circle cx="3" cy="3" r={dot} style={{ fill: color }} />
         </pattern>
         <linearGradient id={`g${id}`} x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stopColor="#fff" />
