@@ -1,55 +1,133 @@
 import { ButtonLink } from "@/components/ui/button";
 import { Kit } from "@/components/kit/kit";
-import { PainterlySky, Sparkle } from "@/components/ui/decor";
+import { Sparkle } from "@/components/ui/decor";
 import { Halftone } from "@/components/ui/halftone";
 import { Em } from "@/components/ui/frame";
-import { LogoStrip } from "./marquee";
+import { Sky } from "@/components/illustrations/sky";
 import { CHAIN } from "@/lib/config";
+import { LogoStrip } from "./marquee";
+import { HeroScene } from "./hero-scene";
+import { Magnetic } from "@/components/motion/magnetic";
 
 export function Hero() {
   return (
-    <section className="relative overflow-hidden border-t border-line">
-      <PainterlySky />
+    <>
+      <HeroScene>
+        <Sky />
 
-      {/* flying Astro Kit, top right */}
-      <div aria-hidden className="pointer-events-none absolute -top-4 right-[3%] w-44 rotate-[18deg] animate-float sm:w-72">
-        <Kit pose="astro" />
-      </div>
-      {/* dot-screen sparkle, bottom left (our take on the halftone hand in the reference) */}
-      <div aria-hidden className="pointer-events-none absolute bottom-28 left-[6%] hidden size-44 -rotate-12 md:block">
-        <Halftone shape="spark" />
-      </div>
-      <Sparkle className="top-40 left-[14%]" />
-      <Sparkle className="top-28 right-[34%] size-5" delay={1} />
+        {/* Kit's flight path and contrail (drawn by HeroScene). Hidden until JS animates it. */}
+        <svg
+          aria-hidden
+          viewBox="0 0 1440 900"
+          preserveAspectRatio="xMidYMid slice"
+          className="pointer-events-none absolute inset-0 size-full"
+        >
+          <path
+            data-hero-path
+            d="M120 860 C 300 640, 420 520, 640 470 S 1040 360, 1170 180 S 1380 -60, 1560 -160"
+            fill="none"
+            stroke="none"
+          />
+          <path
+            data-hero-trail
+            d="M120 860 C 300 640, 420 520, 640 470 S 1040 360, 1170 180 S 1380 -60, 1560 -160"
+            fill="none"
+            stroke="#fff"
+            strokeOpacity="0.85"
+            strokeWidth="10"
+            strokeLinecap="round"
+            strokeDasharray="1 22"
+            className="invisible"
+          />
+        </svg>
 
-      <div className="relative mx-auto max-w-300 px-5 pt-20 pb-20 text-center sm:pt-28 sm:pb-24">
-        <div className="mx-auto mb-6 flex w-fit items-center gap-2 rounded-full border border-line bg-white/80 px-3 py-1 font-mono text-xs backdrop-blur">
-          <span className="size-1.5 rounded-full bg-[#22c55e]" /> Live on {CHAIN.name} · chain {CHAIN.id}
+        {/* Astro Kit. Without JS it simply hovers top right. */}
+        <div
+          data-hero-kit
+          aria-hidden
+          className="pointer-events-none absolute top-2 right-1 z-10 w-20 sm:top-10 sm:right-[6%] sm:w-56"
+        >
+          <div className="rotate-[18deg]">
+            <Kit pose="astro" float sizes="(min-width: 640px) 224px, 80px" />
+          </div>
         </div>
-        <h1 className="mx-auto max-w-4xl text-[clamp(2.75rem,7.5vw,5.25rem)] leading-[0.98]">
-          The home of
-          <br />
-          BOT Chain <Em>dApps.</Em>
-        </h1>
-        <p className="mx-auto mt-6 max-w-xl text-lg text-ink/70 sm:text-xl">
-          List your project in a minute. Get discovered. Get starred.
-          <br />
-          Built for builders, by builders.
-        </p>
-        <div className="mt-9 flex flex-wrap justify-center gap-3">
-          <ButtonLink href="/list" size="lg">List your dApp</ButtonLink>
-          <ButtonLink href="/dapps" variant="secondary" size="lg">Browse dApps</ButtonLink>
+
+        <div
+          aria-hidden
+          className="pointer-events-none absolute bottom-40 left-[5%] hidden size-40 -rotate-12 opacity-80 md:block"
+        >
+          <Halftone shape="spark" />
         </div>
-        <div className="mx-auto mt-14 flex w-fit items-end gap-3 sm:hidden" aria-hidden>
-          <Kit pose="dev" className="w-32" float />
+        <Sparkle className="top-40 left-[14%]" />
+        <Sparkle className="top-28 right-[34%] size-5" delay={1} />
+        <Sparkle className="top-[22rem] right-[12%] size-3" delay={2} />
+
+        <div className="relative mx-auto max-w-300 px-5 pt-20 pb-10 text-center sm:pt-28">
+          <div data-hero-copy>
+            <div
+              data-hero-badge
+              className="border-line mx-auto mb-6 flex w-fit items-center gap-2 rounded-full border bg-white/80 px-3 py-1 font-mono text-xs backdrop-blur"
+            >
+              <span className="relative flex size-2">
+                <span className="absolute inset-0 animate-ping rounded-full bg-[#22c55e]/60" />
+                <span className="relative size-2 rounded-full bg-[#22c55e]" />
+              </span>
+              Live on {CHAIN.name} · chain {CHAIN.id}
+            </div>
+            <h1
+              data-hero-title
+              className="mx-auto max-w-4xl text-[clamp(2.75rem,7.5vw,5.75rem)] leading-[0.98]"
+            >
+              The home of
+              <br />
+              BOT Chain <Em>dApps.</Em>
+            </h1>
+            <p data-hero-sub className="text-ink/70 mx-auto mt-6 max-w-xl text-lg sm:text-xl">
+              List your project in a minute. Get discovered. Get starred.
+              <br />
+              Built for builders, by builders.
+            </p>
+            <div data-hero-cta className="mt-9 flex flex-wrap justify-center gap-3">
+              <Magnetic>
+                <ButtonLink href="/list" size="lg">
+                  List your dApp
+                </ButtonLink>
+              </Magnetic>
+              <ButtonLink href="/dapps" variant="secondary" size="lg">
+                Browse dApps
+              </ButtonLink>
+            </div>
+          </div>
+
+          <div
+            data-hero-trio
+            aria-hidden
+            className="mx-auto mt-12 flex w-fit items-end gap-1 sm:gap-3"
+          >
+            <div className="w-24 sm:w-40">
+              <Kit pose="hackathon" float sizes="(min-width: 640px) 160px, 96px" />
+            </div>
+            <div className="w-36 sm:w-60">
+              <Kit
+                pose="dev"
+                float
+                priority
+                sizes="(min-width: 640px) 240px, 144px"
+                className="[animation-delay:-1.5s]"
+              />
+            </div>
+            <div className="w-24 sm:w-40">
+              <Kit
+                pose="inspector"
+                float
+                sizes="(min-width: 640px) 160px, 96px"
+                className="[animation-delay:-3s]"
+              />
+            </div>
+          </div>
         </div>
-        <div className="mx-auto mt-14 hidden w-fit items-end gap-2 sm:flex" aria-hidden>
-          <Kit pose="hackathon" className="w-40" float />
-          <Kit pose="dev" className="w-60 [animation-delay:-1.5s]" float />
-          <Kit pose="party" className="w-40 [animation-delay:-3s]" float />
-        </div>
-      </div>
+      </HeroScene>
       <LogoStrip />
-    </section>
+    </>
   );
 }

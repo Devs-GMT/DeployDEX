@@ -8,7 +8,8 @@ import { formatDate, shortAddress } from "@/lib/format";
 import { useProject } from "@/hooks/use-projects";
 import { useIsContractOwner } from "@/hooks/use-contract-check";
 import { Chip } from "@/components/ui/chip";
-import { ButtonLink } from "@/components/ui/button";
+import { Button, ButtonLink } from "@/components/ui/button";
+import { safeHttpsUrl } from "@/lib/validators";
 import { Kit } from "@/components/kit/kit";
 import { LogoAvatar } from "./logo-avatar";
 import { StarButton } from "./star-button";
@@ -50,6 +51,7 @@ export function ProjectView({ id }: { id: number }) {
   }
 
   const repo = parseRepo(dapp.repo);
+  const liveUrl = safeHttpsUrl(dapp.liveUrl);
 
   return (
     <div className="mx-auto max-w-3xl space-y-6 px-5 py-12">
@@ -74,7 +76,11 @@ export function ProjectView({ id }: { id: number }) {
       </header>
 
       <div className="flex flex-wrap gap-2">
-        <ButtonLink href={dapp.liveUrl} target="_blank" rel="noopener noreferrer">Live app ↗</ButtonLink>
+        {liveUrl ? (
+          <ButtonLink href={liveUrl} target="_blank" rel="noopener noreferrer">Live app ↗</ButtonLink>
+        ) : (
+          <Button disabled title="This listing has no safe https link">Link unavailable</Button>
+        )}
         {repo && (
           <ButtonLink href={`https://github.com/${repo.owner}/${repo.repo}`} variant="secondary" target="_blank" rel="noopener noreferrer">
             GitHub ↗

@@ -1,5 +1,6 @@
 import { useId } from "react";
 import { cn } from "@/lib/utils";
+import { KIT_RASTER } from "@/lib/config";
 
 export type KitPose =
   | "dev"
@@ -59,9 +60,11 @@ function Ears({ ids, hidden = false }: { ids: Ids; hidden?: boolean }) {
       <path d="M56 66 C50 40 54 24 62 18 C78 24 92 38 98 52Z" fill={`url(#${ids.fur})`} />
       <path d="M64 56 C62 42 64 32 67 29 C76 34 84 42 88 50Z" fill="#FFADA0" />
       {/* right ear, slightly bent tip */}
+      <g className="kit-ear">
       <path d="M144 66 C150 42 148 28 142 20 L130 28 C116 36 106 44 102 52Z" fill={`url(#${ids.fur})`} />
       <path d="M142 20 L154 26 L146 36Z" fill="#E2600C" />
       <path d="M136 56 C138 44 138 36 136 32 C128 36 120 42 116 50Z" fill="#FFADA0" />
+      </g>
     </g>
   );
 }
@@ -87,7 +90,7 @@ function Face({ ids, mood = "open", cx = 100, cy = 84, s = 1 }: { ids: Ids; mood
       <circle cx="112" cy="104" r="12" fill={`url(#${ids.cream})`} />
       {/* eyes */}
       {mood === "open" && (
-        <g>
+        <g className="kit-blink">
           <ellipse cx="75" cy="84" rx="10.5" ry="12.5" fill={INK} />
           <ellipse cx="125" cy="84" rx="10.5" ry="12.5" fill={INK} />
           <ellipse cx="75" cy="86" rx="7" ry="8.5" fill="#7a3d12" opacity="0.55" />
@@ -237,10 +240,14 @@ function Astro({ ids }: { ids: Ids }) {
         <rect x="148" y="118" width="22" height="52" rx="10" fill="#aeb4c2" />
         <rect x="34" y="126" width="6" height="34" rx="3" fill="#fff" opacity="0.45" />
         <rect x="152" y="126" width="6" height="34" rx="3" fill="#fff" opacity="0.45" />
-        <path d="M32 170 q9 30 18 0Z" fill="#FFB400" />
-        <path d="M36 170 q5 16 10 0Z" fill="#FF5C00" />
-        <path d="M150 170 q9 30 18 0Z" fill="#FFB400" />
-        <path d="M154 170 q5 16 10 0Z" fill="#FF5C00" />
+        <g className="kit-flame">
+          <path d="M32 170 q9 30 18 0Z" fill="#FFB400" />
+          <path d="M36 170 q5 16 10 0Z" fill="#FF5C00" />
+        </g>
+        <g className="kit-flame" style={{ animationDelay: "-0.12s" }}>
+          <path d="M150 170 q9 30 18 0Z" fill="#FFB400" />
+          <path d="M154 170 q5 16 10 0Z" fill="#FF5C00" />
+        </g>
       </g>
       <Tail ids={ids} />
       <Body
@@ -284,7 +291,7 @@ function Inspector({ ids }: { ids: Ids }) {
       <g>
         <path d="M156 160 L180 188" stroke="#2a1a12" strokeWidth="10" strokeLinecap="round" />
         <circle cx="146" cy="136" r="26" fill="#cfeaff" fillOpacity="0.5" stroke="#2a1a12" strokeWidth="7" />
-        <path d="M132 124 q6 -9 16 -9" stroke="#fff" strokeWidth="4" strokeLinecap="round" fill="none" />
+        <path className="kit-glint" d="M132 124 q6 -9 16 -9" stroke="#fff" strokeWidth="4" strokeLinecap="round" fill="none" />
         <ellipse cx="124" cy="154" rx="9" ry="7" fill={`url(#${ids.cream})`} />
       </g>
     </g>
@@ -312,6 +319,7 @@ function Curator({ ids }: { ids: Ids }) {
         <path d="M89 84 h22" fill="none" />
       </g>
       {/* clipboard */}
+      <g className="kit-sway">
       <g transform="rotate(8 150 154)">
         <rect x="126" y="120" width="48" height="62" rx="6" fill="#b3763a" />
         <rect x="132" y="130" width="36" height="46" rx="2" fill="#fff" />
@@ -320,6 +328,7 @@ function Curator({ ids }: { ids: Ids }) {
         <path d="M139 168 l3 3 6 -7" stroke="#17a862" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" fill="none" />
       </g>
       <ellipse cx="128" cy="160" rx="9" ry="7" fill={`url(#${ids.cream})`} />
+      </g>
     </g>
   );
 }
@@ -340,7 +349,7 @@ function Party({ ids }: { ids: Ids }) {
         <circle cx="100" cy="6" r="7" fill="#FFD43B" />
       </g>
       {/* confetti */}
-      <g>
+      <g className="kit-confetti">
         <rect x="24" y="44" width="9" height="9" rx="2" fill="#FFD43B" transform="rotate(20 28 48)" />
         <rect x="168" y="58" width="9" height="9" rx="2" fill="#3b82f6" transform="rotate(-18 172 62)" />
         <rect x="36" y="112" width="8" height="8" rx="2" fill="#FF405D" transform="rotate(35 40 116)" />
@@ -361,6 +370,7 @@ function Napping({ ids }: { ids: Ids }) {
   return (
     <g>
       <GroundShadow ids={ids} rx={74} />
+      <g className="kit-breathe">
       {/* body loaf */}
       <path d="M26 156 C22 120 62 104 108 106 C156 108 184 128 178 160 C174 184 140 190 100 190 C60 190 30 184 26 156Z" fill={`url(#${ids.fur})`} />
       <g stroke={STRIPE} strokeOpacity="0.5" strokeWidth="5" strokeLinecap="round" fill="none">
@@ -383,8 +393,9 @@ function Napping({ ids }: { ids: Ids }) {
       </g>
       <ellipse cx="66" cy="168" rx="17" ry="9" fill={`url(#${ids.cream})`} />
       <ellipse cx="116" cy="170" rx="17" ry="9" fill={`url(#${ids.cream})`} />
+      </g>
       {/* zzz */}
-      <g fill={INK} fontFamily="ui-monospace, monospace" fontWeight="700">
+      <g className="kit-zzz" fill={INK} fontFamily="ui-monospace, monospace" fontWeight="700">
         <text x="150" y="70" fontSize="26">Z</text>
         <text x="172" y="46" fontSize="19">z</text>
         <text x="186" y="26" fontSize="13">z</text>
@@ -394,20 +405,59 @@ function Napping({ ids }: { ids: Ids }) {
 }
 
 /** Kit the orange tabby, in a soft clay-toy vector style. Poses map to costumes in DESIGN.md. */
+/** Responsive sources for an HD render in /public/kit (built by scripts/kit-sizes.mjs). */
+export function kitSrcSet(name: string) {
+  return `/kit/${name}-256.webp 256w, /kit/${name}-512.webp 512w, /kit/${name}.webp 1024w`;
+}
+
 export function Kit({
   pose,
   className,
   float = false,
+  shadow = true,
   title,
+  sizes = "240px",
+  priority = false,
 }: {
   pose: KitPose;
   className?: string;
   float?: boolean;
+  /** Soft contact shadow under the HD render. */
+  shadow?: boolean;
   title?: string;
+  /** Rendered width hint so the browser picks the 256/512/1024 source. */
+  sizes?: string;
+  priority?: boolean;
 }) {
   const uid = useId().replace(/:/g, "");
   const ids: Ids = { fur: `${uid}f`, cream: `${uid}c`, shade: `${uid}s` };
   const sitting = pose !== "napping";
+  // Deterministic per-instance offset (same on server and client) so a row of Kits never blinks in sync.
+  const offset = -([...uid].reduce((n, ch) => n + ch.charCodeAt(0), 0) % 50) / 10;
+
+  if (KIT_RASTER) {
+    return (
+      <span
+        className={cn("kit-pic", shadow && "kit-pic-shadow", float && "animate-float", className)}
+        style={{ "--kit-delay": `${offset}s` } as React.CSSProperties}
+      >
+        {/* eslint-disable-next-line @next/next/no-img-element -- static HD renders with a hand-built srcset */}
+        <img
+          src={`/kit/${pose}-512.webp`}
+          srcSet={kitSrcSet(pose)}
+          sizes={sizes}
+          width={1024}
+          height={1024}
+          alt={title ?? ""}
+          aria-hidden={title ? undefined : true}
+          draggable={false}
+          decoding="async"
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : undefined}
+        />
+      </span>
+    );
+  }
 
   return (
     <svg
@@ -415,7 +465,8 @@ export function Kit({
       role={title ? "img" : undefined}
       aria-label={title}
       aria-hidden={title ? undefined : true}
-      className={cn("kit-hover h-auto w-full overflow-visible", float && "animate-float", className)}
+      className={cn("kit-hover kit-idle h-auto w-full overflow-visible", float && "animate-float", className)}
+      style={{ "--kit-delay": `${offset}s` } as React.CSSProperties}
     >
       <Defs ids={ids} />
       {sitting && <GroundShadow ids={ids} />}

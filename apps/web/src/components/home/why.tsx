@@ -1,5 +1,8 @@
 import { Kit } from "@/components/kit/kit";
 import { Em, Section } from "@/components/ui/frame";
+import { WhyLogos } from "./why-logos";
+import { WhyScene } from "./why-scene";
+import { StarField } from "@/components/illustrations/star-field";
 
 const OLD = [
   { t: "Scattered tweets", i: "✎" },
@@ -18,8 +21,13 @@ const TILES: { c: string; pos: string }[] = [
 
 function Pill({ children, icon }: { children: React.ReactNode; icon: string }) {
   return (
-    <span className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border-4 border-[#ffb3c0] bg-[#ffe3e8] px-5 py-2.5 text-xl text-[#d0213d] shadow-[0_0_0_4px_rgba(255,64,93,0.12)]">
-      <span aria-hidden className="text-base">{icon}</span>
+    <span
+      data-why-pill
+      className="inline-flex items-center gap-2 rounded-full border-4 border-[#ffb3c0] bg-[#ffe3e8] px-5 py-2.5 text-xl whitespace-nowrap text-[#d0213d] shadow-[0_0_0_4px_rgba(255,64,93,0.12)]"
+    >
+      <span aria-hidden className="text-base">
+        {icon}
+      </span>
       {children}
     </span>
   );
@@ -27,22 +35,40 @@ function Pill({ children, icon }: { children: React.ReactNode; icon: string }) {
 
 function OldWay() {
   return (
-    <div className="flex h-80 flex-col overflow-hidden rounded-3xl bg-panel">
+    <div className="bg-panel flex h-80 flex-col overflow-hidden rounded-3xl">
       <div className="relative flex-1 overflow-hidden">
-        <div className="absolute top-14 left-0 flex w-max items-center gap-0 -translate-x-8">
+        {/* Revealed by WhyScene once the old way falls apart (hidden in the static layout). */}
+        <div
+          data-why-ghost
+          aria-hidden
+          className="text-ink/45 absolute inset-0 flex translate-y-4 flex-col items-center justify-center gap-1 opacity-0"
+        >
+          <span className="font-display text-6xl tracking-tight">404</span>
+          <span className="font-mono text-sm">link not found. probably.</span>
+        </div>
+        <div className="absolute top-14 left-0 flex w-max -translate-x-8 items-center gap-0">
           {OLD.map((o, i) => (
             <div key={o.t} className="flex items-center">
               <Pill icon={o.i}>{o.t}</Pill>
-              {i < OLD.length - 1 && <span aria-hidden className="h-1 w-8 bg-[#ffb3c0]" />}
+              {i < OLD.length - 1 && (
+                <span data-why-link aria-hidden className="h-1 w-8 origin-left bg-[#ffb3c0]" />
+              )}
             </div>
           ))}
         </div>
-        <div aria-hidden className="absolute bottom-0 left-1/2 w-72 -translate-x-1/2 rotate-[-2deg] rounded-t-lg bg-white p-5 shadow-lg">
-          <p className="font-display text-xl text-ink/40">Is this even deployed?</p>
-          <div className="mt-3 h-px bg-line" />
-          <div className="mt-3 flex gap-2"><div className="h-5 flex-1 rounded bg-line" /><div className="h-5 w-12 rounded bg-line" /></div>
-          <div className="mt-2 h-3 w-2/3 rounded bg-line" />
-          <div className="mt-2 h-3 w-1/2 rounded bg-line" />
+        <div
+          data-why-doc
+          aria-hidden
+          className="absolute bottom-0 left-[calc(50%-9rem)] w-72 rotate-[-2deg] rounded-t-lg bg-white p-5 shadow-lg"
+        >
+          <p className="font-display text-ink/40 text-xl">Is this even deployed?</p>
+          <div className="bg-line mt-3 h-px" />
+          <div className="mt-3 flex gap-2">
+            <div className="bg-line h-5 flex-1 rounded" />
+            <div className="bg-line h-5 w-12 rounded" />
+          </div>
+          <div className="bg-line mt-2 h-3 w-2/3 rounded" />
+          <div className="bg-line mt-2 h-3 w-1/2 rounded" />
         </div>
       </div>
     </div>
@@ -52,7 +78,12 @@ function OldWay() {
 function Tunnel() {
   return (
     <div className="relative h-80 overflow-hidden rounded-3xl bg-white">
-      <svg viewBox="0 0 600 320" preserveAspectRatio="none" aria-hidden className="absolute inset-0 size-full">
+      <svg
+        viewBox="0 0 600 320"
+        preserveAspectRatio="none"
+        aria-hidden
+        className="absolute inset-0 size-full"
+      >
         <defs>
           <linearGradient id="tun" x1="0" x2="1">
             <stop offset="0" stopColor="#f08fc0" />
@@ -61,7 +92,9 @@ function Tunnel() {
             <stop offset="0.78" stopColor="#ff9d63" />
             <stop offset="1" stopColor="#fff2e6" />
           </linearGradient>
-          <filter id="soft"><feGaussianBlur stdDeviation="5" /></filter>
+          <filter id="soft">
+            <feGaussianBlur stdDeviation="5" />
+          </filter>
         </defs>
         <rect width="600" height="320" fill="url(#tun)" />
         <g filter="url(#soft)" fill="#2c3a5e">
@@ -72,13 +105,22 @@ function Tunnel() {
       {TILES.map((t, i) => (
         <span
           key={i}
+          data-why-tile
           aria-hidden
-          className={`absolute grid size-12 place-items-center rounded-2xl border-2 border-white/80 bg-white font-mono text-sm shadow-lg ${t.pos}`}
+          className={`text-ink absolute grid size-12 place-items-center rounded-2xl border-2 border-white/80 bg-white font-mono text-sm shadow-lg ${t.pos}`}
         >
           {t.c}
         </span>
       ))}
-      <div className="absolute top-1/2 left-1/2 grid size-36 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-white/30 p-3 backdrop-blur-sm">
+      <div
+        data-why-glow
+        aria-hidden
+        className="invisible absolute top-[calc(50%-7rem)] left-[calc(50%-7rem)] size-56 rounded-full bg-[radial-gradient(circle,rgba(255,255,255,0.9),rgba(255,255,255,0)_65%)] opacity-0"
+      />
+      <div
+        data-why-portal
+        className="absolute top-[calc(50%-4.5rem)] left-[calc(50%-4.5rem)] grid size-36 place-items-center rounded-full bg-white/30 p-3 backdrop-blur-sm"
+      >
         <div className="grid size-full place-items-center overflow-hidden rounded-full bg-white shadow-xl">
           <Kit pose="dev" className="mt-3 w-24" title="Kit, the DeployDex cat" />
         </div>
@@ -89,28 +131,35 @@ function Tunnel() {
 
 export function Why() {
   return (
-    <Section dark>
-      <h2 className="reveal text-center text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.02]">
-        Our unique <Em>advantage</Em>
-      </h2>
-      <div className="reveal mt-12 grid gap-5 lg:grid-cols-2">
-        <div>
-          <OldWay />
-          <h3 className="mt-5 text-xl">The old way</h3>
-          <p className="mt-2 text-white/70">
-            Scattered tweets, spreadsheets that nobody updates, links that died last month, and the
-            eternal question: is this even deployed?
-          </p>
+    <Section dark className="overflow-hidden">
+      <StarField className="opacity-40" />
+      <WhyScene>
+        <h2 data-split className="text-center text-[clamp(2rem,4.6vw,3.5rem)] leading-[1.02]">
+          Our unique <Em>advantage</Em>
+        </h2>
+        <div className="reveal mt-12 grid gap-5 lg:grid-cols-2">
+          <div data-why-old>
+            <OldWay />
+            <h3 className="mt-5 text-xl">The old way</h3>
+            <p className="mt-2 text-white/70">
+              Scattered tweets, spreadsheets that nobody updates, links that died last month, and
+              the eternal question: is this even deployed?
+            </p>
+          </div>
+          <div data-why-new>
+            <Tunnel />
+            <h3 className="mt-5 text-xl">DeployDex</h3>
+            <p className="mt-2 text-white/70">
+              One on-chain registry. Every listing passes a{" "}
+              <strong data-why-highlight className="text-white">
+                real contract check
+              </strong>
+              , links its GitHub repo, and collects community stars you can verify yourself.
+            </p>
+          </div>
         </div>
-        <div>
-          <Tunnel />
-          <h3 className="mt-5 text-xl">DeployDex</h3>
-          <p className="mt-2 text-white/70">
-            One on-chain registry. Every listing passes a <strong className="text-white">real contract check</strong>,
-            links its GitHub repo, and collects community stars you can verify yourself.
-          </p>
-        </div>
-      </div>
+      </WhyScene>
+      <WhyLogos />
     </Section>
   );
 }

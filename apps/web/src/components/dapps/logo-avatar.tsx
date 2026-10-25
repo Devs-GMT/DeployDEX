@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { cn } from "@/lib/utils";
+import { safeHttpsUrl } from "@/lib/validators";
 
 /** Project logo with a fallback avatar showing the project's initial. */
 export function LogoAvatar({
@@ -14,12 +15,13 @@ export function LogoAvatar({
   className?: string;
 }) {
   const [broken, setBroken] = useState(false);
+  const safeSrc = safeHttpsUrl(src);
   const base = "size-12 shrink-0 rounded-xl";
-  if (src && !broken) {
+  if (safeSrc && !broken) {
     return (
       // eslint-disable-next-line @next/next/no-img-element -- arbitrary user-supplied host
       <img
-        src={src}
+        src={safeSrc}
         alt=""
         loading="lazy"
         referrerPolicy="no-referrer"

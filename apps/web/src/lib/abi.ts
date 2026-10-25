@@ -65,6 +65,22 @@ export const deployDexAbi = [
     inputs: [{ name: "id", type: "uint256" }, { name: "hidden", type: "bool" }],
     outputs: [],
   },
+  {
+    type: "event", name: "Starred",
+    inputs: [
+      { name: "id", type: "uint256", indexed: true },
+      { name: "by", type: "address", indexed: true },
+      { name: "stars", type: "uint32", indexed: false },
+    ],
+  },
+  {
+    type: "event", name: "Unstarred",
+    inputs: [
+      { name: "id", type: "uint256", indexed: true },
+      { name: "by", type: "address", indexed: true },
+      { name: "stars", type: "uint32", indexed: false },
+    ],
+  },
   { type: "error", name: "NotAContract", inputs: [] },
   { type: "error", name: "AlreadyListed", inputs: [{ name: "id", type: "uint256" }] },
   { type: "error", name: "TooLong", inputs: [] },

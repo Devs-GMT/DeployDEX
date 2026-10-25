@@ -1,6 +1,7 @@
 "use client";
 
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
+import { CHAIN } from "@/lib/config";
 import { shortAddress } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import { useIsClient } from "@/hooks/use-is-client";
@@ -10,6 +11,7 @@ export function ConnectButton({ variant = "ghost" }: { variant?: "ghost" | "outl
   const { address, isConnected } = useAccount();
   const { connectors, connect, isPending } = useConnect();
   const { disconnect } = useDisconnect();
+  const { switchChain } = useSwitchChain();
 
   if (!mounted)
     return (
@@ -51,7 +53,14 @@ export function ConnectButton({ variant = "ghost" }: { variant?: "ghost" | "outl
       variant={variant}
       size="sm"
       disabled={isPending || !connector}
-      onClick={() => connector && connect({ connector })}
+      onClick={() =>
+        connector &&
+        connect(
+          { connector },
+          // Wrong network right after connecting? Switch (wagmi adds BOT Chain if the wallet lacks it).
+          { onSuccess: (res) => res.chainId !== CHAIN.id && switchChain({ chainId: CHAIN.id }) },
+        )
+      }
     >
       {isPending ? "Connecting…" : "Connect wallet"}
     </Button>
