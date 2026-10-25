@@ -8,7 +8,7 @@ import { ABOUT_HREF, BUILDERS_LINKS, EXPLORE_SHORTCUTS } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/button";
 import { ConnectButton } from "@/components/web3/connect-button";
-import { Kit } from "@/components/kit/kit";
+import { LogoMark } from "@/components/ui/logo";
 import { Halftone } from "@/components/ui/halftone";
 import { IconChevronDown } from "@/components/ui/icons";
 import { MobileNav } from "@/components/layout/mobile-nav";
@@ -193,7 +193,7 @@ export function Header() {
   return (
     <header
       ref={headerRef}
-      className="border-line sticky top-0 z-40 border-b bg-white/90 backdrop-blur"
+      className="border-line sticky top-0 z-40 border-b bg-white/95"
     >
       <div className="mx-auto flex h-16 max-w-350 items-center gap-4 px-5 sm:px-10">
         <Link
@@ -201,7 +201,7 @@ export function Header() {
           className="font-display flex shrink-0 items-center gap-2 text-lg font-medium"
           onClick={closeNow}
         >
-          <Kit pose="dev" className="size-8" shadow={false} sizes="32px" priority />
+          <LogoMark />
           DeployDex
         </Link>
 
