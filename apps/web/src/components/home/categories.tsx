@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CATEGORIES, CATEGORY_ART } from "@/lib/categories";
 import { useProjects } from "@/hooks/use-projects";
 import { cn } from "@/lib/utils";
-import { Halftone } from "@/components/ui/halftone";
+import { CategoryArt } from "@/components/ui/category-art";
 import { buttonClasses } from "@/components/ui/button";
 import { Em, Section, SectionHead } from "@/components/ui/frame";
 import { Tilt } from "@/components/motion/tilt";
@@ -48,29 +48,21 @@ export function Categories() {
               <Tilt className="h-full">
                 <Link
                   href={`/dapps?c=${c.slug}`}
-                  className="group border-line bg-card relative flex h-full flex-col rounded-3xl border shadow-[0_22px_40px_-28px_rgb(120_45_0/0.5)] transition-shadow hover:shadow-[0_30px_60px_-28px_rgb(120_45_0/0.55)]"
+                  className="group kit-group border-line bg-card relative flex h-full flex-col rounded-3xl border shadow-[0_22px_40px_-28px_rgb(120_45_0/0.5)] transition-shadow hover:shadow-[0_30px_60px_-28px_rgb(120_45_0/0.55)]"
                 >
-                  {/* Two offset dot screens, like a slightly misregistered print; the art bleeds off the card. */}
+                  {/* Kit in the category's costume, bleeding off the card's corner. */}
                   <div
                     aria-hidden
                     data-depth="18"
-                    className="pointer-events-none absolute -top-9 -right-5 size-40 sm:size-44"
+                    className="pointer-events-none absolute -top-14 -right-5 w-32 sm:w-36"
                   >
-                    <div className="size-full transition-transform duration-500 group-hover:scale-110 group-hover:rotate-6">
-                      <Halftone
-                        shape={art.shape}
-                        color="var(--color-pink)"
-                        dot={2.2}
-                        className="absolute inset-0 translate-x-1.5 translate-y-1.5 opacity-60 mix-blend-multiply transition-transform duration-500 group-hover:translate-x-3 group-hover:translate-y-2.5"
-                      />
-                      <Halftone shape={art.shape} dot={2.8} className="relative" />
-                    </div>
+                    <CategoryArt slug={c.slug} sizes="176px" />
                   </div>
                   <div className="relative flex h-44 flex-col justify-between rounded-t-3xl p-6">
                     <span className="text-muted font-mono text-xs tracking-widest">
                       {String(i + 1).padStart(2, "0")}
                     </span>
-                    <div className="max-w-[72%]">
+                    <div className="max-w-[64%]">
                       <h3 className="text-2xl leading-none">{c.label}</h3>
                       <p className="text-muted mt-1.5 text-sm">{art.blurb}</p>
                     </div>
@@ -103,13 +95,10 @@ export function Categories() {
           <Tilt className="h-full">
             <Link
               href="/list"
-              className="group bg-charcoal relative flex h-full min-h-80 flex-col justify-between overflow-hidden rounded-3xl p-7 text-white transition-shadow hover:shadow-xl"
+              className="group kit-group bg-charcoal relative flex h-full min-h-80 flex-col justify-between overflow-hidden rounded-3xl p-7 text-white transition-shadow hover:shadow-xl"
             >
-              <div
-                aria-hidden
-                className="pointer-events-none absolute -right-8 -bottom-10 size-44 opacity-80"
-              >
-                <Halftone shape="star" dot={2.4} />
+              <div aria-hidden className="pointer-events-none absolute -top-12 -right-8 w-32">
+                <CategoryArt slug="other" sizes="160px" />
               </div>
               <span className="relative font-mono text-xs text-white/60">
                 Your build, your shelf

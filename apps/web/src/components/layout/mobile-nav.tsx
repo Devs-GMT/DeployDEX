@@ -4,12 +4,12 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { usePathname } from "next/navigation";
-import { CATEGORIES, CATEGORY_ART } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
 import { ABOUT_HREF, BUILDERS_LINKS, EXPLORE_SHORTCUTS, type NavLink } from "@/lib/nav";
 import { cn } from "@/lib/utils";
 import { ConnectButton } from "@/components/web3/connect-button";
 import { ButtonLink } from "@/components/ui/button";
-import { Halftone } from "@/components/ui/halftone";
+import { CategoryArt } from "@/components/ui/category-art";
 import { Kit } from "@/components/kit/kit";
 import { IconArrowRight } from "@/components/ui/icons";
 
@@ -131,9 +131,7 @@ export function MobileNav({
               onClick={onClose}
               className="border-line bg-card hover:border-ink/25 flex h-10 items-center gap-2 rounded-full border pr-3.5 pl-1.5 text-sm transition-colors"
             >
-              <span aria-hidden className="bg-peach/60 size-7 rounded-full p-1">
-                <Halftone shape={CATEGORY_ART[c.slug]!.shape} dot={3.2} />
-              </span>
+              <CategoryArt slug={c.slug} crop sizes="64px" className="bg-peach/70 size-7" />
               {c.label}
             </Link>
           ))}

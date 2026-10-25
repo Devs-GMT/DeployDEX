@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { CATEGORY_ART, categoryById } from "@/lib/categories";
+import { categoryById } from "@/lib/categories";
 import { shortAddress } from "@/lib/format";
 import type { Dapp } from "@/lib/types";
 import { parseRepo, safeHttpsUrl } from "@/lib/validators";
 import { ButtonLink } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
-import { Halftone } from "@/components/ui/halftone";
+import { CategoryArt } from "@/components/ui/category-art";
 import {
   IconArrowRight,
   IconExternal,
@@ -20,7 +20,6 @@ import { StarButton } from "./star-button";
 /** Wide charcoal spotlight for the most-starred dApp, shown above the grid when nothing is filtered. */
 export function FeaturedDapp({ dapp }: { dapp: Dapp }) {
   const cat = categoryById(dapp.category);
-  const art = CATEGORY_ART[cat.slug]!;
   const liveUrl = safeHttpsUrl(dapp.liveUrl);
 
   return (
@@ -79,8 +78,8 @@ export function FeaturedDapp({ dapp }: { dapp: Dapp }) {
           aria-hidden
           className="dot-grid-light relative min-h-56 overflow-hidden border-t border-white/10 md:border-t-0 md:border-l"
         >
-          <div data-depth="18" className="absolute inset-[8%] opacity-95">
-            <Halftone shape={art.shape} dot={2.9} />
+          <div data-depth="18" className="absolute inset-x-[12%] top-[6%] bottom-0">
+            <CategoryArt slug={cat.slug} sizes="(min-width: 768px) 420px, 80vw" />
           </div>
           <div
             data-depth="30"

@@ -2,12 +2,12 @@
 
 import { useEffect, useMemo, useRef } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { CATEGORIES, CATEGORY_ART } from "@/lib/categories";
+import { CATEGORIES } from "@/lib/categories";
 import { REGISTRY_DEPLOYED } from "@/lib/config";
 import { useProjects } from "@/hooks/use-projects";
 import { cn } from "@/lib/utils";
 import { Kit } from "@/components/kit/kit";
-import { Halftone } from "@/components/ui/halftone";
+import { CategoryArt } from "@/components/ui/category-art";
 import { IconClose, IconSearch } from "@/components/ui/icons";
 import { gsap, MQ_MOTION, useGSAP } from "@/lib/gsap";
 import { DappCard } from "./dapp-card";
@@ -210,7 +210,7 @@ export function Directory() {
                 onClick={() => setParam("c", category?.id === c.id ? null : c.slug)}
                 label={c.label}
                 count={counts.get(c.id) ?? 0}
-                shape={CATEGORY_ART[c.slug]!.shape}
+                slug={c.slug}
               />
             ))}
           </div>
@@ -338,13 +338,14 @@ function CategoryChip({
   onClick,
   label,
   count,
-  shape,
+  slug,
 }: {
   active: boolean;
   onClick: () => void;
   label: string;
   count: number;
-  shape?: (typeof CATEGORY_ART)[string]["shape"];
+  /** Category whose Kit badge leads the chip. */
+  slug?: string;
 }) {
   return (
     <button
@@ -353,18 +354,18 @@ function CategoryChip({
       onClick={onClick}
       className={cn(
         "flex h-10 shrink-0 items-center gap-2 rounded-full border pr-3 pl-2 text-sm whitespace-nowrap transition-[background-color,border-color,color]",
-        !shape && "pl-4",
+        !slug && "pl-4",
         active ? "border-ink bg-ink text-white" : "border-line bg-card hover:border-ink/25",
         !active && count === 0 && "text-muted",
       )}
     >
-      {shape && (
-        <span
-          aria-hidden
-          className={cn("size-6 rounded-full p-0.5", active ? "bg-white" : "bg-peach/60")}
-        >
-          <Halftone shape={shape} dot={3.4} />
-        </span>
+      {slug && (
+        <CategoryArt
+          slug={slug}
+          crop
+          sizes="64px"
+          className={cn("size-7", active ? "bg-white" : "bg-peach/70")}
+        />
       )}
       {label}
       <span

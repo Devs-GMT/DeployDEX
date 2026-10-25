@@ -22,6 +22,7 @@ Next 16 differs from older versions. Before using a Next API, read the matching 
 - Every animation honors `prefers-reduced-motion`. Keep a11y: labels, focus rings, contrast.
 - Design tokens come from `globals.css` `@theme`; no ad-hoc hex values in components.
 - Kit poses: `components/kit/` (`<Kit pose="dev" />`). Pose names: dev, hackathon, astro, inspector, curator, napping, party.
+- Category art: `<CategoryArt slug="ai" />` (`components/ui/category-art.tsx`), not halftones, wherever a category is shown. New renders: `docs/CATEGORY_ART.md`, then `node apps/web/scripts/category-art.mjs`.
 - Browsing must work with no wallet and no MetaMask.
 - Conventional commits. Small, reviewable changes.
 

@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/button";
 import { ConnectButton } from "@/components/web3/connect-button";
 import { LogoMark } from "@/components/ui/logo";
-import { Halftone } from "@/components/ui/halftone";
+import { CategoryArt } from "@/components/ui/category-art";
 import { IconChevronDown } from "@/components/ui/icons";
 import { MobileNav } from "@/components/layout/mobile-nav";
 
@@ -224,11 +224,14 @@ export function Header() {
                     key={c.id}
                     href={`/dapps?c=${c.slug}`}
                     onClick={closeNow}
-                    className="hover:bg-panel flex items-start gap-3 rounded-xl px-7 py-2.5 transition-colors"
+                    className="hover:bg-panel flex items-center gap-3 rounded-xl px-4 py-2 transition-colors"
                   >
-                    <span className="mt-0.5 size-6 shrink-0">
-                      <Halftone shape={art.shape} dot={3.2} />
-                    </span>
+                    <CategoryArt
+                      slug={c.slug}
+                      crop
+                      sizes="80px"
+                      className="bg-peach/70 size-9"
+                    />
                     <span>
                       <span className="block text-sm font-medium">{c.label}</span>
                       <span className="text-muted block text-xs">{art.blurb}</span>

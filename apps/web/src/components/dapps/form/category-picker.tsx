@@ -2,7 +2,7 @@
 
 import { CATEGORIES, CATEGORY_ART } from "@/lib/categories";
 import { cn } from "@/lib/utils";
-import { Halftone } from "@/components/ui/halftone";
+import { CategoryArt } from "@/components/ui/category-art";
 import { IconCheck } from "@/components/ui/icons";
 
 /** Visual radio group: one card per category, still a native radio for keyboard users. */
@@ -24,7 +24,7 @@ export function CategoryPicker({
             <label
               key={c.id}
               className={cn(
-                "group relative flex cursor-pointer flex-col gap-1 overflow-hidden rounded-2xl border p-3 transition-[background-color,border-color,box-shadow]",
+                "group kit-group relative flex cursor-pointer flex-col gap-1 overflow-hidden rounded-2xl border p-3 transition-[background-color,border-color,box-shadow]",
                 "has-[:focus-visible]:outline-brand has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2",
                 selected
                   ? "border-brand bg-peach/40 shadow-[0_0_0_3px_color-mix(in_srgb,var(--color-brand)_18%,transparent)]"
@@ -39,11 +39,8 @@ export function CategoryPicker({
                 onChange={() => onChange(c.id)}
                 className="sr-only"
               />
-              <span
-                className="size-10 transition-transform duration-300 group-hover:scale-110 group-hover:-rotate-6"
-                aria-hidden
-              >
-                <Halftone shape={art.shape} dot={3} />
+              <span aria-hidden className="-mt-1 -ml-1 w-14">
+                <CategoryArt slug={c.slug} still sizes="112px" />
               </span>
               <span className="text-sm leading-tight font-medium">{c.label}</span>
               <span className="text-muted text-[11px] leading-tight">{art.blurb}</span>
