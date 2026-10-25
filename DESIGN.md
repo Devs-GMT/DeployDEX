@@ -17,7 +17,7 @@ Mood: playful-but-premium startup site. Soft cloud sky, warm orange, a cute masc
 Contrast: orange text on white is for large/bold only; use white on orange for buttons.
 
 ## Type
-Body Geist. Headings Space Grotesk, weight 500. Small labels Geist Mono. Hero 36–56px, fluid via clamp.
+Body Geist. Headings and small labels Geist Mono, weight 500, set tight (letter-spacing -0.06em, word-spacing -0.3em on headings). Hero 36–56px, fluid via clamp.
 
 ## Components
 - Buttons: 16px radius. Primary orange/white, secondary black, tertiary text link.
