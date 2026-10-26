@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ButtonHTMLAttributes, ComponentProps } from "react";
+import type { ComponentProps } from "react";
 import { cn } from "@/lib/utils";
 
 type Variant = "primary" | "secondary" | "outline" | "ghost" | "light";
@@ -32,7 +32,7 @@ export function Button({
   size,
   className,
   ...props
-}: Common & ButtonHTMLAttributes<HTMLButtonElement>) {
+}: Common & ComponentProps<"button">) {
   return <button className={buttonClasses(variant, size, className)} {...props} />;
 }
 
