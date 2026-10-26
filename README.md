@@ -11,7 +11,7 @@ The public showcase of BOT Chain dApps. List your project with its contract, liv
 4. A listing must point to a real deployed contract. The contract itself rejects wallets and random addresses.
 
 **Testnet registry (968):** `0x5863636C9308E1318ef4F159bD5019c67C2F6b83`
-**Mainnet registry (677):** _not deployed yet_ — set in `apps/web/.env.local`, shown in the site footer.
+**Mainnet registry (677):** `0xCeA0C0db0F86d75CeE6e8d70e2b20488Fa5cD884` (live site, [scan](https://scan.botchain.ai/address/0xCeA0C0db0F86d75CeE6e8d70e2b20488Fa5cD884))
 
 ## Project layout
 | Path | What |
