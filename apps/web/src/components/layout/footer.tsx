@@ -245,15 +245,16 @@ export function Footer() {
       <div className="lg:border-line mx-auto max-w-300 px-5 pb-0 sm:px-10 lg:border-x">
         <Certificate />
 
-        <div className="border-line mt-20 grid border-y md:grid-cols-[1.1fr_repeat(4,1fr)]">
-          <div className="border-line flex items-center gap-3 border-b p-8 md:border-r md:border-b-0">
+        {/* Five columns only from lg: at md the brand cell's min-content pushed the grid 10px wide. */}
+        <div className="border-line mt-20 grid border-y lg:grid-cols-[1.1fr_repeat(4,1fr)]">
+          <div className="border-line flex items-center gap-3 border-b p-8 lg:border-r lg:border-b-0">
             <LogoMark className="size-12" />
             <span className="font-display text-brand text-3xl">DeployDex</span>
           </div>
           {COLUMNS.map((col) => (
             <div
               key={col.title}
-              className="border-line border-b p-6 last:border-b-0 md:border-r md:border-b-0 md:last:border-r-0"
+              className="border-line border-b p-6 last:border-b-0 lg:border-r lg:border-b-0 lg:last:border-r-0"
             >
               <h3 className="font-sans text-sm font-semibold tracking-wide uppercase">
                 {col.title}

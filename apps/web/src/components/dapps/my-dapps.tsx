@@ -62,10 +62,14 @@ export function MyDapps() {
         {mine.length === 0 ? (
           <EmptyState title="You haven't listed anything yet." />
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {mine.map((d) => (
-              <div key={d.id} className="space-y-2">
-                <DappCard dapp={d} />
+              // The card fills the leftover height (its Tilt is h-full), so the buttons stay below
+              // it instead of being pushed out of the cell over the next section.
+              <div key={d.id} className="flex flex-col gap-2">
+                <div className="flex-1">
+                  <DappCard dapp={d} />
+                </div>
                 <Button variant="outline" size="sm" className="w-full" onClick={() => setEditing(d)}>
                   Edit listing
                 </Button>
@@ -80,7 +84,7 @@ export function MyDapps() {
         {stars.length === 0 ? (
           <EmptyState title="No stars yet — go find something good." action={false} />
         ) : (
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {stars.map((d) => <DappCard key={d.id} dapp={d} />)}
           </div>
         )}
