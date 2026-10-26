@@ -6,6 +6,7 @@ export const botChain = defineChain({
   nativeCurrency: { name: "BOT", symbol: "BOT", decimals: 18 },
   rpcUrls: { default: { http: ["https://rpc.botchain.ai"] } },
   blockExplorers: { default: { name: "BOT Scan", url: "https://scan.botchain.ai" } },
+  testnet: false,
 });
 
 export const botChainTestnet = defineChain({
