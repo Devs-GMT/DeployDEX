@@ -289,7 +289,7 @@ export function DappForm({ mode, initial }: { mode: FormMode; initial?: DappForm
                 id="logoUrl"
                 label="Logo image URL (optional)"
                 error={s.errors.logoUrl}
-                hint="A square https:// image. We fall back to your initial."
+                hint="A square https:// image. Without one, we show your category's icon."
               >
                 <div className="flex items-center gap-3">
                   <LogoAvatar
