@@ -277,7 +277,7 @@ export function Directory() {
           <div
             role="status"
             aria-label="Loading dApps from BOT Chain"
-            className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3"
+            className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3"
           >
             {Array.from({ length: 6 }, (_, i) => (
               <SkeletonCard key={i} />
@@ -310,13 +310,14 @@ export function Directory() {
             <EmptyState />
           )
         ) : (
-          <div className="grid gap-5">
+          // grid-cols-1 is minmax(0, 1fr): a long unbreakable string can't push cards past the viewport.
+          <div className="grid grid-cols-1 gap-5">
             {featured && (
-              <div data-dir-card>
+              <div data-dir-card className="min-w-0">
                 <FeaturedDapp dapp={featured} />
               </div>
             )}
-            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
               {grid.map((d, i) => (
                 <div key={d.id} data-dir-card className="h-full">
                   <DappCard

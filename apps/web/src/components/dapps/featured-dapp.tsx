@@ -21,10 +21,11 @@ import { StarButton } from "./star-button";
 export function FeaturedDapp({ dapp }: { dapp: Dapp }) {
   const cat = categoryById(dapp.category);
   const liveUrl = safeHttpsUrl(dapp.liveUrl);
+  const repo = parseRepo(dapp.repo);
 
   return (
     <Tilt max={2}>
-      <article className="bg-charcoal relative grid overflow-hidden rounded-[28px] text-white shadow-[0_30px_60px_-30px_rgb(0_0_0/0.45)] md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+      <article className="bg-charcoal relative grid grid-cols-1 overflow-hidden rounded-[28px] text-white shadow-[0_30px_60px_-30px_rgb(0_0_0/0.45)] md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         <div className="relative z-10 flex flex-col gap-5 p-7 sm:p-10">
           <div className="flex items-center gap-2">
             <span className="bg-brand rounded-full px-2.5 py-1 font-mono text-[11px] font-medium">
@@ -50,9 +51,13 @@ export function FeaturedDapp({ dapp }: { dapp: Dapp }) {
             <Chip tone="green">
               <IconVerified className="mr-1 size-3.5" /> Contract {shortAddress(dapp.target)}
             </Chip>
-            {parseRepo(dapp.repo) && (
-              <Chip tone="green">
-                <IconRepo className="mr-1 size-3.5" /> {dapp.repo}
+            {repo && (
+              // owner/repo rather than the raw URL; still truncated so a long name can't widen the grid.
+              <Chip tone="green" className="max-w-full min-w-0">
+                <IconRepo className="mr-1 size-3.5 shrink-0" />
+                <span className="truncate">
+                  {repo.owner}/{repo.repo}
+                </span>
               </Chip>
             )}
           </div>

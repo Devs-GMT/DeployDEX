@@ -113,8 +113,8 @@ export function DappCardFace({
           )}
         </div>
 
-        <div className="border-line mt-auto flex items-center justify-between gap-2 border-t border-dashed pt-4">
-          <span className="text-muted font-mono text-xs" title={target}>
+        <div className="border-line mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-3 border-t border-dashed pt-4">
+          <span className="text-muted font-mono text-xs whitespace-nowrap" title={target}>
             {target ? shortAddress(target) : "0x…"}
           </span>
           {actions}
