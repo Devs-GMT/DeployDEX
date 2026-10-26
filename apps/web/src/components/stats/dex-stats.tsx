@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import type { Dapp } from "@/lib/types";
 import { CategoryArt } from "@/components/ui/category-art";
 import { Kit } from "@/components/kit/kit";
-import { IconRocket, IconStar } from "@/components/ui/icons";
+import { IconPencil, IconRocket, IconStar } from "@/components/ui/icons";
 import { EmptyState } from "@/components/dapps/empty-state";
 
 const WEEKS = 12;
@@ -251,7 +251,7 @@ function ChainLog({ dapps, now }: { dapps: Dapp[]; now: number }) {
       </p>
       <ol className="mt-6 divide-y divide-white/10">
         {items.map((it) => {
-          const Icon = it.icon === "star" ? IconStar : IconRocket;
+          const Icon = { star: IconStar, edit: IconPencil, rocket: IconRocket }[it.icon];
           const row = (
             <>
               <span
