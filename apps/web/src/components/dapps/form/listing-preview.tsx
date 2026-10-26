@@ -4,6 +4,7 @@ import { parseRepo, safeHttpsUrl, type DappFormValues } from "@/lib/validators";
 import { isAddress } from "viem";
 import { DappCardFace } from "@/components/dapps/dapp-card-face";
 import { IconExternal } from "@/components/ui/icons";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 
 /**
  * The exact card the showcase will render, fed by the form as you type. Only the chrome
@@ -19,6 +20,9 @@ export function ListingPreview({
   repoOk: boolean;
 }) {
   const live = safeHttpsUrl(values.liveUrl);
+  // The cover looks up the share image once typing settles, not on every keystroke.
+  const coverUrl = useDebouncedValue(values.liveUrl, 700);
+  const coverRepo = useDebouncedValue(values.repo, 700);
 
   return (
     <section aria-label="Listing preview" className="relative">
@@ -31,6 +35,8 @@ export function ListingPreview({
         tagline={values.tagline.trim() || "One line about what you built."}
         category={values.category}
         logoUrl={values.logoUrl}
+        liveUrl={coverUrl}
+        repo={coverRepo}
         stars={0}
         target={isAddress(values.target) ? values.target : undefined}
         contractOk={contractOk}

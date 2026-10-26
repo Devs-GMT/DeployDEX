@@ -1,4 +1,5 @@
 import type { HalftoneShape } from "@/components/ui/halftone";
+import type { KitPose } from "@/components/kit/kit";
 
 // Index order must match `enum Category` in contracts/DeployDex.sol
 export const CATEGORIES = [
@@ -16,15 +17,61 @@ export type Category = (typeof CATEGORIES)[number];
 
 export const categoryById = (id: number): Category => CATEGORIES[id] ?? CATEGORIES[7];
 
-
-/** Halftone illustration + soft tint per category (used on cards). */
-export const CATEGORY_ART: Record<string, { shape: HalftoneShape; blurb: string }> = {
-  ai: { shape: "spark", blurb: "Agents, models and smart tools" },
-  rwa: { shape: "building", blurb: "Real-world assets, on-chain" },
-  community: { shape: "people", blurb: "DAOs, social and groups" },
-  productivity: { shape: "clock", blurb: "Get more done, on-chain" },
-  "fun-lifestyle": { shape: "gamepad", blurb: "Games, art and good vibes" },
-  "dev-tools": { shape: "code", blurb: "Build faster on BOT Chain" },
-  hackathon: { shape: "flag", blurb: "Fresh from the build week" },
-  other: { shape: "star", blurb: "Everything else worth a look" },
+/**
+ * Per category: halftone shape (small decorative marks), blurb, soft tint (a color token for
+ * covers) and `kit`, the plain Kit pose used for round badges and as a stand-in until the
+ * category's own render exists (see components/ui/category-art.tsx and docs/CATEGORY_ART.md).
+ */
+export const CATEGORY_ART: Record<
+  string,
+  { shape: HalftoneShape; blurb: string; tint: string; kit: KitPose }
+> = {
+  ai: {
+    shape: "spark",
+    blurb: "Agents, models and smart tools",
+    tint: "--color-peach",
+    kit: "astro",
+  },
+  rwa: {
+    shape: "building",
+    blurb: "Real-world assets, on-chain",
+    tint: "--color-sky",
+    kit: "curator",
+  },
+  community: {
+    shape: "people",
+    blurb: "DAOs, social and groups",
+    tint: "--color-pink-soft",
+    kit: "party",
+  },
+  productivity: {
+    shape: "clock",
+    blurb: "Get more done, on-chain",
+    tint: "--color-peach",
+    kit: "inspector",
+  },
+  "fun-lifestyle": {
+    shape: "gamepad",
+    blurb: "Games, art and good vibes",
+    tint: "--color-pink-soft",
+    kit: "napping",
+  },
+  "dev-tools": {
+    shape: "code",
+    blurb: "Build faster on BOT Chain",
+    tint: "--color-sky",
+    kit: "dev",
+  },
+  hackathon: {
+    shape: "flag",
+    blurb: "Fresh from the build week",
+    tint: "--color-peach",
+    kit: "hackathon",
+  },
+  other: {
+    shape: "star",
+    blurb: "Everything else worth a look",
+    tint: "--color-panel",
+    kit: "napping",
+  },
 };

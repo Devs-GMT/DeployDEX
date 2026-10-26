@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Instrument_Serif, Space_Grotesk } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { SITE_URL } from "@/lib/config";
 import { Providers } from "@/components/web3/providers";
@@ -18,7 +18,6 @@ const instrument = Instrument_Serif({
   weight: "400",
   style: "italic",
 });
-const space = Space_Grotesk({ variable: "--font-space", subsets: ["latin"], weight: ["500"] });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -34,7 +33,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en"
       data-scroll-behavior="smooth"
-      className={`${geistSans.variable} ${geistMono.variable} ${space.variable} ${instrument.variable}`}
+      className={`${geistSans.variable} ${geistMono.variable} ${instrument.variable}`}
     >
       <body className="flex min-h-screen flex-col antialiased">
         <a

@@ -1,9 +1,11 @@
 import { Section } from "@/components/ui/frame";
+import { CONTACT_EMAIL } from "@/lib/config";
 
 const FAQS: [string, string][] = [
   ["Is it free to list?", "Yes. You only pay the network gas fee for the transaction."],
   ["Why does it need a contract address?", "Every listing must point to a deployed contract on BOT Chain. The registry checks this on-chain, so wallets and random addresses can't be listed."],
   ["Can I edit my listing?", "Yes. The wallet that listed it can update the name, tagline, links, logo and category. The contract address can never change."],
+  ["Can I remove my listing?", "Yes. In My dApps, the wallet that listed it can delist it. It leaves the directory for good (the record stays on-chain), and the contract can be listed again later as a new listing."],
   ["Can I list a testnet project?", "The registry checks code on the chain it's deployed on. Testnet projects belong in a testnet registry; the mainnet DeployDex lists mainnet contracts."],
   ["How do stars work?", "One star per wallet per project. You can unstar any time, and you can't star your own project."],
   ["Who can hide a listing?", "Only the curator (the registry deployer). Hidden projects disappear from the directory but stay on-chain."],
@@ -30,7 +32,7 @@ export function Faq() {
         </div>
         <p className="rounded-b-3xl bg-white py-5 text-center text-sm">
           Can&apos;t find an answer to your question?{" "}
-          <a className="text-brand hover:underline" href="mailto:hello@deploydex.xyz">Get in touch</a>
+          <a className="text-brand hover:underline" href={`mailto:${CONTACT_EMAIL}`}>Get in touch</a>
         </p>
       </div>
     </Section>

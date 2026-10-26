@@ -96,7 +96,7 @@ function ProjectLink({ d }: { d: Dapp }) {
       href={`/dapps/${d.id}`}
       className="flex items-center gap-3 text-xl font-medium whitespace-nowrap opacity-80 transition-opacity hover:opacity-100"
     >
-      <LogoAvatar name={d.name} src={d.logoUrl} className="size-9" />
+      <LogoAvatar name={d.name} src={d.logoUrl} category={d.category} className="size-9" />
       {d.name}
     </Link>
   );

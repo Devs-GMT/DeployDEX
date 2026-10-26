@@ -35,6 +35,8 @@ contract DeployDex {
     mapping(uint256 => mapping(address => bool)) public starred;
     mapping(address => uint256[]) private _listedBy;
     mapping(address => uint256[]) private _starredBy;
+    /// @notice Set once by the lister; a delisted project is also hidden and frees its target.
+    mapping(uint256 => bool) public delisted;
     address public curator;
 
     event Listed(uint256 indexed id, address indexed lister, address indexed target, Category category);
@@ -42,6 +44,7 @@ contract DeployDex {
     event Starred(uint256 indexed id, address indexed by, uint32 stars);
     event Unstarred(uint256 indexed id, address indexed by, uint32 stars);
     event Hidden(uint256 indexed id, bool hidden);
+    event Delisted(uint256 indexed id, address indexed lister, address indexed target);
 
     error NotAContract();
     error AlreadyListed(uint256 id);
@@ -53,6 +56,7 @@ contract DeployDex {
     error SelfStar();
     error AlreadyStarred();
     error NotStarred();
+    error IsDelisted();
 
     constructor() {
         curator = msg.sender;
@@ -107,6 +111,7 @@ contract DeployDex {
     ) external exists(id) {
         Project storage p = projects[id];
         if (p.lister != msg.sender) revert NotLister();
+        if (delisted[id]) revert IsDelisted();
         _validate(name, tagline, liveUrl, repo, logoUrl);
         p.name = name;
         p.tagline = tagline;
@@ -119,6 +124,7 @@ contract DeployDex {
     }
 
     function star(uint256 id) external exists(id) {
+        if (delisted[id]) revert IsDelisted();
         Project storage p = projects[id];
         if (p.lister == msg.sender) revert SelfStar();
         if (starred[id][msg.sender]) revert AlreadyStarred();
@@ -146,8 +152,22 @@ contract DeployDex {
 
     function setHidden(uint256 id, bool hidden) external exists(id) {
         if (msg.sender != curator) revert NotCurator();
+        if (delisted[id]) revert IsDelisted();
         projects[id].hidden = hidden;
         emit Hidden(id, hidden);
+    }
+
+    /// @notice Lister takes the project out of the directory for good. The record stays on-chain
+    /// (hidden), and the contract address is freed so it can be listed again.
+    function delist(uint256 id) external exists(id) {
+        Project storage p = projects[id];
+        if (p.lister != msg.sender) revert NotLister();
+        if (delisted[id]) revert IsDelisted();
+        delisted[id] = true;
+        p.hidden = true;
+        p.updatedAt = uint64(block.timestamp);
+        delete _idPlusOne[p.target];
+        emit Delisted(id, msg.sender, p.target);
     }
 
     // ---------------------------------------------------------------- views

@@ -11,13 +11,15 @@ import { StarButton } from "./star-button";
 export function DappCard({ dapp, rank }: { dapp: Dapp; rank?: number }) {
   const liveUrl = safeHttpsUrl(dapp.liveUrl);
   return (
-    // Subtle pointer tilt (desktop mouse only); the halftone art floats on its own depth layer.
+    // Subtle pointer tilt (desktop mouse only); the cover accent floats on its own depth layer.
     <Tilt max={4} className="h-full">
       <DappCardFace
         name={dapp.name}
         tagline={dapp.tagline}
         category={dapp.category}
         logoUrl={dapp.logoUrl}
+        liveUrl={dapp.liveUrl}
+        repo={dapp.repo}
         stars={dapp.stars}
         target={dapp.target}
         contractOk
@@ -43,7 +45,7 @@ export function DappCard({ dapp, rank }: { dapp: Dapp; rank?: number }) {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                Open <IconExternal className="size-3.5" />
+                Open app <IconExternal className="size-3.5" />
                 <span className="sr-only">{dapp.name} (opens in a new tab)</span>
               </ButtonLink>
             ) : (

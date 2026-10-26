@@ -191,7 +191,7 @@ export function ListOrBrowse() {
         <div data-flip-stage className="mt-12">
           <div data-flip-card className="relative">
             <div data-flip-face="front" className={face}>
-              <div className="relative h-112 overflow-hidden rounded-3xl bg-[#ff7a2e] px-6 pt-8 sm:px-12 lg:h-[34rem]">
+              <div className="relative h-112 overflow-hidden rounded-3xl bg-tangerine px-6 pt-8 sm:px-12 lg:h-[34rem]">
                 <MockForm className="mx-auto max-w-lg" />
                 <div
                   data-checks
@@ -248,7 +248,7 @@ export function ListOrBrowse() {
                   }
                 />
               </div>
-              <div className="relative order-1 h-112 overflow-hidden rounded-3xl bg-[#dcdcdc] pt-8 pl-6 sm:pl-12 lg:order-2 lg:h-[34rem]">
+              <div className="relative order-1 h-112 overflow-hidden rounded-3xl bg-smoke pt-8 pl-6 sm:pl-12 lg:order-2 lg:h-[34rem]">
                 <MockDirectory className="max-w-md" />
                 <div data-flip-kit className="absolute right-4 bottom-0 w-44 sm:w-56">
                   <span className="absolute -top-16 right-6 rounded-full bg-white px-4 py-2 text-sm shadow-lg after:absolute after:-bottom-1.5 after:left-6 after:size-3 after:rotate-45 after:bg-white">

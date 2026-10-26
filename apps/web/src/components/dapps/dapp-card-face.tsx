@@ -1,11 +1,10 @@
 import type { ReactNode } from "react";
-import { CATEGORY_ART, categoryById } from "@/lib/categories";
+import { categoryById } from "@/lib/categories";
 import { shortAddress } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { Chip } from "@/components/ui/chip";
-import { Halftone } from "@/components/ui/halftone";
 import { IconRepo, IconStar, IconVerified } from "@/components/ui/icons";
-import { LogoAvatar } from "./logo-avatar";
+import { DappCover } from "./dapp-cover";
 
 /**
  * The visual card shared by the showcase and the form's live preview, so builders
@@ -16,6 +15,8 @@ export function DappCardFace({
   tagline,
   category,
   logoUrl,
+  liveUrl,
+  repo,
   stars,
   target,
   contractOk,
@@ -30,6 +31,9 @@ export function DappCardFace({
   tagline: string;
   category: number;
   logoUrl?: string;
+  /** Live site and repo, used to find the project's share image for the cover. */
+  liveUrl?: string;
+  repo?: string;
   stars: number;
   target?: string;
   contractOk: boolean;
@@ -43,7 +47,6 @@ export function DappCardFace({
   className?: string;
 }) {
   const cat = categoryById(category);
-  const art = CATEGORY_ART[cat.slug]!;
   const podium = rank != null && rank <= 3 && stars > 0;
 
   return (
@@ -53,18 +56,17 @@ export function DappCardFace({
         className,
       )}
     >
-      <div className="border-line relative h-30 border-b">
-        {/* Art is clipped to the header so the star button's popovers below can overflow the card. */}
-        <div
-          aria-hidden
-          className="bg-panel dot-grid absolute inset-0 overflow-hidden rounded-t-[inherit]"
-        >
-          <div data-depth="12" className="absolute -top-4 -right-3 size-36">
-            <div className="size-full transition-transform duration-700 ease-out group-hover:scale-110 group-hover:-rotate-6">
-              <Halftone shape={art.shape} />
-            </div>
-          </div>
-        </div>
+      <div className="border-line relative aspect-[1.91/1] border-b">
+        {/* Cover is clipped to the header so the star button's popovers below can overflow the card.
+            1.91:1 is the og:image shape, so a project's share image fits without cropping. */}
+        <DappCover
+          name={name}
+          logoUrl={logoUrl}
+          category={category}
+          liveUrl={liveUrl}
+          repo={repo}
+          className="rounded-t-[inherit]"
+        />
         <div className="absolute top-3.5 left-4 flex gap-1.5">
           {podium && (
             <span
@@ -82,14 +84,9 @@ export function DappCardFace({
             </span>
           )}
         </div>
-        <LogoAvatar
-          name={name || "?"}
-          src={logoUrl}
-          className="absolute -bottom-7 left-5 size-15 rounded-2xl border-[3px] border-white shadow-[0_6px_16px_-6px_rgb(0_0_0/0.3)]"
-        />
       </div>
 
-      <div className="flex flex-1 flex-col px-5 pt-10 pb-5">
+      <div className="flex flex-1 flex-col px-5 pt-5 pb-5">
         <div className="flex items-start justify-between gap-3">
           <h3 className="min-w-0 truncate text-[1.375rem] leading-tight">{title ?? name}</h3>
           <span
@@ -116,8 +113,8 @@ export function DappCardFace({
           )}
         </div>
 
-        <div className="border-line mt-auto flex items-center justify-between gap-2 border-t border-dashed pt-4">
-          <span className="text-muted font-mono text-xs" title={target}>
+        <div className="border-line mt-auto flex flex-wrap items-center justify-between gap-x-2 gap-y-3 border-t border-dashed pt-4">
+          <span className="text-muted font-mono text-xs whitespace-nowrap" title={target}>
             {target ? shortAddress(target) : "0x…"}
           </span>
           {actions}

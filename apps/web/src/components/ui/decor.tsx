@@ -77,8 +77,8 @@ export function CursorTag({ children, className }: { children: React.ReactNode; 
       <svg viewBox="0 0 16 22" className="mt-3 -mr-2 size-4 drop-shadow">
         <path d="M1 1 15 12 8 13 5 21Z" fill="#111" stroke="#fff" strokeWidth="1.5" strokeLinejoin="round" />
       </svg>
-      <span className="rounded-full bg-[#2563eb] px-3 py-1 text-sm font-medium text-white shadow-lg">{children}</span>
-      <span className="mt-6 -ml-2 grid size-5 place-items-center rounded-full bg-[#22c55e] text-xs text-white shadow">+</span>
+      <span className="rounded-full bg-cursor px-3 py-1 text-sm font-medium text-white shadow-lg">{children}</span>
+      <span className="mt-6 -ml-2 grid size-5 place-items-center rounded-full bg-live text-xs text-white shadow">+</span>
     </div>
   );
 }

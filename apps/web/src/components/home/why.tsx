@@ -23,7 +23,7 @@ function Pill({ children, icon }: { children: React.ReactNode; icon: string }) {
   return (
     <span
       data-why-pill
-      className="inline-flex items-center gap-2 rounded-full border-4 border-[#ffb3c0] bg-[#ffe3e8] px-5 py-2.5 text-xl whitespace-nowrap text-[#d0213d] shadow-[0_0_0_4px_rgba(255,64,93,0.12)]"
+      className="inline-flex items-center gap-2 rounded-full border-4 border-pink-line bg-pink-wash px-5 py-2.5 text-xl whitespace-nowrap text-pink-deep shadow-[0_0_0_4px_rgba(255,64,93,0.12)]"
     >
       <span aria-hidden className="text-base">
         {icon}
@@ -51,7 +51,7 @@ function OldWay() {
             <div key={o.t} className="flex items-center">
               <Pill icon={o.i}>{o.t}</Pill>
               {i < OLD.length - 1 && (
-                <span data-why-link aria-hidden className="h-1 w-8 origin-left bg-[#ffb3c0]" />
+                <span data-why-link aria-hidden className="h-1 w-8 origin-left bg-pink-line" />
               )}
             </div>
           ))}

@@ -21,6 +21,7 @@ const KNOWN_ERRORS: Record<string, string> = {
   SelfStar: "You can't star your own project.",
   AlreadyStarred: "You already starred this project.",
   NotStarred: "You haven't starred this project.",
+  IsDelisted: "This project was delisted by its lister.",
 };
 
 function friendly(err: unknown): string {
@@ -32,7 +33,7 @@ function friendly(err: unknown): string {
   return "The transaction failed. Please try again.";
 }
 
-type WriteName = "list" | "update" | "star" | "unstar";
+type WriteName = "list" | "update" | "star" | "unstar" | "delist";
 
 export function useRegistryWrite() {
   const client = usePublicClient({ chainId: CHAIN.id });

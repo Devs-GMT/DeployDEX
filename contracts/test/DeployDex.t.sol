@@ -156,6 +156,62 @@ contract DeployDexTest is Test {
         assertEq(dex.getProjects(0, 1).length, 1);
     }
 
+    // ---- delist
+    function testDelistByListerHidesAndFreesTarget() public {
+        _list(alice, target);
+        vm.prank(alice);
+        dex.delist(0);
+        assertTrue(dex.delisted(0));
+        assertTrue(dex.getProject(0).hidden);
+        (bool found, ) = dex.idOfTarget(target);
+        assertFalse(found);
+        // The contract can be listed again, under a new id.
+        uint256 id = _list(bob, target);
+        assertEq(id, 1);
+        (bool again, uint256 fid) = dex.idOfTarget(target);
+        assertTrue(again);
+        assertEq(fid, 1);
+    }
+
+    function testDelistListerOnlyAndOnce() public {
+        _list(alice, target);
+        vm.prank(bob);
+        vm.expectRevert(DeployDex.NotLister.selector);
+        dex.delist(0);
+        vm.expectRevert(DeployDex.NotLister.selector);
+        dex.delist(0); // curator is not the lister either
+        vm.startPrank(alice);
+        dex.delist(0);
+        vm.expectRevert(DeployDex.IsDelisted.selector);
+        dex.delist(0);
+        vm.stopPrank();
+    }
+
+    function testDelistedBlocksStarUpdateAndUnhide() public {
+        _list(alice, target);
+        vm.prank(bob);
+        dex.star(0);
+        vm.prank(alice);
+        dex.delist(0);
+
+        address carol = address(0xCA201);
+        vm.prank(carol);
+        vm.expectRevert(DeployDex.IsDelisted.selector);
+        dex.star(0);
+
+        vm.prank(alice);
+        vm.expectRevert(DeployDex.IsDelisted.selector);
+        dex.update(0, "New", "t", DeployDex.Category.AI, "https://x.io", "o/r", "");
+
+        vm.expectRevert(DeployDex.IsDelisted.selector);
+        dex.setHidden(0, false);
+
+        // Existing stars can still be taken back.
+        vm.prank(bob);
+        dex.unstar(0);
+        assertEq(dex.getProject(0).stars, 0);
+    }
+
     function testGetProjectUnknownReverts() public {
         vm.expectRevert(DeployDex.NoSuchProject.selector);
         dex.getProject(0);

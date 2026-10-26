@@ -10,7 +10,7 @@ The public showcase of BOT Chain dApps. List your project with its contract, liv
 3. To list or star, connect MetaMask. The site switches you to BOT Chain.
 4. A listing must point to a real deployed contract. The contract itself rejects wallets and random addresses.
 
-**Testnet registry (968):** `0x3b3ABC68c8Af9C769612f13E03EBfb9091Cb735A`
+**Testnet registry (968):** `0x5863636C9308E1318ef4F159bD5019c67C2F6b83`
 **Mainnet registry (677):** _not deployed yet_ — set in `apps/web/.env.local`, shown in the site footer.
 
 ## Project layout
@@ -41,5 +41,5 @@ The registry checks `target.code.length` on the chain it lives on, so deploy a r
 Import the repo, set root directory `apps/web`, add the env vars from `.env.example` (`GITHUB_TOKEN` is optional and server-only; set `NEXT_PUBLIC_SITE_URL` to the production URL), then add your custom domain.
 
 ## Status
-Built: contract, web3 wiring, directory, project page, list/edit form with live checks, star/unstar, My dApps, 9-section home, certificate footer, Kit SVG poses.
-Next: two-wallet test on testnet, mainnet deploy, seed listings, replace the placeholder BOT Chain logo. Step-by-step in `docs/DEPLOY.md`.
+Built: contract, web3 wiring, directory, project page, list/edit form with live checks, star/unstar, My dApps with delist, Trust report (verified source, deployer, owner, repo claim), listing guidelines, on-chain stats, 9-section home, certificate footer, Kit HD poses and per-category Kit art.
+Next: two-wallet test on testnet, mainnet deploy, seed listings. Step-by-step in `docs/DEPLOY.md`.

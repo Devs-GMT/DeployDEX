@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { CATEGORY_ART, categoryById } from "@/lib/categories";
+import { categoryById } from "@/lib/categories";
 import { shortAddress } from "@/lib/format";
 import type { Dapp } from "@/lib/types";
 import { parseRepo, safeHttpsUrl } from "@/lib/validators";
 import { ButtonLink } from "@/components/ui/button";
 import { Chip } from "@/components/ui/chip";
-import { Halftone } from "@/components/ui/halftone";
+import { CategoryArt } from "@/components/ui/category-art";
 import {
   IconArrowRight,
   IconExternal,
@@ -20,12 +20,12 @@ import { StarButton } from "./star-button";
 /** Wide charcoal spotlight for the most-starred dApp, shown above the grid when nothing is filtered. */
 export function FeaturedDapp({ dapp }: { dapp: Dapp }) {
   const cat = categoryById(dapp.category);
-  const art = CATEGORY_ART[cat.slug]!;
   const liveUrl = safeHttpsUrl(dapp.liveUrl);
+  const repo = parseRepo(dapp.repo);
 
   return (
     <Tilt max={2}>
-      <article className="bg-charcoal relative grid overflow-hidden rounded-[28px] text-white shadow-[0_30px_60px_-30px_rgb(0_0_0/0.45)] md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
+      <article className="bg-charcoal relative grid grid-cols-1 overflow-hidden rounded-[28px] text-white shadow-[0_30px_60px_-30px_rgb(0_0_0/0.45)] md:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)]">
         <div className="relative z-10 flex flex-col gap-5 p-7 sm:p-10">
           <div className="flex items-center gap-2">
             <span className="bg-brand rounded-full px-2.5 py-1 font-mono text-[11px] font-medium">
@@ -36,6 +36,7 @@ export function FeaturedDapp({ dapp }: { dapp: Dapp }) {
           <div className="flex items-center gap-4">
             <LogoAvatar
               name={dapp.name}
+              category={dapp.category}
               src={dapp.logoUrl}
               className="size-18 rounded-2xl border-[3px] border-white/90 text-3xl"
             />
@@ -50,9 +51,13 @@ export function FeaturedDapp({ dapp }: { dapp: Dapp }) {
             <Chip tone="green">
               <IconVerified className="mr-1 size-3.5" /> Contract {shortAddress(dapp.target)}
             </Chip>
-            {parseRepo(dapp.repo) && (
-              <Chip tone="green">
-                <IconRepo className="mr-1 size-3.5" /> {dapp.repo}
+            {repo && (
+              // owner/repo rather than the raw URL; still truncated so a long name can't widen the grid.
+              <Chip tone="green" className="max-w-full min-w-0">
+                <IconRepo className="mr-1 size-3.5 shrink-0" />
+                <span className="truncate">
+                  {repo.owner}/{repo.repo}
+                </span>
               </Chip>
             )}
           </div>
@@ -79,8 +84,8 @@ export function FeaturedDapp({ dapp }: { dapp: Dapp }) {
           aria-hidden
           className="dot-grid-light relative min-h-56 overflow-hidden border-t border-white/10 md:border-t-0 md:border-l"
         >
-          <div data-depth="18" className="absolute inset-[8%] opacity-95">
-            <Halftone shape={art.shape} dot={2.9} />
+          <div data-depth="18" className="absolute inset-x-[12%] top-[6%] bottom-0">
+            <CategoryArt slug={cat.slug} sizes="(min-width: 768px) 420px, 80vw" />
           </div>
           <div
             data-depth="30"

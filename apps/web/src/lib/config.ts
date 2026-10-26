@@ -20,6 +20,9 @@ export const REGISTRY_DEPLOYED = REGISTRY_ADDRESS !== ZERO;
 export const EXPLORER_URL = CHAIN.blockExplorers.default.url;
 export const explorerAddressUrl = (address: string) => `${EXPLORER_URL}/address/${address}`;
 export const BOT_CHAIN_SITE = "https://botchain.ai";
+export const BOT_CHAIN_DOCS = "https://dev-docs.botchain.ai/docs/intro";
+export const BOT_CHAIN_FAUCET = "https://faucet.botchain.ai/en/basic";
+export const CONTACT_EMAIL = "hello@girlmeetstech.org";
 
 /** Public site URL for sitemap/OG. Set NEXT_PUBLIC_SITE_URL in production. */
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000").replace(/\/$/, "");

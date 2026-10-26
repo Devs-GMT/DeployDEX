@@ -5,8 +5,12 @@ import { useRef, useState } from "react";
 import { useReadContract } from "wagmi";
 import { deployDexAbi } from "@/lib/abi";
 import {
+  BOT_CHAIN_DOCS,
+  BOT_CHAIN_FAUCET,
   BOT_CHAIN_SITE,
   CHAIN,
+  CONTACT_EMAIL,
+  EXPLORER_URL,
   REGISTRY_ADDRESS,
   REGISTRY_DEPLOYED,
   explorerAddressUrl,
@@ -27,6 +31,7 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
       { label: "Categories", href: "/#categories" },
       { label: "Most starred", href: "/dapps?s=stars" },
       { label: "Fresh deploys", href: "/dapps?s=new" },
+      { label: "Dex stats", href: "/stats" },
     ],
   },
   {
@@ -34,16 +39,16 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
     links: [
       { label: "List your dApp", href: "/list" },
       { label: "My dApps", href: "/my" },
-      { label: "Listing guidelines", href: "/#faq" },
+      { label: "Listing guidelines", href: "/guidelines" },
       { label: "GitHub", href: "https://github.com/Devs-GMT/DeployDEX", external: true },
     ],
   },
   {
     title: "Resources",
     links: [
-      { label: "BOT Chain docs", href: BOT_CHAIN_SITE, external: true },
-      { label: "Explorer", href: "https://scan.botchain.ai", external: true },
-      { label: "Faucet", href: "https://scan.bohr.life", external: true },
+      { label: "BOT Chain docs", href: BOT_CHAIN_DOCS, external: true },
+      { label: "Explorer", href: EXPLORER_URL, external: true },
+      { label: "Faucet", href: BOT_CHAIN_FAUCET, external: true },
       { label: "FAQ", href: "/#faq" },
     ],
   },
@@ -51,7 +56,7 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
     title: "Company",
     links: [
       { label: "About", href: "/#about" },
-      { label: "Contact", href: "mailto:hello@deploydex.xyz", external: true },
+      { label: "Contact", href: `mailto:${CONTACT_EMAIL}`, external: true },
       { label: "X", href: "https://x.com/BOTChain_ai", external: true },
     ],
   },
@@ -170,7 +175,7 @@ function Certificate() {
         {REGISTRY_DEPLOYED && (
           <ExternalLink
             href={explorerAddressUrl(REGISTRY_ADDRESS)}
-            className="border-brand-deep bg-brand mt-6 inline-flex h-11 items-center rounded-xl border-b-4 px-5 text-sm font-medium text-white hover:bg-[#ff6c1a]"
+            className="border-brand-deep bg-brand mt-6 inline-flex h-11 items-center rounded-xl border-b-4 px-5 text-sm font-medium text-white hover:bg-brand-hover"
           >
             View on explorer ↗
           </ExternalLink>
@@ -282,7 +287,7 @@ export function Footer() {
           <Link href="/terms" className="hover:text-brand">
             Terms
           </Link>
-          <ExternalLink href="mailto:hello@deploydex.xyz" className="hover:text-brand">
+          <ExternalLink href={`mailto:${CONTACT_EMAIL}`} className="hover:text-brand">
             Email
           </ExternalLink>
           <ExternalLink href="https://x.com/BOTChain_ai" className="hover:text-brand">

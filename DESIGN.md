@@ -17,12 +17,15 @@ Mood: playful-but-premium startup site. Soft cloud sky, warm orange, a cute masc
 Contrast: orange text on white is for large/bold only; use white on orange for buttons.
 
 ## Type
-Body Geist. Headings Space Grotesk, weight 500. Small labels Geist Mono. Hero 36–56px, fluid via clamp.
+Body Geist. Headings and small labels Geist Mono, weight 500, set tight (letter-spacing -0.06em, word-spacing -0.3em on headings). Hero 36–56px, fluid via clamp.
 
 ## Components
 - Buttons: 16px radius. Primary orange/white, secondary black, tertiary text link.
 - Brand mark: Kit's head shaped as a "D" on a brand-orange tile (`components/ui/logo.tsx`, same art as `app/icon.svg` favicon). Header and footer lockups use it beside the "DeployDex" wordmark.
 - Cards: white, 16px radius, 1px border. Logo top-left, orange star count top-right, peach category chip.
+- Category art: Kit in a costume per category (`<CategoryArt slug />`, `components/ui/category-art.tsx`), on card covers, home category cards, /dapps filter chips (round crop), the /list category picker, the Explore menu and the featured dApp. Renders live in `public/category` (built by `scripts/category-art.mjs`, prompts in `docs/CATEGORY_ART.md`); until one exists the closest Kit pose stands in.
+- dApp card cover (1.91:1, the og:image shape): the project's own share image (og:image/twitter:image of its live site, else a custom GitHub social preview) via `/api/preview`; otherwise the category tint, the dot grid and the category Kit on the right. The project logo is a tile bottom-left. `components/dapps/dapp-cover.tsx`.
+- Project logos and cover images load through `/api/image` (our origin; SSRF-guarded fetch in `lib/safe-fetch.ts`, type sniffed from bytes, size-capped, SVG sandboxed). No logo, or a failed one: an app-icon tile with the category's 3D prop on its tint (`public/category/icons`, built by `scripts/category-compose.mjs`).
 - Top banner: slim, dismissible. Header: logo, mega-menus (Explore, Builders, About), right actions.
 - Dark rounded panel for the intro statement.
 

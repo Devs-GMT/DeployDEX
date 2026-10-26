@@ -52,7 +52,7 @@ export function Intro() {
               <div>
                 <p
                   data-intro-text
-                  className="text-[clamp(1.6rem,3vw,2.6rem)] leading-[1.12] tracking-[-0.04em]"
+                  className="font-display text-[clamp(1.45rem,2.6vw,2.3rem)] leading-[1.15]"
                 >
                   <Em>DeployDex</Em> is an on-chain directory where every listing points to a real
                   BOT Chain contract. That means no fake projects, no dead links, and a community
