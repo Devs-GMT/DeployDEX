@@ -39,7 +39,6 @@ const COLUMNS: { title: string; links: { label: string; href: string; external?:
       { label: "List your dApp", href: "/list" },
       { label: "My dApps", href: "/my" },
       { label: "Listing guidelines", href: "/guidelines" },
-      { label: "GitHub", href: "https://github.com/Devs-GMT/DeployDEX", external: true },
     ],
   },
   {
