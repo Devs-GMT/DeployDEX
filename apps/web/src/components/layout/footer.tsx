@@ -2,8 +2,6 @@
 
 import Link from "next/link";
 import { useRef, useState } from "react";
-import { useReadContract } from "wagmi";
-import { deployDexAbi } from "@/lib/abi";
 import {
   BOT_CHAIN_DOCS,
   BOT_CHAIN_FAUCET,
@@ -16,6 +14,7 @@ import {
   explorerAddressUrl,
 } from "@/lib/config";
 import { shortAddress } from "@/lib/format";
+import { useProjects } from "@/hooks/use-projects";
 import { ExternalLink } from "@/components/ui/button";
 import { BotChainLogo } from "@/components/ui/bot-chain-logo";
 import { Kit } from "@/components/kit/kit";
@@ -94,13 +93,9 @@ function Certificate() {
     },
     { scope: root },
   );
-  const { data: total } = useReadContract({
-    address: REGISTRY_ADDRESS,
-    abi: deployDexAbi,
-    functionName: "total",
-    chainId: CHAIN.id,
-    query: { enabled: REGISTRY_DEPLOYED },
-  });
+  // Visible listings only, same as the directory. The contract's total() also counts delisted
+  // and hidden entries, which made the footer disagree with every other number on the site.
+  const { data: dapps } = useProjects();
 
   async function copy() {
     try {
@@ -145,6 +140,9 @@ function Certificate() {
               >
                 <BotChainLogo />
               </ExternalLink>
+              {CHAIN.testnet && (
+                <span className="text-muted ml-2 font-mono text-xs uppercase">Testnet</span>
+              )}
             </dd>
           </div>
           <div>
@@ -168,7 +166,7 @@ function Certificate() {
           </div>
           <div>
             <dt className="text-muted font-mono text-xs">dApps listed</dt>
-            <dd className="mt-1 font-mono">{total !== undefined ? total.toString() : "—"}</dd>
+            <dd className="mt-1 font-mono">{dapps ? dapps.length : "—"}</dd>
           </div>
         </dl>
 

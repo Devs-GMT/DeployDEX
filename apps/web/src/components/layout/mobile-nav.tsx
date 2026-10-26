@@ -10,7 +10,6 @@ import { cn } from "@/lib/utils";
 import { ConnectButton } from "@/components/web3/connect-button";
 import { ButtonLink } from "@/components/ui/button";
 import { CategoryArt } from "@/components/ui/category-art";
-import { Kit } from "@/components/kit/kit";
 import { IconArrowRight } from "@/components/ui/icons";
 
 const LINKS: NavLink[] = [
@@ -151,9 +150,6 @@ export function MobileNav({
       </nav>
 
       <div className="border-line relative shrink-0 border-t bg-white/90 px-5 pt-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-10">
-        <div aria-hidden className="pointer-events-none absolute -top-[4.6rem] right-6 w-24">
-          <Kit pose="hackathon" sizes="96px" float />
-        </div>
         <div className={cn("grid gap-2 sm:grid-cols-2")}>
           <div className="grid">
             <ConnectButton variant="outline" />

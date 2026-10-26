@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
+import { createPortal } from "react-dom";
 import { useAccount, useConnect, useSwitchChain } from "wagmi";
 import { Button } from "@/components/ui/button";
 import { TxPending } from "@/components/web3/tx-pending";
@@ -14,6 +15,44 @@ import type { Dapp } from "@/lib/types";
 
 const METAMASK_URL = "https://metamask.io/download/";
 
+/**
+ * Pins its children under the anchor's bottom-right corner, portalled to <body>. Cards clip
+ * (overflow-hidden) or stack over each other, so an in-flow popover got hidden by the next card.
+ */
+function Anchored({ anchor, children }: { anchor: RefObject<HTMLElement | null>; children: ReactNode }) {
+  const [pos, setPos] = useState<{ top: number; right: number } | null>(null);
+
+  useEffect(() => {
+    let raf = 0;
+    const place = () => {
+      const el = anchor.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      setPos({ top: r.bottom + 8, right: Math.max(8, window.innerWidth - r.right) });
+    };
+    const schedule = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(place);
+    };
+    schedule();
+    window.addEventListener("scroll", schedule, { passive: true, capture: true });
+    window.addEventListener("resize", schedule);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", schedule, { capture: true });
+      window.removeEventListener("resize", schedule);
+    };
+  }, [anchor]);
+
+  if (!pos) return null;
+  return createPortal(
+    <div className="fixed z-40" style={{ top: pos.top, right: pos.right }}>
+      {children}
+    </div>,
+    document.body,
+  );
+}
+
 export function StarButton({ dapp, size = "sm" }: { dapp: Dapp; size?: "sm" | "md" }) {
   const mounted = useIsClient();
   const { address, isConnected, chainId } = useAccount();
@@ -26,6 +65,7 @@ export function StarButton({ dapp, size = "sm" }: { dapp: Dapp; size?: "sm" | "m
   const [authError, setAuthError] = useState<string | null>(null);
   const lastAction = useRef<"star" | "unstar">("star");
   const burst = useRef<HTMLSpanElement>(null);
+  const anchor = useRef<HTMLButtonElement>(null);
 
   // Party Kit moment after a successful star.
   useEffect(() => {
@@ -106,6 +146,7 @@ export function StarButton({ dapp, size = "sm" }: { dapp: Dapp; size?: "sm" | "m
         ))}
       </span>
       <Button
+        ref={anchor}
         variant={starred ? "outline" : "primary"}
         size={size}
         disabled={pending || authBusy}
@@ -122,18 +163,22 @@ export function StarButton({ dapp, size = "sm" }: { dapp: Dapp; size?: "sm" | "m
               : "⭐ Star"}
       </Button>
       {pending && (
-        <div className="absolute top-full right-0 z-20 mt-2 w-60">
-          <TxPending label="Confirm in your wallet, then we check the chain…" />
-        </div>
+        <Anchored anchor={anchor}>
+          <div className="w-60">
+            <TxPending label="Confirm in your wallet, then we check the chain…" />
+          </div>
+        </Anchored>
       )}
       {party && (
-        <div
-          role="status"
-          className="border-line absolute top-full right-0 z-20 mt-2 flex w-56 items-center gap-2 rounded-xl border bg-white p-3 text-sm shadow-lg"
-        >
-          <Kit pose="party" className="w-14 shrink-0" />
-          <span>Starred! Kit says thanks.</span>
-        </div>
+        <Anchored anchor={anchor}>
+          <div
+            role="status"
+            className="border-line text-ink flex w-56 items-center gap-2 rounded-xl border bg-white p-3 text-sm shadow-lg"
+          >
+            <Kit pose="party" className="w-14 shrink-0" />
+            <span>Starred! Kit says thanks.</span>
+          </div>
+        </Anchored>
       )}
       {state.status === "error" && (
         <span role="alert" className="text-pink max-w-48 text-right text-xs">

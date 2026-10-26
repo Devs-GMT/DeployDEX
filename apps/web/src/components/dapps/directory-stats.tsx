@@ -20,7 +20,9 @@ export function DirectoryStats() {
   ];
 
   return (
-    <div className="mt-8 flex flex-wrap items-center gap-3">
+    // From sm, Curator Kit perches on the search shelf's right edge just below this row; keep its
+    // column clear so it never sits on "See all stats". At lg the row is short enough on its own.
+    <div className="mt-8 flex flex-wrap items-center gap-3 sm:pr-40 lg:pr-0">
       <dl className="contents">
         {stats.map((s) => (
           <div
