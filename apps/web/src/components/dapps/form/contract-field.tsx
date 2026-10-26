@@ -39,7 +39,10 @@ export function ContractField({
   if (!editing && parsed && !loading && check) {
     if (check.isSelf) checkError = "That's your wallet address, not a contract. Paste the dApp's contract.";
     else if (check.isRegistry) checkError = "That's the DeployDex registry itself. Paste your own contract.";
-    else if (!check.isContract) checkError = "No contract found at this address on BOT Chain.";
+    else if (!check.isContract)
+      checkError = CHAIN.testnet
+        ? "No contract found at this address on BOT Chain testnet."
+        : "No contract at this address on BOT Chain mainnet. Testnet addresses can't be listed here: use your dApp's mainnet contract.";
     else if (listed) checkError = "This contract is already listed.";
   }
   if (!editing && parsed && !loading && unavailable) {
