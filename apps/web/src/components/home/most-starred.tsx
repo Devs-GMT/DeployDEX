@@ -7,6 +7,7 @@ import { LogoAvatar } from "@/components/dapps/logo-avatar";
 import { Halftone } from "@/components/ui/halftone";
 import { ButtonLink, ExternalLink } from "@/components/ui/button";
 import { Kit } from "@/components/kit/kit";
+import { CategoryArt } from "@/components/ui/category-art";
 import { CATEGORIES, CATEGORY_ART } from "@/lib/categories";
 import { shortAddress } from "@/lib/format";
 import { safeHttpsUrl } from "@/lib/validators";
@@ -79,22 +80,36 @@ function DragScroller({ children }: { children: React.ReactNode }) {
   );
 }
 
-/** One ranked dApp: halftone header with logo and stars, then the tagline and links. */
+/**
+ * One ranked dApp. Header: the category's tint, its halftone shape as a soft orange print
+ * behind, and Kit in the category's costume in front, then the logo, name and stars.
+ */
 function StarCard({ d, className }: { d: Dapp; className?: string }) {
   const slug = CATEGORIES.find((c) => c.id === d.category)?.slug ?? "other";
+  const art = CATEGORY_ART[slug] ?? CATEGORY_ART.other!;
   const live = safeHttpsUrl(d.liveUrl);
   return (
     <article
       className={cn(
-        "border-line bg-card relative overflow-hidden rounded-3xl border shadow-sm",
+        "kit-group border-line bg-card relative overflow-hidden rounded-3xl border shadow-sm",
         className,
       )}
     >
-      <div className="relative h-52 bg-mist">
-        <div aria-hidden className="halftone-mask absolute inset-0 p-6 opacity-70">
-          <Halftone shape={CATEGORY_ART[slug]!.shape} color="var(--color-ash)" dot={2.2} />
+      <div
+        className="relative h-52 overflow-hidden"
+        style={{ backgroundColor: `color-mix(in srgb, var(${art.tint}) 60%, var(--color-card))` }}
+      >
+        <div aria-hidden className="dot-grid absolute inset-0" />
+        <div
+          aria-hidden
+          className="halftone-mask absolute -top-6 -left-6 size-52 -rotate-12 opacity-35"
+        >
+          <Halftone shape={art.shape} dot={2.4} />
         </div>
-        <div className="absolute inset-x-0 bottom-0 flex items-center gap-3 bg-linear-to-t from-white/90 to-transparent p-4 pt-10">
+        <div aria-hidden className="absolute top-1 right-[4%] aspect-square h-[78%]">
+          <CategoryArt slug={slug} sizes="(min-width: 640px) 170px, 150px" />
+        </div>
+        <div className="from-card via-card/85 absolute inset-x-0 bottom-0 flex items-center gap-3 bg-linear-to-t to-transparent p-4 pt-10">
           <LogoAvatar name={d.name} src={d.logoUrl} category={d.category} className="size-11" />
           <div className="min-w-0">
             <p className="truncate font-medium">{d.name}</p>
