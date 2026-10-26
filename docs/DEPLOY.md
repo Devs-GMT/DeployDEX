@@ -3,6 +3,22 @@
 ## 0. Current state
 - Testnet registry (chain 968): `0x3b3ABC68c8Af9C769612f13E03EBfb9091Cb735A` (set in `apps/web/.env.local`).
 - Mainnet registry (chain 677): not deployed yet.
+- The testnet registry above predates `delist()`. The site still reads it, but **Delist** reverts there. Redeploy (section 0.1) before testing delist.
+
+## 0.1 Redeploy the testnet registry (delist upgrade)
+A contract can't be upgraded in place, so the new registry starts empty and the old listings are listed again.
+1. Remix: compile `contracts/DeployDex.sol` (0.8.20+), MetaMask on testnet 968, deploy. The deployer is the curator.
+2. Put the new address in `apps/web/.env.local` (`NEXT_PUBLIC_REGISTRY_TESTNET`) and on Vercel, then update section 0.
+3. Seed from the original lister wallet `0x15621E6FdaB1f6f3f6FDa6284aF93ca6815c7E6a` through `/list` (stars don't carry over):
+
+| Name | Contract | Category | Tagline | Live URL | Repo | Logo |
+|---|---|---|---|---|---|---|
+| Velora | `0xcaE9f3569486094b86Fc8b85024050B58815ddFe` | AI | Safely authorize AI agents through programmable blockchain policies. | https://velora-policies.my.id/ | bayuapriansyah/velora | https://github.com/bayuapriansyah/velora/raw/main/public/velora.png |
+| Asetra | `0x1893bd849B656fE9eBFf8392340C30FE04268C37` | RWA | Real-world assets, made programmable. | https://www.asetra-rwa.my.id | bayuapriansyah/Asetra | https://www.asetra-rwa.my.id/Asetra.png |
+| ChefBOT | `0x939878F4aA5564B91aFa1e8758A100F14AAbcB85` | Fun & Lifestyle | Pick. Cook. Stamp on-chain. | https://chef-bot.my.id | Devs-GMT/ChefBOT | https://github.com/Devs-GMT/ChefBOT/raw/main/app/icon.svg |
+
+4. Run point 10 of `contracts/test-notes.md` (delist with wallet A, star blocked, contract can be listed again), then star from wallet B so `/stats` has a Chain log entry.
+5. When testnet passes, go to section 2. Mainnet needs each dApp's **mainnet** contract address: `list()` checks the code exists on the registry's own chain, so the testnet addresses above won't list there.
 
 ## 1. Test on testnet (2 wallets)
 1. `npm run dev`, open http://localhost:3000, connect wallet A (MetaMask on chain 968, it auto-switches).
