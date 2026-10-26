@@ -1,45 +1,33 @@
 # Deploy guide
 
 ## 0. Current state
-- Testnet registry (chain 968): `0x5863636C9308E1318ef4F159bD5019c67C2F6b83` (set in `apps/web/.env.local`), redeployed with `delist()`. The old one, `0x3b3ABC68c8Af9C769612f13E03EBfb9091Cb735A`, is retired.
-- Mainnet registry (chain 677): `0xCeA0C0db0F86d75CeE6e8d70e2b20488Fa5cD884`, curator `0x15621E6FdaB1f6f3f6FDa6284aF93ca6815c7E6a`. Production runs on it (`NEXT_PUBLIC_CHAIN=mainnet`). Starts empty: list each dApp again with its **mainnet** contract address.
 
-## 0.1 Redeploy the testnet registry (delist upgrade)
-A contract can't be upgraded in place, so the new registry starts empty and the old listings are listed again.
-1. Remix: compile `contracts/DeployDex.sol` (0.8.20+), MetaMask on testnet 968, deploy. The deployer is the curator.
-2. Put the new address in `apps/web/.env.local` (`NEXT_PUBLIC_REGISTRY_TESTNET`) and on Vercel, then update section 0.
-3. Seed from the original lister wallet `0x15621E6FdaB1f6f3f6FDa6284aF93ca6815c7E6a` through `/list` (stars don't carry over):
+| Network | Chain ID | Registry | Used by |
+|---|---|---|---|
+| BOT Chain mainnet | `677` | `0xCeA0C0db0F86d75CeE6e8d70e2b20488Fa5cD884` | Production (`NEXT_PUBLIC_CHAIN=mainnet`) |
+| BOT Chain testnet | `968` | `0x5863636C9308E1318ef4F159bD5019c67C2F6b83` | Local testing |
 
-| Name | Contract | Category | Tagline | Live URL | Repo | Logo |
-|---|---|---|---|---|---|---|
-| Velora | `0xcaE9f3569486094b86Fc8b85024050B58815ddFe` | AI | Safely authorize AI agents through programmable blockchain policies. | https://velora-policies.my.id/ | bayuapriansyah/velora | https://github.com/bayuapriansyah/velora/raw/main/public/velora.png |
-| Asetra | `0x1893bd849B656fE9eBFf8392340C30FE04268C37` | RWA | Real-world assets, made programmable. | https://www.asetra-rwa.my.id | bayuapriansyah/Asetra | https://www.asetra-rwa.my.id/Asetra.png |
-| ChefBOT | `0x939878F4aA5564B91aFa1e8758A100F14AAbcB85` | Fun & Lifestyle | Pick. Cook. Stamp on-chain. | https://chef-bot.my.id | Devs-GMT/ChefBOT | https://github.com/Devs-GMT/ChefBOT/raw/main/app/icon.svg |
-
-4. Run point 10 of `contracts/test-notes.md` (delist with wallet A, star blocked, contract can be listed again), then star from wallet B so `/stats` has a Chain log entry.
-5. When testnet passes, go to section 2. Mainnet needs each dApp's **mainnet** contract address: `list()` checks the code exists on the registry's own chain, so the testnet addresses above won't list there.
+A registry can't be upgraded in place. A new deploy starts empty: listings and stars don't carry over, so each dApp is listed again.
 
 ## 1. Test on testnet (2 wallets)
-1. `npm run dev`, open http://localhost:3000, connect wallet A (MetaMask on chain 968, it auto-switches).
-2. `/list`: use a real contract address (for example the registry address above), a real `owner/repo`, an https live URL. Wait for the 4 checks, press **List on BOT Chain**.
-3. The project shows in `/dapps`, the home page and the footer counter.
-4. Switch to wallet B, open the project, press **Star**. Count goes to 1. Press **Unstar**. Count goes to 0.
-5. Wallet A sees **Your project** instead of Star. Edit it from `/my`.
-6. Run the full checklist in `contracts/test-notes.md` for the revert cases.
+1. In `apps/web/.env.local` set `NEXT_PUBLIC_CHAIN=testnet` and `NEXT_PUBLIC_REGISTRY_TESTNET`.
+2. `npm run dev`, open http://localhost:3000, connect wallet A (MetaMask auto-switches to chain 968).
+3. `/list`: a real testnet contract, a real `owner/repo`, an https live URL. Wait for the 4 checks, press **List on BOT Chain**.
+4. The project shows in `/dapps`, the home page, `/stats` and the footer counter.
+5. Switch to wallet B, open the project, press **Star** (count goes to 1), then **Unstar** (back to 0).
+6. Wallet A sees **Your project** instead of Star. Edit and delist it from `/my`.
+7. Run the full checklist in `contracts/test-notes.md` for the revert cases.
 
-## 2. Deploy the registry to mainnet (Remix)
-1. Open `contracts/DeployDex.sol` in Remix, compiler 0.8.20+ (no `viaIR` needed).
-2. MetaMask on BOT Chain mainnet: chain ID 677, RPC `https://rpc.botchain.ai`, explorer `https://scan.botchain.ai`. Fund the deployer with BOT for gas.
-3. Deploy. The deployer becomes the **curator** (can hide listings). Use a wallet you control long-term.
-4. Copy the address into:
-   - `apps/web/.env.local` and Vercel: `NEXT_PUBLIC_REGISTRY_MAINNET`
-   - `README.md` (the "Mainnet registry" line)
-5. Check it is visible on `https://scan.botchain.ai/address/<address>`.
+## 2. Deploy the registry (Remix)
+1. Open `contracts/DeployDex.sol` in [Remix](https://remix.ethereum.org), compiler 0.8.20+ (no `viaIR` needed).
+2. MetaMask on the target network, with BOT for gas:
+   - Mainnet: chain ID 677, RPC `https://rpc.botchain.ai`, explorer `https://scan.botchain.ai`
+   - Testnet: chain ID 968, RPC `https://rpc.bohr.life`, explorer `https://scan.bohr.life`
+3. Deploy. The deployer becomes the **curator** (can hide listings), so use a wallet you control long-term.
+4. Put the address in `apps/web/.env.local` and on Vercel (`NEXT_PUBLIC_REGISTRY_MAINNET` or `NEXT_PUBLIC_REGISTRY_TESTNET`), and update the contracts table in `README.md` and section 0 above.
+5. Check it on the explorer: `<explorer>/address/<address>`.
 
-## 3. Seed the directory
-Before sharing the link, list your own deployed hackathon projects from the real mainnet wallet so judges do not see an empty site. Each needs: name, tagline (80 chars max), category, contract, https live URL, GitHub repo, optional logo URL.
-
-## 4. Vercel
+## 3. Vercel
 1. Push the repo to GitHub (nothing secret is committed; `.env*.local` is git-ignored).
 2. Vercel: New Project, import the repo, **Root Directory = `apps/web`**, framework Next.js.
 3. Environment variables (Production):
@@ -47,18 +35,25 @@ Before sharing the link, list your own deployed hackathon projects from the real
 | Name | Value |
 |---|---|
 | `NEXT_PUBLIC_CHAIN` | `mainnet` |
-| `NEXT_PUBLIC_REGISTRY_MAINNET` | your mainnet address |
+| `NEXT_PUBLIC_REGISTRY_MAINNET` | `0xCeA0C0db0F86d75CeE6e8d70e2b20488Fa5cD884` |
 | `NEXT_PUBLIC_REGISTRY_TESTNET` | testnet address (optional) |
-| `NEXT_PUBLIC_SITE_URL` | your production URL, e.g. `https://deploydex.xyz` (used by sitemap and social cards) |
+| `NEXT_PUBLIC_SITE_URL` | production URL, e.g. `https://deploy-dex.vercel.app` (sitemap and social cards) |
 | `GITHUB_TOKEN` | optional, a fine-grained token with no scopes (public data only). Server only, never prefix with `NEXT_PUBLIC_`. |
 
-4. Deploy, then add your custom domain in Project Settings, Domains.
-5. Contact email, docs and faucet links live in `src/lib/config.ts` (`CONTACT_EMAIL`, `BOT_CHAIN_DOCS`, `BOT_CHAIN_FAUCET`).
+4. Deploy. `NEXT_PUBLIC_*` values are baked in at build time, so **redeploy after changing any of them**.
+5. Optional: add a custom domain in Project Settings, Domains, and update `NEXT_PUBLIC_SITE_URL`.
+6. Contact email, docs and faucet links live in `src/lib/config.ts` (`CONTACT_EMAIL`, `BOT_CHAIN_DOCS`, `BOT_CHAIN_FAUCET`).
+
+## 4. List dApps on mainnet
+List through `/list` on the live site. Each listing needs: name, tagline (80 bytes max), category, contract address, https live URL, GitHub repo, optional logo URL.
+
+The contract address must exist on **mainnet**: `list()` checks the code on the registry's own chain, so testnet-only addresses are rejected. A contract deployed from the same wallet at the same nonce can have the same address on both chains; check on the explorer that it is the right contract before listing, since the address can't be edited later (only delisted).
 
 ## 5. Launch checklist
-- [ ] Mainnet address in README, footer shows it, visible on scan.botchain.ai
+- [ ] Footer shows chain 677 and the mainnet registry; registry visible on scan.botchain.ai
+- [ ] `NEXT_PUBLIC_SITE_URL` set: `/sitemap.xml` and the og:image use the production URL
 - [ ] Live URL works on mobile and desktop
-- [ ] At least a few real listings
+- [ ] At least a few real listings, and a star from a second wallet so `/stats` has a Chain log entry
 - [ ] Demo clip: list, checks pass, star from the second wallet
 - [ ] X post tagging @BOTChain_ai
 - [x] Official BOT Chain logo in place (`components/ui/bot-chain-logo.tsx`)
