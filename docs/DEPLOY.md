@@ -1,9 +1,8 @@
 # Deploy guide
 
 ## 0. Current state
-- Testnet registry (chain 968): `0x3b3ABC68c8Af9C769612f13E03EBfb9091Cb735A` (set in `apps/web/.env.local`).
+- Testnet registry (chain 968): `0x5863636C9308E1318ef4F159bD5019c67C2F6b83` (set in `apps/web/.env.local`), redeployed with `delist()`. The old one, `0x3b3ABC68c8Af9C769612f13E03EBfb9091Cb735A`, is retired.
 - Mainnet registry (chain 677): not deployed yet.
-- The testnet registry above predates `delist()`. The site still reads it, but **Delist** reverts there. Redeploy (section 0.1) before testing delist.
 
 ## 0.1 Redeploy the testnet registry (delist upgrade)
 A contract can't be upgraded in place, so the new registry starts empty and the old listings are listed again.

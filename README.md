@@ -10,7 +10,7 @@ The public showcase of BOT Chain dApps. List your project with its contract, liv
 3. To list or star, connect MetaMask. The site switches you to BOT Chain.
 4. A listing must point to a real deployed contract. The contract itself rejects wallets and random addresses.
 
-**Testnet registry (968):** `0x3b3ABC68c8Af9C769612f13E03EBfb9091Cb735A`
+**Testnet registry (968):** `0x5863636C9308E1318ef4F159bD5019c67C2F6b83`
 **Mainnet registry (677):** _not deployed yet_ — set in `apps/web/.env.local`, shown in the site footer.
 
 ## Project layout
