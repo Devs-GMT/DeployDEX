@@ -1,7 +1,8 @@
 # DeployDex — X launch thread
 
 Images: `post-N-*.png` (1600×900, attach one per post) · Profile banner: `x-banner.png` (1500×500).
-Regenerate: `node apps/web/scripts/social-images.mjs`
+Posts 2-4 use real screenshots of the live site (`shots/`).
+Refresh: `node apps/web/scripts/social-shots.mjs` then `node apps/web/scripts/social-images.mjs`
 
 ## Post 1 — `post-1-hero.png`
 Meet DeployDex 🐱
@@ -10,7 +11,7 @@ The on-chain home of BOT Chain dApps. Every listing points to a real contract, n
 
 Ship it. List it. Get starred.
 
-https://deploy-dex.vercel.app
+https://www.deploydex.my.id
 
 LIVE on @Botchain_ai
 
@@ -25,7 +26,7 @@ Live checks while you type:
 
 You can edit or delist any time. Your listing, your control.
 
-https://deploy-dex.vercel.app/list
+https://www.deploydex.my.id/list
 
 LIVE on @Botchain_ai
 
@@ -36,16 +37,16 @@ One star per wallet per dApp. No self-stars. Every vote is a transaction anyone 
 
 Find the best builders on BOT Chain and give them a star.
 
-https://deploy-dex.vercel.app/dapps
+https://www.deploydex.my.id/dapps
 
 LIVE on @Botchain_ai
 
 ## Post 4 — `post-4-browse.png`
-Browse 8 shelves, no wallet needed: AI, RWA, Community, Productivity, Fun, Dev tools, Hackathon and more.
+Browse every BOT Chain dApp, no wallet needed. Search, filter across 7 shelves (AI, RWA, Community, Productivity, Fun & Lifestyle, Dev tools, Hackathon) and sort by stars.
 
-Plus a trust report per project and live Dex stats from the chain. Hosted by Kit, our orange tabby 🧡
+Every project page has a trust report, and Dex stats are read straight from the chain. Hosted by Kit, our orange tabby 🧡
 
 Go explore, then list yours 👇
-https://deploy-dex.vercel.app
+https://www.deploydex.my.id
 
 LIVE on @Botchain_ai

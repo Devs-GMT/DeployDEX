@@ -7,6 +7,7 @@ import { mkdirSync, writeFileSync, rmSync } from "node:fs";
 const pub = pathToFileURL(process.cwd() + "/apps/web/public/").href;
 const icon = pathToFileURL(process.cwd() + "/apps/web/src/app/icon.svg").href;
 const out = "docs/social";
+const shots = pathToFileURL(process.cwd() + "/docs/social/shots/").href;
 const tmp = `${out}/.tmp`;
 mkdirSync(tmp, { recursive: true });
 
@@ -30,11 +31,30 @@ h1{font-weight:500;line-height:.98}
 mark{background:linear-gradient(transparent 62%,var(--peach) 62%,var(--peach) 92%,transparent 92%);color:inherit}
 `;
 const logo = `<div class="logo mono"><img src="${icon}">DeployDex</div>`;
-const foot = (t = "deploy-dex.vercel.app") =>
+const foot = (t = "deploydex.my.id") =>
   `<div class="foot mono"><span class="live" style="font-size:24px;padding:10px 22px"><i></i>LIVE on @Botchain_ai</span>${t}</div>`;
 const kit = (n, style) => `<img class="kit" src="${pub}kit/${n}.webp" style="${style}">`;
 const cat = (s, size = 150) =>
   `<img src="${pub}category/${s}-512.webp" style="width:${size}px;height:${size}px;object-fit:cover;border-radius:24px">`;
+
+
+/** Real site screenshot in a browser frame (top promo banner cropped), headline on the left, Kit peeking in. */
+const shotPage = ({ shot, kitName, title, sub, url }) => `
+  <div class="dots"></div><div class="blob" style="width:560px;height:560px;right:-140px;top:-120px"></div>
+  ${logo}
+  <div style="position:absolute;left:72px;top:190px;width:520px">
+    <h1 class="mono" style="font-size:64px">${title}</h1>
+    <p style="font-size:28px;color:var(--muted);margin-top:30px;line-height:1.4">${sub}</p>
+  </div>
+  <div class="card" style="position:absolute;left:640px;top:120px;width:900px;height:580px;overflow:hidden;border-radius:22px">
+    <div style="height:44px;background:#fff;border-bottom:2px solid var(--line);display:flex;align-items:center;gap:8px;padding:0 18px">
+      <i style="width:12px;height:12px;border-radius:50%;background:#ff5f57"></i><i style="width:12px;height:12px;border-radius:50%;background:#febc2e"></i><i style="width:12px;height:12px;border-radius:50%;background:#28c840"></i>
+      <span class="mono" style="margin-left:18px;font-size:16px;color:var(--muted);letter-spacing:0">${url}</span>
+    </div>
+    <div style="height:534px;overflow:hidden"><img src="${shots}${shot}.png" style="display:block;width:900px;margin-top:-28px"></div>
+  </div>
+  ${kit(kitName, "right:10px;top:600px;width:300px")}
+  ${foot()}`;
 
 const W = 1600;
 const H = 900;
@@ -49,44 +69,21 @@ const pages = [
     </div>
     ${kit("dev", "right:20px;top:150px;width:700px")}
     ${foot()}`],
-  ["post-2-list", W, H, `
-    <div class="dots"></div><div class="blob" style="width:620px;height:620px;right:40px;top:200px"></div>
-    ${logo}
-    <div style="position:absolute;left:72px;top:190px;width:760px">
-      <h1 class="mono" style="font-size:92px">List your dApp<br>in <span class="serif" style="font-size:100px">a minute</span></h1>
-      <div class="card" style="margin-top:44px;padding:28px 38px;font-size:30px;line-height:1.9">
-        <div class="mono" style="color:var(--muted);font-size:24px;letter-spacing:0">LIVE CHECKS WHILE YOU TYPE</div>
-        ✅ Contract exists on BOT Chain<br>✅ Not already listed<br>✅ Public GitHub repo<br>✅ <b>https://</b> live URL
-      </div>
-    </div>
-    ${kit("hackathon", "right:30px;top:150px;width:680px")}
-    ${foot("deploy-dex.vercel.app/list")}`],
-  ["post-3-stars", W, H, `
-    <div class="dots"></div><div class="blob" style="width:700px;height:700px;left:-160px;top:160px"></div>
-    ${logo}
-    ${kit("party", "left:20px;top:170px;width:660px")}
-    <div style="position:absolute;left:700px;top:190px;width:830px">
-      <h1 class="mono" style="font-size:90px">Stars live<br><span class="serif" style="font-size:100px">on-chain</span></h1>
-      <div class="card" style="margin-top:40px;padding:30px 36px;display:flex;gap:26px;align-items:center">
-        ${cat("ai", 130)}
-        <div style="flex:1"><div class="mono" style="font-size:40px;font-weight:600">Your dApp</div><div style="font-size:26px;color:var(--muted);margin-top:6px">AI · listed by you</div></div>
-        <div class="mono" style="font-size:44px;font-weight:600;background:var(--peach);border-radius:20px;padding:14px 26px">⭐ 128</div>
-      </div>
-      <p style="font-size:30px;color:var(--muted);margin-top:30px;line-height:1.4">One star per wallet.<br>No self-stars. No backend, no database.</p>
-    </div>
-    ${foot()}`],
-  ["post-4-browse", W, H, `
-    <div class="dots"></div>
-    ${logo}
-    <div style="position:absolute;left:72px;top:190px;width:900px">
-      <h1 class="mono" style="font-size:88px">Browse 8 shelves.<br><span class="serif" style="font-size:96px">No wallet needed.</span></h1>
-      <div style="display:grid;grid-template-columns:repeat(4,150px);gap:22px;margin-top:46px">
-        ${["ai", "rwa", "community", "productivity", "fun-lifestyle", "dev-tools", "hackathon", "other"].map((s) => cat(s)).join("")}
-      </div>
-    </div>
-    <div class="blob" style="width:520px;height:520px;right:30px;top:260px"></div>
-    ${kit("astro", "right:10px;top:210px;width:560px")}
-    ${foot()}`],
+  ["post-2-list", W, H, shotPage({
+    shot: "list", kitName: "hackathon",
+    title: 'List your dApp<br>in <span class="serif" style="font-size:72px">a minute</span>',
+    sub: "Live checks while you type: contract on BOT Chain, not already listed, public GitHub repo, https:// live URL.",
+    url: "deploydex.my.id/list" })],
+  ["post-3-stars", W, H, shotPage({
+    shot: "project", kitName: "party",
+    title: 'Stars live<br><span class="serif" style="font-size:72px">on-chain</span>',
+    sub: "One star per wallet, no self-stars. A trust report on every project page.",
+    url: "deploydex.my.id/dapps/0" })],
+  ["post-4-browse", W, H, shotPage({
+    shot: "dapps", kitName: "astro",
+    title: 'Browse every<br>dApp, <span class="serif" style="font-size:72px">no wallet</span>',
+    sub: "Search, filter by shelf, sort by stars. Works without MetaMask.",
+    url: "deploydex.my.id/dapps" })],
   ["x-banner", 1500, 500, `
     <div class="dots"></div><div class="blob" style="width:520px;height:520px;right:40px;top:-20px"></div>
     <div style="position:absolute;left:400px;top:92px;width:900px">
